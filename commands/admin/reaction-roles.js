@@ -7,7 +7,7 @@
  * - Fino a 5 coppie emoji/ruolo
  *
  * Il bot invia l'embed, aggiunge automaticamente le reazioni e salva la
- * configurazione in config/reactionRoles.json per la persistenza.
+ * configurazione su MongoDB Cloud per la persistenza.
  */
 
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
