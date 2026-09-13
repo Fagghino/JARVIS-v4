@@ -7,7 +7,6 @@
 
 const { isDBConnected } = require('./database');
 const ReactionRoleModel = require('../models/ReactionRole');
-require('dotenv').config({ path: '../config/.env' });
 
 /**
  * Carica tutti i dati reaction-role da MongoDB
