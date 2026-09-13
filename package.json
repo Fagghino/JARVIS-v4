@@ -1,6 +1,6 @@
 {
   "name": "jarvis_bot",
-  "version": "3.4.7",
+  "version": "4.5.2",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -34,12 +34,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Fagghino/JARVIS.git"
+    "url": "https://github.com/Fagghino/JARVIS-Alpha.git"
   },
   "bugs": {
-    "url": "https://github.com/Fagghino/JARVIS/issues"
+    "url": "https://github.com/Fagghino/JARVIS-Alpha/issues"
   },
-  "homepage": "https://github.com/Fagghino/JARVIS#readme",
+  "homepage": "https://github.com/Fagghino/JARVIS-Alpha#readme",
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
