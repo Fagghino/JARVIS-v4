@@ -13,7 +13,7 @@ module.exports = {
     async execute(interaction) {
         // Genera risultato casuale: Testa o Croce
         const risultato = Math.random() < 0.5 ? 'Testa' : 'Croce';
-        const emoji = risultato === 'Testa' ? '🪙' : '🪙';
+        const emoji = risultato === 'Testa' ? '👑' : '🪙';
 
         // Crea l'embed con il risultato
         const embed = new EmbedBuilder()
