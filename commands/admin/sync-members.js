@@ -7,7 +7,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { isDBConnected } = require('../../misc/database');
 const UserXPModel = require('../../models/UserXP');
-require('dotenv').config({ path: '../../config/.env' });
 
 module.exports = {
   data: new SlashCommandBuilder()
