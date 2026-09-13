@@ -11,7 +11,7 @@ const fs = require("fs");
 const path = require("path");
 const { checkCooldown } = require("./utils/cooldown");
 
-const keep_alive = require("./dashboard/server.js");
+const startDashboard = require("./dashboard/server.js");
 
 // Inizializza il client Discord con gli intent necessari
 const client = new Client({
@@ -34,7 +34,7 @@ const client = new Client({
 connectDB();
 
 // Avvia il server Express Web Dashboard
-keep_alive(client);
+startDashboard(client);
 
 // Collection per memorizzare tutti i comandi slash del bot
 client.commands = new Collection();
@@ -164,14 +164,24 @@ client.on("messageReactionRemove", (reaction, user) => {
 client.login(process.env.DISCORD_TOKEN);
 
 // Shutdown pulito
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.log('\n⚠️ [SIGINT] Disconnessione pulita di JARVIS...');
+  try {
+    await flushCache();
+  } catch (err) {
+    console.error('Errore durante il flush della cache XP in shutdown:', err);
+  }
   client.destroy();
   process.exit(0);
 });
 
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   console.log('\n⚠️ [SIGTERM] Segnale di arresto ricevuto.');
+  try {
+    await flushCache();
+  } catch (err) {
+    console.error('Errore durante il flush della cache XP in shutdown:', err);
+  }
   client.destroy();
   process.exit(0);
 });
