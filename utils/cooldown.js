@@ -2,7 +2,7 @@
  * Sistema di cooldown per i comandi slash
  *
  * Implementa un rate limiting per utente per evitare
- * spam di comandi pesanti (es. /classifica che chiama Google Sheets).
+ * spam di comandi pesanti (es. /classifica che interroga MongoDB Atlas).
  *
  * Uso in index.js:
  *   const { checkCooldown } = require('./utils/cooldown');
@@ -16,7 +16,7 @@ const cooldowns = new Map();
 
 // Cooldown personalizzati per comando (in secondi). Default: 3 secondi.
 const COOLDOWN_SECONDS = {
-  classifica: 10,   // Chiama Google Sheets
+  classifica: 10,   // Interroga MongoDB Atlas
   traduci: 5,       // Chiama API esterna
   server: 5,        // Fetch membri
   help: 3,
