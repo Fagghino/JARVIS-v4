@@ -11,7 +11,6 @@ const { EmbedBuilder } = require('discord.js');
 const { getGuildConfig } = require('../utils/guildSettings');
 const { isDBConnected } = require('./database');
 const UserXPModel = require('../models/UserXP');
-require('dotenv').config({ path: '../config/.env' });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Cache XP in memoria per-server: xpCache[guildId][userId] = { xp, level, username }
