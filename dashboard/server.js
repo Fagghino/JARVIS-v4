@@ -191,6 +191,45 @@ module.exports = (client) => {
     res.status(403).send("<h1>Accesso Negato</h1><p>Devi avere i permessi di Amministratore o Gestione Server per questa sezione.</p><a href='/select-guild'>Torna ai tuoi Server</a>");
   }
 
+  // Middleware Verifica Permessi Admin per API (Risposta JSON)
+  async function ensureGuildAdminApi(req, res, next) {
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({ message: "Non autenticato." });
+    }
+
+    const targetGuildId = req.params.guildId || req.query.guildId || req.body?.guildId;
+    if (!targetGuildId) {
+      return res.status(400).json({ message: "guildId richiesto." });
+    }
+
+    const userId = req.session.user.id;
+    const guild = client.guilds.cache.get(targetGuildId);
+
+    if (!guild) {
+      return res.status(404).json({ message: "Server Discord non accessibile dal Bot." });
+    }
+
+    try {
+      const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
+      if (!member) {
+        return res.status(403).json({ message: "Accesso negato: non sei membro di questo server." });
+      }
+
+      const isOwner = member.id === guild.ownerId;
+      const isAdmin = member.permissions.has("Administrator") || member.permissions.has("ManageGuild");
+
+      if (!isOwner && !isAdmin) {
+        return res.status(403).json({ message: "Accesso negato: permessi amministrativi richiesti." });
+      }
+
+      req.guild = guild;
+      req.member = member;
+      next();
+    } catch (error) {
+      res.status(500).json({ message: "Errore durante la verifica dei permessi." });
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   // ROTTE PRINCIPALI WEB
   // ─────────────────────────────────────────────────────────────────────────
@@ -493,7 +532,7 @@ module.exports = (client) => {
   });
 
   // API Salvataggio Impostazioni per-server (MongoDB)
-  app.post("/api/settings/:guildId?", ensureAuthenticated, async (req, res) => {
+  app.post("/api/settings/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
     const targetGuildId = req.params.guildId || req.query.guildId;
     const updatedSettings = req.body;
 
@@ -508,7 +547,7 @@ module.exports = (client) => {
   });
 
   // API Sincronizzazione Membri per-server
-  app.post("/api/sync-members/:guildId?", ensureAuthenticated, async (req, res) => {
+  app.post("/api/sync-members/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
     const targetGuildId = req.params.guildId || req.query.guildId;
     try {
       const guild = client.guilds.cache.get(targetGuildId);
