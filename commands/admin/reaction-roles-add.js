@@ -3,7 +3,7 @@
  *
  * Il titolo del messaggio viene selezionato tramite autocomplete (lista dai messaggi
  * reaction-role già configurati nel server). Il bot aggiunge la nuova reazione al
- * messaggio e aggiorna config/reactionRoles.json.
+ * messaggio e aggiorna la configurazione su MongoDB Cloud.
  */
 
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
