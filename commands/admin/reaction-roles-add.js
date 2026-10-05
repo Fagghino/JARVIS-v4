@@ -12,20 +12,7 @@ const {
   getTitlesForGuild,
   addEmojiRoleToMessage,
 } = require('../../misc/reactionRoles');
-
-/**
- * Analizza la stringa di un'emoji (uguale alla funzione in reaction-roles.js)
- * @param {string} input
- * @returns {{ key: string, display: string }}
- */
-function parseEmoji(input) {
-  const trimmed = input.trim();
-  const customMatch = trimmed.match(/^<a?:([\w]+):(\d+)>$/);
-  if (customMatch) {
-    return { key: customMatch[2], display: trimmed };
-  }
-  return { key: trimmed, display: trimmed };
-}
+const { parseEmoji } = require('../../utils/parseEmoji');
 
 module.exports = {
   data: new SlashCommandBuilder()
