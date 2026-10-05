@@ -48,10 +48,6 @@ module.exports = {
           const userId = member.id;
           const username = member.user.username;
 
-          const exists = await UserXPModel.exists({ guildId, userId });
-          if (!exists) addedCount++;
-          else existingCount++;
-
           operations.push({
             updateOne: {
               filter: { guildId, userId },
@@ -65,7 +61,9 @@ module.exports = {
         }
 
         if (operations.length > 0) {
-          await UserXPModel.bulkWrite(operations);
+          const result = await UserXPModel.bulkWrite(operations);
+          addedCount = result.upsertedCount || 0;
+          existingCount = operations.length - addedCount;
         }
       }
 
