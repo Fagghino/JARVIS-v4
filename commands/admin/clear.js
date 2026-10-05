@@ -5,12 +5,13 @@
  * dal canale corrente (massimo 50 messaggi).
  */
 
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, PermissionsBitField } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('clear')
     .setDescription('Cancella un numero specifico di messaggi (SOLO ADMIN)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addIntegerOption((option) =>
       option
         .setName('amount')
