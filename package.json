@@ -1,6 +1,6 @@
 {
   "name": "jarvis_bot",
-  "version": "4.5.2",
+  "version": "4.5.3",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -26,7 +26,9 @@
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.7",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.7.0",
     "express-session": "^1.18.0",
+    "helmet": "^8.3.0",
     "mongoose": "^8.4.0"
   },
   "devDependencies": {
@@ -34,12 +36,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Fagghino/JARVIS-Alpha.git"
+    "url": "https://github.com/Fagghino/JARVIS-v4.git"
   },
   "bugs": {
-    "url": "https://github.com/Fagghino/JARVIS-Alpha/issues"
+    "url": "https://github.com/Fagghino/JARVIS-v4/issues"
   },
-  "homepage": "https://github.com/Fagghino/JARVIS-Alpha#readme",
+  "homepage": "https://github.com/Fagghino/JARVIS-v4#readme",
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
