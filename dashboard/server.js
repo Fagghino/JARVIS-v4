@@ -8,6 +8,8 @@
 
 const express = require("express");
 const session = require("express-session");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
@@ -20,7 +22,31 @@ module.exports = (client) => {
   const app = express();
   const PORT = process.env.PORT || 8080;
 
+  function escapeHtml(unsafe) {
+    if (unsafe === null || unsafe === undefined) return '';
+    return String(unsafe)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   app.set("trust proxy", 1);
+
+  // Helmet per sicurezza headers e CSP (ALTA-02)
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https://cdn.discordapp.com"],
+        connectSrc: ["'self'"]
+      }
+    }
+  }));
 
   const client_id = process.env.DISCORD_CLIENT_ID;
   const client_secret = process.env.DISCORD_CLIENT_SECRET;
@@ -48,20 +74,38 @@ module.exports = (client) => {
 
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || "jarvis_super_secret_session_key",
+      secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       store: sessionStore,
       cookie: {
         maxAge: 24 * 60 * 60 * 1000,
-        secure: process.env.NODE_ENV === "production"
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        sameSite: 'lax'
       },
     })
   );
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: '10kb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10kb' }));
   app.use(express.static(path.join(__dirname, "public")));
+
+  // Limitatori di richieste (ALTA-03)
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100, // max 100 richieste per IP ogni 15 minuti su /api
+    message: { message: "Troppe richieste all'API, riprova più tardi." }
+  });
+
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20, // max 20 tentativi per IP ogni 15 minuti su /auth
+    message: "Troppi tentativi di autenticazione, riprova più tardi."
+  });
+
+  app.use("/api", apiLimiter);
+  app.use("/auth", authLimiter);
 
   function renderTemplate(res, templateName, variables = {}) {
     const templatePath = path.join(__dirname, "views", templateName);
@@ -85,7 +129,8 @@ module.exports = (client) => {
 
       for (const [key, value] of Object.entries(variables)) {
         const regex = new RegExp(`<%= ${key} %>`, "g");
-        content = content.replace(regex, value !== undefined && value !== null ? value : "");
+        const safeValue = (key === 'userBarHtml' || key.endsWith('Html')) ? value : escapeHtml(value);
+        content = content.replace(regex, safeValue !== undefined && safeValue !== null ? safeValue : "");
       }
 
       res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -107,8 +152,8 @@ module.exports = (client) => {
     return `
       <div class="user-bar">
         <div class="user-info">
-          ${user ? `<img src="${avatarUrl}" alt="${user.username}" class="user-avatar">
-          <span class="user-name">${user.username}</span>` : `<span>J.A.R.V.I.S. Panel</span>`}
+          ${user ? `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(user.username)}" class="user-avatar">
+          <span class="user-name">${escapeHtml(user.username)}</span>` : `<span>J.A.R.V.I.S. Panel</span>`}
         </div>
         <div class="theme-lang-bar" style="display: flex; align-items: center; gap: 10px;">
           <button id="themeToggleBtn" class="theme-toggle-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 12px; border-radius: 8px; cursor: pointer;">☀️ Light</button>
@@ -127,6 +172,10 @@ module.exports = (client) => {
     if (!isOauthConfigured) {
       return res.status(403).send("<h1>OAuth2 Non Configurato</h1><p>Inserisci DISCORD_CLIENT_ID e DISCORD_CLIENT_SECRET nel file .env.</p><a href='/'>Torna alla Home</a>");
     }
+    
+    // Rende la funzione escapeHtml globale così che le altre funzioni come getUserBarHtml 
+    // vi abbiano accesso, o spostala fuori.
+    
     if (req.session && req.session.user) {
       return next();
     }
@@ -220,6 +269,51 @@ module.exports = (client) => {
 
       if (!isOwner && !isAdmin) {
         return res.status(403).json({ message: "Accesso negato: permessi amministrativi richiesti." });
+      }
+
+      req.guild = guild;
+      req.member = member;
+      next();
+    } catch (error) {
+      res.status(500).json({ message: "Errore durante la verifica dei permessi." });
+    }
+  }
+
+  // Middleware Richiesta JSON (SUGGERIMENTO-01)
+  function requireJsonContent(req, res, next) {
+    if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+      const hasBody = req.headers['content-length'] > 0 || req.headers['transfer-encoding'];
+      if (hasBody && !req.is('application/json')) {
+        return res.status(400).json({ message: "Content-Type deve essere application/json" });
+      }
+    }
+    next();
+  }
+
+  app.use("/api", requireJsonContent);
+
+  // Middleware Verifica Membro per API (Risposta JSON)
+  async function ensureGuildMemberApi(req, res, next) {
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({ message: "Non autenticato." });
+    }
+
+    const targetGuildId = req.params.guildId || req.query.guildId || req.body?.guildId;
+    if (!targetGuildId) {
+      return res.status(400).json({ message: "guildId richiesto." });
+    }
+
+    const userId = req.session.user.id;
+    const guild = client.guilds.cache.get(targetGuildId);
+
+    if (!guild) {
+      return res.status(404).json({ message: "Server Discord non accessibile dal Bot." });
+    }
+
+    try {
+      const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
+      if (!member) {
+        return res.status(403).json({ message: "Accesso negato: non sei membro di questo server." });
       }
 
       req.guild = guild;
@@ -337,8 +431,8 @@ module.exports = (client) => {
       if (isEligible) {
         cardsHtml += `
           <div class="guild-card active-card">
-            <img src="${iconUrl}" alt="${bg.name}" class="guild-icon">
-            <div class="guild-name">${bg.name}</div>
+            <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(bg.name)}" class="guild-icon">
+            <div class="guild-name">${escapeHtml(bg.name)}</div>
             <div class="guild-actions">
               ${mode === "settings"
                 ? `<a href="/settings/${bg.id}" class="btn" data-i18n="settingsBtn">⚙️ Impostazioni</a>`
@@ -350,9 +444,9 @@ module.exports = (client) => {
       } else {
         cardsHtml += `
           <div class="guild-card disabled-card">
-            <img src="${iconUrl}" alt="${bg.name}" class="guild-icon">
-            <div class="guild-name">${bg.name}</div>
-            <div class="lock-badge" data-i18n="${lockKey}">${lockReason}</div>
+            <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(bg.name)}" class="guild-icon">
+            <div class="guild-name">${escapeHtml(bg.name)}</div>
+            <div class="lock-badge" data-i18n="${lockKey}">${escapeHtml(lockReason)}</div>
           </div>
         `;
       }
@@ -395,20 +489,27 @@ module.exports = (client) => {
   });
 
   // Login Discord OAuth2
+  const crypto = require('crypto');
   app.get("/auth/login", (req, res) => {
     if (!isOauthConfigured) {
       return res.redirect("/?error=OAuth2 non configurato nel file .env.");
     }
+    const state = crypto.randomBytes(16).toString('hex');
+    req.session.oauthState = state;
     const url = `https://discord.com/api/oauth2/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(
       redirect_uri
-    )}&response_type=code&scope=identify%20guilds`;
+    )}&response_type=code&scope=identify%20guilds&state=${state}`;
     res.redirect(url);
   });
 
   // Callback Discord OAuth2
   app.get("/auth/callback", async (req, res) => {
-    const { code } = req.query;
+    const { code, state } = req.query;
     if (!code) return res.redirect("/?error=Codice autorizzazione mancante.");
+    if (!state || state !== req.session.oauthState) {
+      return res.redirect("/?error=Validazione stato OAuth fallita.");
+    }
+    delete req.session.oauthState;
 
     try {
       const tokenResponse = await axios.post(
@@ -458,7 +559,7 @@ module.exports = (client) => {
   // ─────────────────────────────────────────────────────────────────────────
 
   // API Leaderboard
-  app.get("/api/leaderboard/:guildId?", ensureAuthenticated, async (req, res) => {
+  app.get("/api/leaderboard/:guildId?", ensureAuthenticated, ensureGuildMemberApi, async (req, res) => {
     try {
       const targetGuildId = req.params.guildId || req.query.guildId;
       if (!targetGuildId) return res.status(400).json({ message: "guildId richiesto." });
@@ -503,7 +604,7 @@ module.exports = (client) => {
   });
 
   // API Recupero Impostazioni
-  app.get("/api/settings/:guildId?", ensureAuthenticated, async (req, res) => {
+  app.get("/api/settings/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
     const targetGuildId = req.params.guildId || req.query.guildId;
     const guild = client.guilds.cache.get(targetGuildId);
 
@@ -534,7 +635,20 @@ module.exports = (client) => {
   // API Salvataggio Impostazioni per-server (MongoDB)
   app.post("/api/settings/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
     const targetGuildId = req.params.guildId || req.query.guildId;
-    const updatedSettings = req.body;
+    
+    // Whitelist dei campi consentiti per evitare Mass Assignment (ALTA-06)
+    const settingsWhitelist = [
+      'welcomeChannelId', 'goodbyeChannelId', 'levelUpChannelId',
+      'totalChannelId', 'usersChannelId', 'botsChannelId',
+      'newMemberRoleId', 'botRoleId', 'inviteLink'
+    ];
+    
+    const updatedSettings = {};
+    for (const key of settingsWhitelist) {
+      if (req.body[key] !== undefined) {
+        updatedSettings[key] = req.body[key];
+      }
+    }
 
     try {
       await updateGuildConfig(targetGuildId, updatedSettings);
