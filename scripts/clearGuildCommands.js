@@ -8,7 +8,12 @@ const { REST, Routes } = require('discord.js');
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
-const guildId = process.argv[2] || '1305900849633169438';
+const guildId = process.argv[2];
+
+if (!guildId) {
+  console.error('❌ Uso: node scripts/clearGuildCommands.js <guildId>');
+  process.exit(1);
+}
 
 if (!token || !clientId) {
   console.error('❌ DISCORD_TOKEN o DISCORD_CLIENT_ID mancanti nel file config/.env');
