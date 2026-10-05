@@ -87,6 +87,8 @@ $RECYCLE.BIN/
 *.tmp
 *.temp
 *.bak
+*.zip
+*.tar.gz
 dist/
 build/
 .cache/
