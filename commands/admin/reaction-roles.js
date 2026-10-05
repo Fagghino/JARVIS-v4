@@ -12,30 +12,7 @@
 
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const { addReactionRole } = require('../../misc/reactionRoles');
-
-/**
- * Analizza la stringa di un'emoji ricevuta dall'input slash command
- * @param {string} input - Es. "🎮" oppure "<:custom:123456789>"
- * @returns {{ key: string, display: string }} key = chiave per il JSON, display = per l'embed
- */
-function parseEmoji(input) {
-  const trimmed = input.trim();
-
-  // Custom emoji: <:name:id> oppure <a:name:id> (animated)
-  const customMatch = trimmed.match(/^<a?:([\w]+):(\d+)>$/);
-  if (customMatch) {
-    return {
-      key: customMatch[2],     // ID numerico → chiave nel JSON e in handleReactionAdd
-      display: trimmed,        // <:name:id> → visualizzato nell'embed
-    };
-  }
-
-  // Unicode emoji (o qualsiasi altro testo)
-  return {
-    key: trimmed,
-    display: trimmed,
-  };
-}
+const { parseEmoji } = require('../../utils/parseEmoji');
 
 module.exports = {
   data: new SlashCommandBuilder()
