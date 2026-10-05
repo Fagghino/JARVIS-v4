@@ -186,13 +186,16 @@
             <td class="rank ${rankClass}">${rankDisplay}</td>
             <td>
               <div class="user-cell">
-                <img src="${avatarUrl}" alt="${user.username}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
-                <span>${user.username}</span>
+                <img src="${avatarUrl}" alt="Avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <span class="user-username-safe"></span>
               </div>
             </td>
             <td><strong style="color: var(--primary);">${user.level}</strong></td>
             <td>${user.xp.toLocaleString()} XP</td>
           `;
+          
+          // Use textContent to prevent XSS from Discord username
+          tr.querySelector('.user-username-safe').textContent = user.username;
           
           tbodyEl.appendChild(tr);
         });
