@@ -1,5 +1,16 @@
 const { Client, GatewayIntentBits, Collection, Partials } = require("discord.js");
 require("dotenv").config({ path: "./config/.env" });
+
+// Valida variabili d'ambiente essenziali come prima cosa (MEDIA-06)
+const requiredEnvVars = ['DISCORD_TOKEN', 'DISCORD_CLIENT_ID', 'MONGODB_URI', 'SESSION_SECRET'];
+const missing = requiredEnvVars.filter(key => !process.env[key]);
+
+if (missing.length > 0) {
+  console.error(`❌ Variabili d'ambiente mancanti: ${missing.join(', ')}`);
+  console.error('Controlla il file config/.env');
+  process.exit(1);
+}
+
 const config = require("./config/config.js");
 const { connectDB } = require("./misc/database.js");
 const counter = require("./misc/counter");
@@ -30,11 +41,6 @@ const client = new Client({
   ],
 });
 
-// Connessione a MongoDB Atlas all'avvio
-connectDB();
-
-// Avvia il server Express Web Dashboard
-startDashboard(client);
 
 // Collection per memorizzare tutti i comandi slash del bot
 client.commands = new Collection();
@@ -56,15 +62,6 @@ if (fs.existsSync(commandsPath)) {
   console.warn('⚠️ La cartella "commands" non esiste!');
 }
 
-// Valida variabili d'ambiente essenziali
-const requiredEnvVars = ['DISCORD_TOKEN', 'DISCORD_CLIENT_ID', 'MONGODB_URI'];
-const missing = requiredEnvVars.filter(key => !process.env[key]);
-
-if (missing.length > 0) {
-  console.error(`❌ Variabili d'ambiente mancanti: ${missing.join(', ')}`);
-  console.error('Controlla il file config/.env');
-  process.exit(1);
-}
 
 // Evento eseguito quando il bot si connette a Discord
 client.once("ready", () => {
@@ -160,8 +157,33 @@ client.on("messageReactionRemove", (reaction, user) => {
   handleReactionRemove(reaction, user);
 });
 
-// Login del bot
-client.login(process.env.DISCORD_TOKEN);
+// Avvio asincrono: connessione DB, avvio Web Dashboard e login Discord (MEDIA-03)
+(async () => {
+  try {
+    await connectDB();
+    startDashboard(client);
+    await client.login(process.env.DISCORD_TOKEN);
+  } catch (error) {
+    console.error('❌ Errore fatale durante l\'avvio di JARVIS:', error);
+    process.exit(1);
+  }
+})();
+
+// Gestione eccezioni globali (ALTA-01)
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('⚠️ [unhandledRejection] Eccezione non gestita:', reason);
+});
+
+process.on('uncaughtException', async (err) => {
+  console.error('❌ [uncaughtException] Errore critico in JARVIS:', err);
+  try {
+    const { flushCache } = require("./misc/level.js");
+    await flushCache();
+  } catch (flushErr) {
+    console.error('Errore durante il flush della cache XP in crash:', flushErr);
+  }
+  process.exit(1);
+});
 
 // Shutdown pulito
 process.on('SIGINT', async () => {
