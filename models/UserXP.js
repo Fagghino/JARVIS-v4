@@ -11,4 +11,7 @@ const userXPSchema = new mongoose.Schema({
 // Compound unique index for guildId and userId
 userXPSchema.index({ guildId: 1, userId: 1 }, { unique: true });
 
+// Compound index for guild leaderboard queries ordered by XP (SUGGERIMENTO-04)
+userXPSchema.index({ guildId: 1, xp: -1 });
+
 module.exports = mongoose.model('UserXP', userXPSchema);
