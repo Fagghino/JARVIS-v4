@@ -15,6 +15,11 @@
   <%= userBarHtml %>
 
   <div class="container">
+    <div class="banner-wrapper">
+      <img src="/images/banner.png" alt="JARVIS Banner" class="banner-img">
+      <div class="banner-overlay"></div>
+    </div>
+
     <div class="header">
       <div class="avatar-container">
         <%= avatarHtml %>
@@ -26,31 +31,49 @@
     
     <div class="grid">
       <div class="card">
-        <div class="card-label" data-i18n="webServerStatus">Stato Web Server</div>
+        <div class="card-header">
+          <span class="card-icon">🌐</span>
+          <div class="card-label" data-i18n="webServerStatus">Stato Web Server</div>
+        </div>
         <div class="card-value status-text">
           <span style="color: var(--online)" data-i18n="activeStatus">🟢 Attivo</span>
         </div>
       </div>
       <div class="card">
-        <div class="card-label" data-i18n="discordStatus">Connessione Discord</div>
+        <div class="card-header">
+          <span class="card-icon">🤖</span>
+          <div class="card-label" data-i18n="discordStatus">Connessione Discord</div>
+        </div>
         <div class="card-value status-text">
           <%= discordStatusHtml %>
         </div>
       </div>
       <div class="card">
-        <div class="card-label" data-i18n="activeServers">Server Attivi</div>
+        <div class="card-header">
+          <span class="card-icon">🛡️</span>
+          <div class="card-label" data-i18n="activeServers">Server Attivi</div>
+        </div>
         <div class="card-value"><%= guildsCount %></div>
       </div>
       <div class="card">
-        <div class="card-label" data-i18n="botUptime">Uptime del Bot</div>
+        <div class="card-header">
+          <span class="card-icon">⚡</span>
+          <div class="card-label" data-i18n="botUptime">Uptime del Bot</div>
+        </div>
         <div class="card-value"><%= uptimeText %></div>
       </div>
       <div class="card">
-        <div class="card-label" data-i18n="apiPing">Latenza API (Ping)</div>
+        <div class="card-header">
+          <span class="card-icon">📶</span>
+          <div class="card-label" data-i18n="apiPing">Latenza API (Ping)</div>
+        </div>
         <div class="card-value"><%= pingText %></div>
       </div>
       <div class="card">
-        <div class="card-label" data-i18n="memoryUsed">Memoria Utilizzata</div>
+        <div class="card-header">
+          <span class="card-icon">🧠</span>
+          <div class="card-label" data-i18n="memoryUsed">Memoria Utilizzata</div>
+        </div>
         <div class="card-value"><%= memoryText %></div>
       </div>
     </div>
