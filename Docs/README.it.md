@@ -7,7 +7,7 @@
   <p><b>La Suite Completa di Automazione Discord Multi-Server & Dashboard Web Interattiva</b></p>
 
   <p>
-    <a href="https://github.com/Fagghino/JARVIS-v4"><img src="https://img.shields.io/badge/Versione-v4.5.3-blue?style=for-the-badge&logo=discord&logoColor=white" alt="Versione"></a>
+    <a href="https://github.com/Fagghino/JARVIS-v4"><img src="https://img.shields.io/badge/Versione-v4.5.4-blue?style=for-the-badge&logo=discord&logoColor=white" alt="Versione"></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-16.x%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"></a>
     <a href="https://discord.js.org/"><img src="https://img.shields.io/badge/Discord.js-v14-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord.js"></a>
     <a href="https://www.mongodb.com/cloud/atlas"><img src="https://img.shields.io/badge/Database-MongoDB_Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"></a>
@@ -17,7 +17,7 @@
   <p>
     <a href="../README.md"><b>🇺🇸 Documentazione Inglese</b></a> • 
     <a href="README.it.md"><b>🇮🇹 Documentazione Italiana</b></a> • 
-    <a href="CHANGELOG.it.md"><b>📜 Storico Cambiamenti (v4.5.3)</b></a>
+    <a href="CHANGELOG.it.md"><b>📜 Storico Cambiamenti (v4.5.4)</b></a>
   </p>
 </div>
 
@@ -294,6 +294,6 @@ Assicurati che la variabile d'ambiente <code>REDIRECT_URI</code> corrisponda esa
   <p>
     <a href="#top">⬆️ Torna in Alto</a> • 
     <a href="../LICENSE">📄 Licenza MIT</a> • 
-    <a href="CHANGELOG.it.md">📜 Storico Cambiamenti (v4.5.3)</a>
+    <a href="CHANGELOG.it.md">📜 Storico Cambiamenti (v4.5.4)</a>
   </p>
 </div>
