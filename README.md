@@ -72,6 +72,7 @@
 - **`/set [key] [value]`**: Configure server channels (welcome, goodbye, level-up, counters) and default roles dynamically without restarting.
 - **`/sync-members`**: Synchronizes all guild members with MongoDB Atlas to ensure complete database records.
 - **`/invita`**: Generates or retrieves permanent server invite links with dynamic fallback creation.
+- **`/sito`**: Displays the official website and Web Dashboard URL with an interactive link button.
 - **`/help_admin`**: Dedicated administrator command guide and permission verification.
 
 ---
@@ -127,6 +128,7 @@
 | `/embed` | Create and send a custom embed | Administrator |
 | `/set` | Configure server channels and roles | Administrator / Manage Guild |
 | `/invita` | Generate or fetch server invite link | Administrator |
+| `/sito` | Get bot website and Web Dashboard URL | Administrator |
 | `/reaction-roles` | Reaction role wizard setup | Administrator |
 | `/reaction-roles-add` | Append emoji-role pairs to existing menu | Administrator |
 | `/sync-members` | Sync guild members with database | Administrator |
