@@ -5,6 +5,27 @@ Tutte le modifiche rilevanti a questo progetto saranno documentate in questo fil
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.4] - 2026-10-29
+
+### Added
+- **Comando Amministratore `/sito`**:
+  - `commands/admin/sito.js`: Aggiunto comando slash riservato agli amministratori con verifica permessi (`PermissionFlagsBits.Administrator`), embed informativo e pulsante interattivo con link diretto alla Web Dashboard ufficiale su Render (`https://jarvis-v5-cto5.onrender.com/`).
+- **Asset Grafici Web Dashboard**:
+  - `dashboard/public/images/banner.png`: Integrato il banner ufficiale di JARVIS per l'header della dashboard web.
+
+### Changed
+- **Restyling Estetico Web Dashboard**:
+  - `dashboard/public/css/style.css`: Aggiornata la combinazione cromatica dall'arancione/giallo (`#ff8c00`) alla palette sci-fi Arc Reactor Ciano & Azzurro (`#00b4d8`, `#38bdf8`, `#0077b6`, gradiente `linear-gradient(135deg, #00d2ff 0%, #0077b6 100%)`).
+  - `dashboard/public/css/style.css`: Introdotta la classe `.banner-wrapper` con overlay a gradiente sfumato ed effetto header profilo Discord Nitro con avatar (`.avatar-container`) parzialmente sovrapposto al banner.
+  - `dashboard/public/css/style.css`: Rinnovate le card di monitoraggio con micro-icone, transizioni morbide ed elevazione con bagliore neon al passaggio del mouse (`box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 18px rgba(0, 180, 216, 0.15)`).
+  - `dashboard/public/css/style.css`: Ottimizzati i pulsanti d'azione con gradiente azzurro sci-fi e bagliori metallici per i podi della classifica (Oro, Argento, Ambra).
+  - `dashboard/public/css/style.css`: Calibrati i contrasti, i bordi e l'overlay del banner per la modalità chiara (*Light Mode*).
+  - `dashboard/views/dashboard.html`: Integrato il banner immersivo a tutto schermo e aggiunte micro-icone descrittive per ciascuna statistica (🌐 Web Server, 🤖 Connessione Discord, 🛡️ Server Attivi, ⚡ Uptime, 📶 Ping, 🧠 Memoria).
+  - `dashboard/views/login.html`: Implementato l'header con banner anche nella schermata di login, coordinato con l'avatar animato del bot.
+  - `dashboard/views/leaderboard.html`: Aggiornato lo spinner di caricamento e i dettagli visivi alla palette ciano/azzurra.
+  - `dashboard/views/select-guild.html`: Convertite le ombre di elevazione delle card server attive al tema ciano.
+  - `dashboard/views/settings.html`: Armonizzati gli spinner di caricamento e gli stili form con il tema ciano.
+
 ## [4.5.3] - 2026-10-05
 
 ### Security
