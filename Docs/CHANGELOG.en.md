@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.4] - 2026-10-29
+
+### Added
+- **Admin `/sito` Slash Command**:
+  - `commands/admin/sito.js`: Added an administrator-only slash command with permission checks (`PermissionFlagsBits.Administrator`), informational embed, and an interactive button linking directly to the official Render Web Dashboard (`https://jarvis-v5-cto5.onrender.com/`).
+- **Web Dashboard Graphic Assets**:
+  - `dashboard/public/images/banner.png`: Integrated the official JARVIS header banner asset for the web dashboard.
+
+### Changed
+- **Web Dashboard Aesthetic Redesign**:
+  - `dashboard/public/css/style.css`: Shifted theme accent colors from legacy orange/yellow (`#ff8c00`) to an Arc Reactor Cyan & Azure sci-fi palette (`#00b4d8`, `#38bdf8`, `#0077b6`, and gradient `linear-gradient(135deg, #00d2ff 0%, #0077b6 100%)`).
+  - `dashboard/public/css/style.css`: Introduced `.banner-wrapper` with gradient fade overlay and Discord Nitro profile header style avatar overlap (`.avatar-container`).
+  - `dashboard/public/css/style.css`: Upgraded stats cards with smooth hover elevation and cyan neon glow (`box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 18px rgba(0, 180, 216, 0.15)`).
+  - `dashboard/public/css/style.css`: Modernized primary action buttons with cyan gradient and metallic glows for top 3 leaderboard ranks (Gold, Silver, Amber).
+  - `dashboard/public/css/style.css`: Calibrated contrast, borders, and banner overlays for light theme compatibility (*Light Mode*).
+  - `dashboard/views/dashboard.html`: Integrated edge-to-edge banner header and thematic micro-icons across all metric cards (🌐 Web Server, 🤖 Discord Connection, 🛡️ Active Servers, ⚡ Uptime, 📶 Ping, 🧠 Memory).
+  - `dashboard/views/login.html`: Embedded header banner and aligned the animated bot avatar in the login box.
+  - `dashboard/views/leaderboard.html`: Updated loading spinner and visual accents to cyan theme.
+  - `dashboard/views/select-guild.html`: Updated active guild card hover elevation to cyan theme.
+  - `dashboard/views/settings.html`: Harmonized loading spinners and form controls to cyan theme.
+
 ## [4.5.3] - 2026-10-05
 
 ### Security
