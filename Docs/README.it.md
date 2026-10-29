@@ -72,6 +72,7 @@
 - **`/set [chiave] [valore]`**: Configura i canali (benvenuto, addio, level-up, contatori) ed i ruoli predefiniti a runtime senza riavviare il bot.
 - **`/sync-members`**: Sincronizza tutti i membri ed i ruoli del server con il database MongoDB Atlas.
 - **`/invita`**: Genera o recupera il link di invito permanente del server con creazione dinamica di fallback.
+- **`/sito`**: Mostra il link al sito web ufficiale e alla Web Dashboard con pulsante interattivo.
 - **`/help_admin`**: Guida ai comandi riservati agli amministratori.
 
 ---
@@ -127,6 +128,7 @@
 | `/embed` | Crea ed invia un embed custom | Amministratore |
 | `/set` | Configura canali e ruoli del server | Amministratore / Gestisci Server |
 | `/invita` | Genera o recupera il link di invito | Amministratore |
+| `/sito` | Mostra il link del sito web e della Web Dashboard | Amministratore |
 | `/reaction-roles` | Wizard creazione menu Reaction Roles | Amministratore |
 | `/reaction-roles-add` | Aggiunge coppie emoji-ruolo ad un menu | Amministratore |
 | `/sync-members` | Sincronizza i membri del server con MongoDB | Amministratore |
