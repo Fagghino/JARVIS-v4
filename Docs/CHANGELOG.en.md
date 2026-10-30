@@ -12,8 +12,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `commands/admin/sito.js`: Added an administrator-only slash command with permission checks (`PermissionFlagsBits.Administrator`), informational embed, and an interactive button linking directly to the official Render Web Dashboard (`https://jarvis-v5-cto5.onrender.com/`).
 - **Web Dashboard Graphic Assets**:
   - `dashboard/public/images/banner.png`: Integrated the official JARVIS header banner asset for the web dashboard.
+- **Official Landing Page & Complete Redesign**:
+  - `dashboard/public/css/landing.css`: New dedicated, high-performance stylesheet for the landing page with Bento Grid modular architecture, 60fps animations, native Discord component mockups (chat channel, embeds with bot badges, rank cards, interactive role buttons), and Arc Reactor cyan/azure palette.
+  - `dashboard/views/landing.html`: New template for the public bot homepage (`/`), featuring:
+    - Sticky glassmorphic navbar with a hover/click dropdown mega-menu ("Funzionalità") listing all 8 core bot modules for instant preview.
+    - Centered Hero section with strictly left-aligned copy and dual call-to-action buttons ("Aggiungi a Discord" & "Funzioni ↓"), accompanied by a 3D glass card showcase with official banner and floating status badges.
+    - Bento Grid section with functional toggle switches and click-to-preview triggers.
+    - Interactive modal popup with a live Discord mockup window displaying real-time demonstrations for all 8 modules (Levels & XP, Moderation, Reaction Roles, Welcome & Goodbye, Web Dashboard, Google Translator, Voice Counters, 17 Slash Commands).
+    - Dedicated cloud dashboard preview, transparent feature comparison table, accordion FAQ, and comprehensive footer.
+- **Dedicated `/dashboard` Route**:
+  - `dashboard/server.js`: Created explicit `GET /dashboard` route for authenticated access to internal system health and bot runtime metrics (uptime, heap memory, WebSocket ping, connection status).
 
 ### Changed
+- **Web Dashboard Navigation & Routing**:
+  - `dashboard/server.js`: Reengineered main `GET /` route to deliver the public landing page to all visitors with dynamic user action injection (single "Accedi con Discord" button for guests, user profile widget with server & status links for logged-in users).
+  - `dashboard/server.js`: Optimized post-login OAuth2 redirection (`GET /auth/callback`) to directly open the server selector (`/select-guild`).
+  - `dashboard/server.js`: Added convenient top-bar navigation shortcuts (`🏠 Home`, `⚙️ Server`, `📊 Stato`) across all internal pages.
+  - `dashboard/views/login.html`: Updated to match and serve the new unified modular landing page.
 - **Web Dashboard Aesthetic Redesign**:
   - `dashboard/public/css/style.css`: Shifted theme accent colors from legacy orange/yellow (`#ff8c00`) to an Arc Reactor Cyan & Azure sci-fi palette (`#00b4d8`, `#38bdf8`, `#0077b6`, and gradient `linear-gradient(135deg, #00d2ff 0%, #0077b6 100%)`).
   - `dashboard/public/css/style.css`: Introduced `.banner-wrapper` with gradient fade overlay and Discord Nitro profile header style avatar overlap (`.avatar-container`).
@@ -21,7 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `dashboard/public/css/style.css`: Modernized primary action buttons with cyan gradient and metallic glows for top 3 leaderboard ranks (Gold, Silver, Amber).
   - `dashboard/public/css/style.css`: Calibrated contrast, borders, and banner overlays for light theme compatibility (*Light Mode*).
   - `dashboard/views/dashboard.html`: Integrated edge-to-edge banner header and thematic micro-icons across all metric cards (🌐 Web Server, 🤖 Discord Connection, 🛡️ Active Servers, ⚡ Uptime, 📶 Ping, 🧠 Memory).
-  - `dashboard/views/login.html`: Embedded header banner and aligned the animated bot avatar in the login box.
   - `dashboard/views/leaderboard.html`: Updated loading spinner and visual accents to cyan theme.
   - `dashboard/views/select-guild.html`: Updated active guild card hover elevation to cyan theme.
   - `dashboard/views/settings.html`: Harmonized loading spinners and form controls to cyan theme.
