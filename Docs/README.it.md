@@ -212,13 +212,19 @@ JARVIS-v4/
 │   ├── GuildSettings.js              # Schema delle impostazioni per ogni server
 │   ├── ReactionRole.js               # Schema dei reaction roles e mappature emoji
 │   └── UserXP.js                     # Schema di XP e livello degli utenti
-├── dashboard/                        # Web Dashboard Express
+├── dashboard/                        # Web Dashboard Express & Landing Page
 │   ├── server.js                     # Server Express, OAuth2 Discord & API per-guild
 │   ├── public/                       # Risorse statiche
-│   │   ├── css/style.css             # Foglio di stile CSS glassmorphism (Dark/Light)
+│   │   ├── css/
+│   │   │   ├── landing.css           # Foglio di stile dedicato per la landing page
+│   │   │   └── style.css             # Foglio di stile CSS glassmorphism (Dark/Light)
+│   │   ├── images/
+│   │   │   ├── avatar.gif            # Avatar animato del bot
+│   │   │   └── banner.png            # Banner ufficiale di testata ed hero
 │   │   └── js/theme-lang.js          # Script frontend per cambio tema e lingua
 │   └── views/                        # Template HTML5
-│       ├── login.html                # Pagina di login OAuth2 Discord
+│       ├── landing.html              # Pagina iniziale ufficiale con anteprima interattiva dei moduli
+│       ├── login.html                # Pagina unificata di ingresso e login
 │       ├── dashboard.html            # Vista principali con statistiche del bot
 │       ├── select-guild.html         # Selettore server con controllo permessi
 │       ├── leaderboard.html          # Classifica XP dinamica del server
@@ -257,6 +263,7 @@ JARVIS-v4/
 | :--- | :--- | :--- |
 | `npm start` | `node index.js` | Avvia il bot e la Web Dashboard in produzione |
 | `npm run dev` | `nodemon index.js` | Avvia in modalità sviluppo con ricaricamento automatico |
+| `npm run web` | `node -e ...` | Avvia esclusivamente il server web del sito in locale (senza connettersi a Discord) |
 | `npm run deploy` | `node deploy-commands.js` | Registra i comandi slash a livello globale su Discord |
 | `npm run migrate` | `node scripts/migrateSheetsToMongo.js` | Migra i dati storici da Google Sheets a MongoDB |
 | `npm run test` | `node --check ...` | Esegue il controllo sintattico su tutti i file del progetto |
