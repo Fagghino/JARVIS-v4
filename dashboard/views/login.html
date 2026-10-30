@@ -3,42 +3,1193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JARVIS Bot - Accedi</title>
+  <title>J.A.R.V.I.S. - Il Bot Discord All-in-One per la tua Community</title>
+  
+  <!-- Font Google Outfit, Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/landing.css">
 </head>
 <body>
-  <div class="container" style="max-width: 480px;">
-    <div class="banner-wrapper" style="height: 140px;">
-      <img src="/images/banner.png" alt="JARVIS Banner" class="banner-img">
-      <div class="banner-overlay"></div>
-    </div>
-    <div class="login-box">
-      <div class="login-avatar-wrapper">
-        <img src="/images/avatar.gif" alt="JARVIS" class="login-avatar">
-      </div>
-      <h1>J.A.R.V.I.S.</h1>
-      <p class="version" style="margin-bottom: 20px;">Control Panel</p>
 
-      <p class="login-text">
-        Accedi con il tuo account Discord per visualizzare la classifica del server e gestire le impostazioni del bot.
-      </p>
-
-      <% if (error) { %>
-        <div class="alert alert-danger">
-          <strong>Errore di accesso:</strong> <%= error %>
-        </div>
-      <% } %>
-
-      <a href="/auth/login" class="btn">
-        <svg width="20" height="20" viewBox="0 0 127.14 96.36" fill="currentColor" style="margin-right: 8px;">
-          <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,69.43,69.43,0,0,1-10.5-5c.9-.65,1.76-1.34,2.58-2.06a75.48,75.48,0,0,0,73,0c.82.72,1.68,1.41,2.58,2.06a69.43,69.43,0,0,1-10.5,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,31-18.83C129,50.7,122.64,27.78,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
-        </svg>
-        Accedi con Discord
+  <!-- ==========================================================================
+       NAVBAR (ACCESSO CON DISCORD)
+       ========================================================================== -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="nav-brand">
+        <img src="/images/avatar.gif" alt="JARVIS Logo" class="brand-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+        <span class="brand-title">J.A.R.V.I.S.</span>
+        <span class="brand-badge">v<%= version %></span>
       </a>
+
+      <ul class="nav-links">
+        <!-- Funzionalità with Dropdown (Menu a comparsa) -->
+        <li class="nav-item-dropdown">
+          <a href="#plugins" class="nav-link dropdown-toggle" id="navFeaturesBtn">
+            <span>Funzionalità</span>
+            <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          
+          <!-- Dropdown Mega-Menu a comparsa -->
+          <div class="nav-dropdown-menu" id="navDropdownMenu">
+            <div class="dropdown-menu-header">
+              <span>Moduli J.A.R.V.I.S. • Clicca per vedere l'anteprima</span>
+            </div>
+            <div class="dropdown-grid">
+              <div class="dropdown-item" onclick="openFeatureModal('levels')">
+                <span class="dropdown-icon">🏆</span>
+                <div>
+                  <div class="dropdown-title">Livelli & XP</div>
+                  <div class="dropdown-desc">Rank card e ruoli automatici</div>
+                </div>
+              </div>
+              <div class="dropdown-item" onclick="openFeatureModal('moderation')">
+                <span class="dropdown-icon">🛡️</span>
+                <div>
+                  <div class="dropdown-title">Moderazione</div>
+                  <div class="dropdown-desc">Comandi /clear e sicurezza</div>
+                </div>
+              </div>
+              <div class="dropdown-item" onclick="openFeatureModal('roles')">
+                <span class="dropdown-icon">🎭</span>
+                <div>
+                  <div class="dropdown-title">Reaction Roles</div>
+                  <div class="dropdown-desc">Auto-assegnazione con pulsanti</div>
+                </div>
+              </div>
+              <div class="dropdown-item" onclick="openFeatureModal('welcome')">
+                <span class="dropdown-icon">👋</span>
+                <div>
+                  <div class="dropdown-title">Benvenuto & Addio</div>
+                  <div class="dropdown-desc">Banner ed embed interattivi</div>
+                </div>
+              </div>
+              <div class="dropdown-item" onclick="openFeatureModal('dashboard')">
+                <span class="dropdown-icon">🌐</span>
+                <div>
+                  <div class="dropdown-title">Web Dashboard</div>
+                  <div class="dropdown-desc">Controllo cloud in tempo reale</div>
+                </div>
+              </div>
+              <div class="dropdown-item" onclick="openFeatureModal('translate')">
+                <span class="dropdown-icon">🌍</span>
+                <div>
+                  <div class="dropdown-title">Traduttore</div>
+                  <div class="dropdown-desc">Oltre 100 lingue con Google API</div>
+                </div>
+              </div>
+              <div class="dropdown-item" onclick="openFeatureModal('counters')">
+                <span class="dropdown-icon">📈</span>
+                <div>
+                  <div class="dropdown-title">Contatori Vocali</div>
+                  <div class="dropdown-desc">Canali statistica dinamici</div>
+                </div>
+              </div>
+              <div class="dropdown-item" onclick="openFeatureModal('commands')">
+                <span class="dropdown-icon">⚡</span>
+                <div>
+                  <div class="dropdown-title">17 Comandi Slash</div>
+                  <div class="dropdown-desc">Nuovo comando /sito incluso</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="#dashboard" class="nav-link">Web Dashboard</a></li>
+        <li><a href="#confronto" class="nav-link">Perché JARVIS</a></li>
+        <li><a href="#faq" class="nav-link">FAQ</a></li>
+      </ul>
+
+      <!-- SOLO Accedi con Discord in alto a destra (oppure User Bar se autenticato) -->
+      <div class="nav-actions">
+        <%= navActionsHtml %>
+      </div>
+    </div>
+  </nav>
+
+  <% if (error) { %>
+    <div class="container">
+      <div class="alert-banner">
+        <span style="font-size: 1.3rem;">⚠️</span>
+        <div>
+          <strong>Attenzione:</strong> <%= error %>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- ==========================================================================
+       HERO SECTION (ALLINEAMENTO SCI-FI A SINISTRA)
+       ========================================================================== -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-layout">
+        
+        <!-- Colonna Sinistra: Allineata a Sinistra con i 2 pulsanti -->
+        <div class="hero-content">
+          <div class="hero-pill">
+            <span>⚡</span> J.A.R.V.I.S. Bot v<%= version %> • L'Assistente All-in-One Definitivo
+          </div>
+
+          <h1 class="hero-title">
+            Il Bot Discord <span class="highlight">All-in-One</span><br>
+            per Costruire la tua<br>
+            <span class="gradient-text">Migliore Community</span>
+          </h1>
+
+          <p class="hero-desc">
+            Configura livelli & XP dinamici, moderazione automatica, reaction roles, messaggi di benvenuto interattivi e monitora tutto da una Web Dashboard sci-fi ultra reattiva.
+          </p>
+
+          <!-- I 2 Pulsanti Allineati a Sinistra: "Aggiungi a Discord" & "Funzioni" -->
+          <div class="hero-cta-group">
+            <%= heroCtaHtml %>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-icon">⚡</span>
+              <span>99.9% Uptime Cloud</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🛡️</span>
+              <span>17 Comandi Slash</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🍃</span>
+              <span>MongoDB Atlas</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🔓</span>
+              <span>100% Gratuito</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonna Destra: Immagine Grafica Ufficiale e Badge Fluttuanti (Showcase) -->
+        <div class="hero-visual">
+          
+          <!-- Badge Fluttuante 1 -->
+          <div class="hero-floating-pill pill-top-left">
+            <span style="font-size: 1.3rem;">🏆</span>
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 800; color: #fff;">Livello 18 Sbloccato</div>
+              <div style="font-size: 0.72rem; color: #00d2ff;">+250 XP Guadagnati</div>
+            </div>
+          </div>
+
+          <!-- Card Grafica con Banner JARVIS -->
+          <div class="hero-visual-card">
+            <img src="/images/banner.png" alt="J.A.R.V.I.S. Banner" class="hero-visual-img" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div class="hero-visual-body">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <img src="/images/avatar.gif" alt="Avatar" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--cyan-primary);" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                  <span style="font-weight: 800; font-size: 0.95rem; color: #fff;">J.A.R.V.I.S. Assistant</span>
+                </div>
+                <span style="font-size: 0.72rem; color: #00e676; font-weight: 700; background: rgba(0, 230, 118, 0.15); padding: 2px 8px; border-radius: 10px;">● ATTIVO</span>
+              </div>
+              <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.4;">
+                Architettura ad alte prestazioni con memorizzazione su cloud MongoDB Atlas e gestione web istantanea.
+              </div>
+            </div>
+          </div>
+
+          <!-- Badge Fluttuante 2 -->
+          <div class="hero-floating-pill pill-bottom-right">
+            <span style="font-size: 1.3rem;">🛡️</span>
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 800; color: #fff;">Moderazione Attiva</div>
+              <div style="font-size: 0.72rem; color: #00e676;">100% Sicuro & Audit Ready</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       PLUGINS & FEATURES SECTION (BENTO GRID MODULARE)
+       ========================================================================== -->
+  <section class="section-plugins" id="plugins">
+    <div class="container">
+      
+      <div class="section-header">
+        <span class="section-tag">Moduli & Funzionalità</span>
+        <h2 class="section-title">Tutto ciò di cui hai bisogno per far crescere il tuo server</h2>
+        <p class="section-desc">
+          Moduli potenti, completamente personalizzabili e pronti all'uso con un semplice switch. Clicca su qualsiasi modulo per aprire il menu a comparsa e vedere come funziona in tempo reale.
+        </p>
+      </div>
+
+      <div class="plugins-grid">
+        
+        <!-- Card 1: Livelli & XP -->
+        <div class="plugin-card" onclick="openFeatureModal('levels')">
+          <div class="plugin-top">
+            <div class="plugin-icon">🏆</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Livelli & XP')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">Livelli & XP</div>
+          <div class="plugin-desc">
+            Premia l'attività nei canali testuali e vocali con punti XP dinamici, rank card animate e assegnazione automatica di ruoli esclusivi.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Moderazione -->
+        <div class="plugin-card" onclick="openFeatureModal('moderation')">
+          <div class="plugin-top">
+            <div class="plugin-icon">🛡️</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Moderazione')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">Moderazione Avanzata</div>
+          <div class="plugin-desc">
+            Strumenti di pulizia rapida con /clear, gestione permessi nativa Discord v14 e audit trail protetto contro abusi e spam.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Reaction Roles -->
+        <div class="plugin-card" onclick="openFeatureModal('roles')">
+          <div class="plugin-top">
+            <div class="plugin-icon">🎭</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Reaction Roles')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">Reaction Roles</div>
+          <div class="plugin-desc">
+            Permetti ai membri di selezionare i propri ruoli premendo pulsanti interattivi eleganti sotto gli annunci ufficiali.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Benvenuto & Addio -->
+        <div class="plugin-card" onclick="openFeatureModal('welcome')">
+          <div class="plugin-top">
+            <div class="plugin-icon">👋</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Benvenuto & Addio')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">Benvenuto & Addio</div>
+          <div class="plugin-desc">
+            Accogli i nuovi membri con banner grafici ad alto impatto, embed personalizzati e menzioni automatiche nei canali predefiniti.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+        <!-- Card 5: Web Dashboard Multi-Server -->
+        <div class="plugin-card" onclick="openFeatureModal('dashboard')">
+          <div class="plugin-top">
+            <div class="plugin-icon">🌐</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Web Dashboard')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">Web Dashboard Cloud</div>
+          <div class="plugin-desc">
+            Gestisci tutti i server in cui possiedi i permessi da un unico pannello responsive con statistiche, classifiche e switch in tempo reale.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+        <!-- Card 6: Traduttore Automatico -->
+        <div class="plugin-card" onclick="openFeatureModal('translate')">
+          <div class="plugin-top">
+            <div class="plugin-icon">🌍</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Traduttore')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">Traduttore Multilingua</div>
+          <div class="plugin-desc">
+            Traduci istantaneamente qualsiasi messaggio in oltre 100 lingue tramite Google Translate API con il comando /translate.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+        <!-- Card 7: Canali Statistiche Vocali -->
+        <div class="plugin-card" onclick="openFeatureModal('counters')">
+          <div class="plugin-top">
+            <div class="plugin-icon">📈</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Contatori')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">Contatori Canali Vocali</div>
+          <div class="plugin-desc">
+            Visualizza il numero totale di membri, bot e utenti online direttamente tra i canali della barra laterale di Discord.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+        <!-- Card 8: Comandi Slash Completi -->
+        <div class="plugin-card" onclick="openFeatureModal('commands')">
+          <div class="plugin-top">
+            <div class="plugin-icon">⚡</div>
+            <label class="plugin-toggle" onclick="event.stopPropagation()">
+              <input type="checkbox" checked onchange="toggleFeature(this, 'Comandi Slash')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="plugin-name">17 Comandi Slash Registrati</div>
+          <div class="plugin-desc">
+            Include comandi utility, rank, info bot, comandi admin e il nuovo comando esclusivo /sito per il link rapido alla dashboard.
+          </div>
+          <div class="plugin-footer-action">
+            <span>Guarda come funziona</span>
+            <span class="action-btn">Anteprima Live →</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DASHBOARD PREVIEW SECTION (GESTIONE CLOUD)
+       ========================================================================== -->
+  <section class="section-dashboard" id="dashboard">
+    <div class="container">
+      
+      <div class="section-header">
+        <span class="section-tag">Interfaccia di Controllo</span>
+        <h2 class="section-title">Una Web Dashboard progettata per la semplicità</h2>
+        <p class="section-desc">
+          Non serve digitare comandi complessi nella chat. Accedi con Discord e modifica le impostazioni del bot in pochi clic.
+        </p>
+      </div>
+
+      <div class="dash-box">
+        <div class="dash-header-preview">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <img src="/images/avatar.gif" alt="Avatar" style="width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--cyan-primary);" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div>
+              <div style="font-size: 1.2rem; font-weight: 800; color: #fff;">J.A.R.V.I.S. Control Center</div>
+              <div style="font-size: 0.85rem; color: #00e676; font-weight: 600;">● Online su Render Cloud • Uptime 99.9%</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="/select-guild" class="btn-hero-primary" style="padding: 10px 22px; font-size: 0.9rem;">
+              <span>Apri Dashboard Completa</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="dash-stats-grid">
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Stato Bot</div>
+            <div class="dash-stat-val" style="color: #00e676;">
+              <span>🟢</span> Connesso
+            </div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Database Cloud</div>
+            <div class="dash-stat-val" style="color: #00d2ff;">
+              <span>🍃</span> MongoDB Atlas
+            </div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Latenza WebSocket</div>
+            <div class="dash-stat-val" style="color: #38bdf8;">
+              <span>📶</span> 18 ms
+            </div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Versione Ufficiale</div>
+            <div class="dash-stat-val">
+              <span>🚀</span> v<%= version %>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding-top: 10px;">
+          <a href="/select-guild" class="btn-hero-secondary" style="font-size: 0.95rem;">
+            <span>⚙️ Accedi per configurare i tuoi Server Discord</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CONFRONTO: PERCHÉ J.A.R.V.I.S.
+       ========================================================================== -->
+  <section class="section-compare" id="confronto">
+    <div class="container">
+      
+      <div class="section-header">
+        <span class="section-tag">Confronto Trasparente</span>
+        <h2 class="section-title">Perché scegliere J.A.R.V.I.S. rispetto ad altri bot</h2>
+        <p class="section-desc">
+          Tutte le funzionalità essenziali per la community sbloccate al 100%, senza paywall nascosti o abbonamenti esorbitanti.
+        </p>
+      </div>
+
+      <div class="compare-table-wrapper">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Funzionalità</th>
+              <th class="col-jarvis">J.A.R.V.I.S. Bot</th>
+              <th>Bot con Paywall</th>
+              <th>Altri Bot Tradizionali</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Prezzo & Funzioni Complete</strong></td>
+              <td class="col-jarvis"><span class="check-yes">✓ 100% Gratuito</span></td>
+              <td><span class="check-no">✗ Limitato (Serve Premium)</span></td>
+              <td><span class="check-no">✗ Abbonamenti mensili</span></td>
+            </tr>
+            <tr>
+              <td><strong>Web Dashboard Multi-Server</strong></td>
+              <td class="col-jarvis"><span class="check-yes">✓ Inclusa con OAuth2</span></td>
+              <td><span class="check-yes">✓ Inclusa</span></td>
+              <td><span class="check-no">✗ Solo comandi testuali</span></td>
+            </tr>
+            <tr>
+              <td><strong>Livelli & Rank Card Personalizzate</strong></td>
+              <td class="col-jarvis"><span class="check-yes">✓ Senza Limiti</span></td>
+              <td><span class="check-no">✗ Blocchi su XP e ruoli</span></td>
+              <td><span class="check-yes">✓ Base</span></td>
+            </tr>
+            <tr>
+              <td><strong>Database MongoDB Atlas Dedicato</strong></td>
+              <td class="col-jarvis"><span class="check-yes">✓ Dati sempre al sicuro</span></td>
+              <td><span class="check-yes">✓ Cloud proprietario</span></td>
+              <td><span class="check-no">✗ File JSON locali fragili</span></td>
+            </tr>
+            <tr>
+              <td><strong>17 Comandi Slash Nativi v14</strong></td>
+              <td class="col-jarvis"><span class="check-yes">✓ Ultimo standard Discord</span></td>
+              <td><span class="check-yes">✓ Standard</span></td>
+              <td><span class="check-no">✗ Vecchi comandi con prefisso !</span></td>
+            </tr>
+            <tr>
+              <td><strong>Privacy & Controllo Completo</strong></td>
+              <td class="col-jarvis"><span class="check-yes">✓ Codice tuo & Zero ads</span></td>
+              <td><span class="check-no">✗ Tracciamento e pubblicità</span></td>
+              <td><span class="check-no">✗ Spesso offline</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FAQ ACCORDION SECTION
+       ========================================================================== -->
+  <section class="section-faq" id="faq">
+    <div class="container">
+      
+      <div class="section-header">
+        <span class="section-tag">Domande Frequenti</span>
+        <h2 class="section-title">Hai delle domande su J.A.R.V.I.S.?</h2>
+        <p class="section-desc">
+          Ecco le risposte più comuni sulle funzionalità, la configurazione e la sicurezza del bot.
+        </p>
+      </div>
+
+      <div class="faq-list">
+        
+        <div class="faq-item active">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Come aggiungo J.A.R.V.I.S. al mio server Discord?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            Ti basta cliccare sul pulsante "Aggiungi a Discord" presente nella schermata iniziale o nel menu. Verrai reindirizzato al portale ufficiale di autorizzazione di Discord dove potrai selezionare il tuo server e approvare i permessi necessari.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Come funziona il nuovo comando /sito?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            Il comando <code>/sito</code> è riservato agli amministratori del server. Eseguendolo, il bot risponderà con un embed informativo e un pulsante che porta direttamente a questa Web Dashboard ufficiale (https://jarvis-v5-cto5.onrender.com/).
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>I dati dei livelli e dei membri vengono salvati?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            Sì! J.A.R.V.I.S. è collegato a un database cloud MongoDB Atlas ad alta affidabilità. Tutti i punti XP, i livelli raggiunti, le configurazioni dei canali e i reaction roles rimangono memorizzati in modo persistente anche dopo i riavvii del server.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>Chi può accedere alla Web Dashboard?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            L'accesso avviene tramite Discord OAuth2. Tutti gli utenti possono visualizzare le classifiche dei server in cui si trovano, mentre la modifica delle impostazioni e dei canali è riservata esclusivamente ai proprietari e ai membri con permessi di Amministratore o Gestione Server.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            <span>J.A.R.V.I.S. è compatibile con Discord v14?</span>
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            Assolutamente sì. J.A.R.V.I.S. è sviluppato con la libreria più recente discord.js v14.16, supporta comandi slash nativi, pulsanti interattivi, menu a tendina e rispetta gli standard di sicurezza di Discord.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <div>
+          <a href="#" class="nav-brand">
+            <img src="/images/avatar.gif" alt="JARVIS Logo" class="brand-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <span class="brand-title">J.A.R.V.I.S.</span>
+          </a>
+          <p class="footer-brand-desc">
+            L'assistente modulare definitivo per i server Discord. Livelli, moderazione, traduzioni e dashboard cloud con reattività istantanea.
+          </p>
+          <div class="footer-status-pill">
+            <span>●</span> Tutti i sistemi operativi su Render
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Funzionalità</div>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="openFeatureModal('levels')">Livelli & XP</a></li>
+            <li><a href="javascript:void(0)" onclick="openFeatureModal('moderation')">Moderazione</a></li>
+            <li><a href="javascript:void(0)" onclick="openFeatureModal('roles')">Reaction Roles</a></li>
+            <li><a href="javascript:void(0)" onclick="openFeatureModal('welcome')">Messaggi di Benvenuto</a></li>
+            <li><a href="javascript:void(0)" onclick="openFeatureModal('translate')">Traduttore Google</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Piattaforma</div>
+          <ul class="footer-links">
+            <li><a href="/select-guild">Web Dashboard</a></li>
+            <li><a href="/select-guild?mode=leaderboard">Classifica Server</a></li>
+            <li><a href="/dashboard">Stato & Metriche</a></li>
+            <li><a href="/auth/login">Accedi con Discord</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Info Progetto</div>
+          <ul class="footer-links">
+            <li><a href="https://github.com/Fagghino/JARVIS-v4" target="_blank">Repository GitHub</a></li>
+            <li><a href="#faq">Domande Frequenti</a></li>
+            <li><a href="https://discord.com" target="_blank">Discord API Status</a></li>
+            <li><a href="https://onrender.com" target="_blank">Cloud Hosting Render</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 J.A.R.V.I.S. Bot • Creato con dedizione da Fagghino. Non affiliato con Discord Inc.
+        </div>
+        <div style="display: flex; gap: 20px;">
+          <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy</a>
+          <a href="#" style="color: var(--text-muted); text-decoration: none;">Termini di Servizio</a>
+          <a href="#" style="color: var(--text-muted); text-decoration: none;">Torna in Cima ↑</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODAL DI ANTEPRIMA A COMPARSA ("COME SONO LE FUNZIONALITÀ")
+       ========================================================================== -->
+  <div class="modal-overlay" id="featureModalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal-container">
+      
+      <!-- Header Modale con Titolo e Bottone Chiudi -->
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon-pill" id="modalHeaderIcon">🏆</div>
+          <div>
+            <div class="modal-title" id="modalHeaderTitle">Livelli & XP Dinamico</div>
+            <div class="modal-subtitle" id="modalHeaderDesc">Rank card, classifiche e ruoli sbloccabili per messaggi e voce</div>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeFeatureModal()" aria-label="Chiudi Modale">✕</button>
+      </div>
+
+      <!-- Barra di Navigazione Rapida a Pillole fra le Funzionalità -->
+      <div class="modal-nav-pills">
+        <button class="modal-pill active" onclick="switchModalFeature('levels', this)">🏆 Livelli</button>
+        <button class="modal-pill" onclick="switchModalFeature('moderation', this)">🛡️ Moderazione</button>
+        <button class="modal-pill" onclick="switchModalFeature('roles', this)">🎭 Reaction Roles</button>
+        <button class="modal-pill" onclick="switchModalFeature('welcome', this)">👋 Benvenuto</button>
+        <button class="modal-pill" onclick="switchModalFeature('dashboard', this)">🌐 Dashboard</button>
+        <button class="modal-pill" onclick="switchModalFeature('translate', this)">🌍 Traduttore</button>
+        <button class="modal-pill" onclick="switchModalFeature('counters', this)">📈 Contatori</button>
+        <button class="modal-pill" onclick="switchModalFeature('commands', this)">⚡ Comandi</button>
+      </div>
+
+      <!-- Corpo Modale con Live Discord Window Mockup -->
+      <div class="modal-body" id="modalBodyContent">
+        <!-- Contenuto dinamico inserito via JS -->
+      </div>
+
+      <!-- Footer Modale con Azioni -->
+      <div class="modal-footer">
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          ✨ Funzionalità nativa già inclusa nel bot J.A.R.V.I.S.
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-hero-secondary" style="padding: 10px 20px; font-size: 0.88rem;" onclick="closeFeatureModal()">
+            Chiudi
+          </button>
+          <a href="/auth/login" class="btn-hero-primary" style="padding: 10px 24px; font-size: 0.88rem;">
+            <span>Configura sul tuo Server</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
+
+  <!-- ==========================================================================
+       INTERACTIVE SCRIPTS (MENU A COMPARSA & PREVIEW LIVE DI OGNI MODULO)
+       ========================================================================== -->
+  <script>
+    // Database delle anteprime per ciascuna funzionalità ("Come sono")
+    const featureData = {
+      levels: {
+        icon: "🏆",
+        title: "Sistema Livelli & XP Dinamico",
+        desc: "Premia l'attività della tua community con punti XP calcolati in tempo reale sia per i messaggi che per i canali vocali, con ruoli ricompensa automatici.",
+        channel: "#generale",
+        html: `
+          <div class="discord-msg">
+            <img src="/images/avatar.gif" alt="Bot Avatar" class="msg-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">J.A.R.V.I.S.</span>
+                <span class="msg-badge">APP</span>
+                <span class="msg-time">Oggi alle 19:42</span>
+              </div>
+              <div class="msg-text">
+                🎉 Complimenti <strong style="color: #00d2ff;">@Alex_CyberDev</strong>! Sei salito al <strong>Livello 18</strong> inviando messaggi e partecipando ai canali vocali!
+              </div>
+
+              <!-- Live Rank Card -->
+              <div class="xp-card">
+                <img src="https://cdn.discordapp.com/embed/avatars/1.png" alt="User" class="xp-avatar">
+                <div class="xp-info">
+                  <div class="xp-top">
+                    <span class="xp-user">Alex_CyberDev <span style="font-size: 0.8rem; color: #949ba4;">#0001</span></span>
+                    <span class="xp-level">LIV. 18</span>
+                  </div>
+                  <div class="xp-bar-bg">
+                    <div class="xp-bar-fill"></div>
+                  </div>
+                  <div class="xp-stats-text">
+                    <span>Posizione: <strong style="color: #ffd700;">#1 nella Classifica</strong></span>
+                    <span>5,420 / 6,000 XP (78%)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="discord-btn-group">
+                <button class="discord-btn btn-active" onclick="alert('Classifica server aperta con successo!')">
+                  🏆 Visualizza Classifica Completa
+                </button>
+                <button class="discord-btn" onclick="alert('Punti XP attuali: 5,420 • Livello 18')">
+                  📊 Le Mie Statistiche
+                </button>
+              </div>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Guadagno XP Bilanciato", desc: "Punti XP calcolati per chat testuale e canali vocali con cooldown anti-spam." },
+          { title: "Ruoli Premio Automatici", desc: "Sblocca ruoli esclusivi automaticamente al raggiungimento di determinati livelli." },
+          { title: "Classifica Web & Discord", desc: "Accessibile sia via comando /classifica che sulla Web Dashboard sincronizzata su MongoDB." }
+        ]
+      },
+
+      moderation: {
+        icon: "🛡️",
+        title: "Moderazione Avanzata & Pulizia Chat",
+        desc: "Mantieni il tuo server pulito e sicuro con comandi di eliminazione rapida, filtri e controlli di sicurezza nativi Discord.",
+        channel: "#staff-moderazione",
+        html: `
+          <div class="discord-msg">
+            <img src="https://cdn.discordapp.com/embed/avatars/2.png" alt="Admin" class="msg-avatar">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">ServerAdmin</span>
+                <span class="msg-time">Oggi alle 19:44</span>
+              </div>
+              <div class="msg-text" style="color: #94a3b8; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem;">
+                /clear quantita: 25
+              </div>
+            </div>
+          </div>
+
+          <div class="discord-msg">
+            <img src="/images/avatar.gif" alt="Bot Avatar" class="msg-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">J.A.R.V.I.S.</span>
+                <span class="msg-badge">APP</span>
+                <span class="msg-time">Oggi alle 19:44</span>
+              </div>
+
+              <div class="discord-embed" style="border-left-color: #00e676;">
+                <div class="embed-title" style="color: #00e676;">🧹 Pulizia Chat Completata</div>
+                <div class="embed-desc">
+                  Eliminati con successo <strong>25 messaggi</strong> in questo canale.
+                  <br><br>
+                  <em>Solo tu puoi vedere questo messaggio • Azione registrata negli audit logs.</em>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Permessi Amministrativi Obbligatori", desc: "I comandi sensibili sono nascosti nel client Discord a chi non ha i permessi necessari." },
+          { title: "Risposte Effimere Sicure", desc: "Le conferme di moderazione sono visibili solo al moderatore senza intasare la chat." },
+          { title: "Tracciamento Audit", desc: "Ogni pulizia chat viene registrata per garantire massima trasparenza allo staff." }
+        ]
+      },
+
+      roles: {
+        icon: "🎭",
+        title: "Reaction Roles Interattivi con Pulsanti",
+        desc: "Addio vecchie reazioni lente. Con i pulsanti Discord v14 i membri assegnano o rimuovono i loro ruoli con un singolo clic istantaneo.",
+        channel: "#scegli-ruoli",
+        html: `
+          <div class="discord-msg">
+            <img src="/images/avatar.gif" alt="Bot Avatar" class="msg-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">J.A.R.V.I.S.</span>
+                <span class="msg-badge">APP</span>
+                <span class="msg-time">Oggi alle 19:45</span>
+              </div>
+
+              <div class="discord-embed" style="border-left-color: #5865F2;">
+                <div class="embed-title">🎭 Seleziona i tuoi Ruoli Preferiti</div>
+                <div class="embed-desc">
+                  Clicca sui pulsanti sottostanti per ricevere o rimuovere le notifiche e sbloccare i canali tematici dedicati.
+                </div>
+              </div>
+
+              <div class="discord-btn-group">
+                <button class="discord-btn btn-active" onclick="toggleRoleBtn(this, 'Novità & Aggiornamenti')">
+                  🔔 Annunci Server
+                </button>
+                <button class="discord-btn" onclick="toggleRoleBtn(this, 'Gamer')">
+                  🎮 Ruolo Gamer
+                </button>
+                <button class="discord-btn" onclick="toggleRoleBtn(this, 'Developer')">
+                  💻 Ruolo Developer
+                </button>
+              </div>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Pulsanti Interattivi Component v14", desc: "Assegnazione in millisecondi senza attendere il caricamento delle reazioni emoji." },
+          { title: "Toggle Bidirezionale", desc: "Premendo di nuovo il pulsante il ruolo viene rimosso automaticamente." },
+          { title: "Notifiche Ephemeral", desc: "Ricevi una conferma discreta 'Ruolo aggiunto!' visibile solo a te." }
+        ]
+      },
+
+      welcome: {
+        icon: "👋",
+        title: "Messaggi di Benvenuto & Addio",
+        desc: "Fai sentire speciali i nuovi arrivati con un messaggio di benvenuto memorabile arricchito dal banner ufficiale e dalle regole della community.",
+        channel: "#benvenuto",
+        html: `
+          <div class="discord-msg">
+            <img src="/images/avatar.gif" alt="Bot Avatar" class="msg-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">J.A.R.V.I.S.</span>
+                <span class="msg-badge">APP</span>
+                <span class="msg-time">Oggi alle 19:47</span>
+              </div>
+
+              <div class="discord-embed" style="border-left-color: #00d2ff; max-width: 540px;">
+                <div class="embed-title" style="color: #00d2ff;">👋 Benvenuto nella nostra Community!</div>
+                <div class="embed-desc">
+                  Ciao <strong style="color: #fff;">@Marco_Rossi</strong>, siamo entusiasti di averti con noi nel server!
+                  <br><br>
+                  📌 Ricordati di leggere il regolamento in <span style="color: #00d2ff;">#regole</span> e prendi i tuoi ruoli in <span style="color: #00d2ff;">#ruoli</span>.
+                  <br>
+                  🎉 Sei il nostro membro numero <strong>#1,452</strong>!
+                </div>
+                <div style="margin-top: 14px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0, 180, 216, 0.3);">
+                  <img src="/images/banner.png" alt="Banner" style="width: 100%; height: 110px; object-fit: cover; display: block;" onerror="this.style.display='none'">
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Canale Personalizzabile", desc: "Scegli tramite la Web Dashboard quale canale deve ricevere i messaggi di accoglienza." },
+          { title: "Menzioni Dinamiche", desc: "Menziona direttamente l'utente appena entrato per attirare la sua attenzione." },
+          { title: "Banner Nitro Integrato", desc: "Mostra la grafica personalizzata della tua community con visuale sci-fi." }
+        ]
+      },
+
+      dashboard: {
+        icon: "🌐",
+        title: "Web Dashboard Multi-Server Cloud",
+        desc: "Un vero e proprio centro di comando accessibile da qualsiasi browser. Monitora lo stato in tempo reale e configura i tuoi server con facilità.",
+        channel: "Browser Web • https://jarvis-v5-cto5.onrender.com/",
+        html: `
+          <div style="background: rgba(14, 20, 32, 0.95); border: 1px solid rgba(0, 180, 216, 0.3); border-radius: 8px; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 14px; margin-bottom: 16px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="/images/avatar.gif" style="width: 32px; height: 32px; border-radius: 50%;" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <strong style="color: #fff;">Pannello di Amministrazione Multi-Server</strong>
+              </div>
+              <span style="font-size: 0.75rem; color: #00e676; background: rgba(0, 230, 118, 0.1); padding: 4px 10px; border-radius: 12px; font-weight: 700;">SINCRONIZZATO</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; margin-bottom: 16px;">
+              <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 6px;">
+                <div style="font-size: 0.72rem; color: #94a3b8;">SISTEMA XP</div>
+                <div style="color: #00e676; font-weight: 800; font-size: 1.1rem;">ABILITATO</div>
+              </div>
+              <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 6px;">
+                <div style="font-size: 0.72rem; color: #94a3b8;">CANALE LOG</div>
+                <div style="color: #00d2ff; font-weight: 800; font-size: 1.1rem;">#audit-log</div>
+              </div>
+              <div style="background: rgba(255, 255, 255, 0.04); padding: 12px; border-radius: 6px;">
+                <div style="font-size: 0.72rem; color: #94a3b8;">COOLDOWN</div>
+                <div style="color: #fff; font-weight: 800; font-size: 1.1rem;">60 sec</div>
+              </div>
+            </div>
+
+            <div style="text-align: right;">
+              <a href="/select-guild" class="btn-hero-primary" style="padding: 8px 18px; font-size: 0.82rem; display: inline-flex;">
+                Vai alla Selezione Server
+              </a>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Verifica Ruoli Discord", desc: "Solo chi è Amministratore o Gestore Server può modificare i parametri critici." },
+          { title: "Tema Scuro & Chiaro", desc: "Supporta switch immediato fra Dark Cyberpunk e Light Minimalist con salvataggio." },
+          { title: "Bilingue ITA / ENG", desc: "Interfaccia completamente localizzata con selettore rapido della lingua." }
+        ]
+      },
+
+      translate: {
+        icon: "🌍",
+        title: "Traduttore Google Integrato",
+        desc: "Supera le barriere linguistiche. Traduci al volo testi da qualsiasi lingua verso l'italiano o viceversa con un unico comando.",
+        channel: "#internazionale",
+        html: `
+          <div class="discord-msg">
+            <img src="https://cdn.discordapp.com/embed/avatars/4.png" alt="User" class="msg-avatar">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">InternationalDev</span>
+                <span class="msg-time">Oggi alle 19:50</span>
+              </div>
+              <div class="msg-text" style="color: #94a3b8; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem;">
+                /translate testo: "This Discord bot architecture is astonishingly fast and reliable!" lingua: "it"
+              </div>
+            </div>
+          </div>
+
+          <div class="discord-msg">
+            <img src="/images/avatar.gif" alt="Bot Avatar" class="msg-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">J.A.R.V.I.S.</span>
+                <span class="msg-badge">APP</span>
+                <span class="msg-time">Oggi alle 19:50</span>
+              </div>
+
+              <div class="discord-embed" style="border-left-color: #00d2ff;">
+                <div class="embed-title" style="color: #00d2ff;">🌐 Traduzione Google Ufficiale</div>
+                <div class="embed-desc">
+                  <strong>Originale (Inglese):</strong><br>
+                  <em>"This Discord bot architecture is astonishingly fast and reliable!"</em>
+                  <br><br>
+                  <strong>Traduzione (Italiano):</strong><br>
+                  <strong style="color: #fff;">"L'architettura di questo bot Discord è sorprendentemente veloce e affidabile!"</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Google Translate API v8", desc: "Supporto accurato e continuo per oltre cento lingue mondiali." },
+          { title: "Riconoscimento Automatico", desc: "Rileva la lingua di origine senza doverla specificare a mano." },
+          { title: "Visualizzazione Pulita", desc: "Embed ordinato con confronto immediato tra lingua di partenza e di arrivo." }
+        ]
+      },
+
+      counters: {
+        icon: "📈",
+        title: "Canali Vocali Contatori in Tempo Reale",
+        desc: "Mantieni tutta la community aggiornata sulle dimensioni del server con canali vocali protetti che si aggiornano da soli.",
+        channel: "Barra Canali Discord",
+        html: `
+          <div style="background: var(--discord-darker); border-radius: 8px; padding: 16px; max-width: 380px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #949ba4; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">
+              📊 STATISTICHE SERVER (LIVE)
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255, 255, 255, 0.04); border-radius: 6px; color: #dbdee1; font-weight: 600; font-size: 0.88rem;">
+                <span style="color: #80848e;">🔊</span>
+                <span>👥 Membri Totali: <strong style="color: #00d2ff;">1,452</strong></span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255, 255, 255, 0.04); border-radius: 6px; color: #dbdee1; font-weight: 600; font-size: 0.88rem;">
+                <span style="color: #80848e;">🔊</span>
+                <span>🟢 Membri Online: <strong style="color: #00e676;">384</strong></span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255, 255, 255, 0.04); border-radius: 6px; color: #dbdee1; font-weight: 600; font-size: 0.88rem;">
+                <span style="color: #80848e;">🔊</span>
+                <span>🤖 Bot Attivi: <strong style="color: #ffd700;">8</strong></span>
+              </div>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Zero Consumo di Risorse", desc: "Aggiornamento a intervalli intelligenti nel pieno rispetto del rate limit Discord." },
+          { title: "Canali Vocali Bloccati", desc: "Nessun utente può entrarvi per fare rumore, fungono puramente da display visivo." },
+          { title: "Attivazione Singolo Clic", desc: "Accendili o spegnili a piacere dalla Web Dashboard." }
+        ]
+      },
+
+      commands: {
+        icon: "⚡",
+        title: "17 Comandi Slash Registrati & Pronti",
+        desc: "L'intera suite di comandi nativi, con validazione immediata, permessi d'amministrazione e il nuovo comando esclusivo /sito.",
+        channel: "#comandi-bot",
+        html: `
+          <div class="discord-msg">
+            <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="User" class="msg-avatar">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">Fagghino (Admin)</span>
+                <span class="msg-time">Oggi alle 19:55</span>
+              </div>
+              <div class="msg-text" style="color: #94a3b8; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem;">
+                /sito
+              </div>
+            </div>
+          </div>
+
+          <div class="discord-msg">
+            <img src="/images/avatar.gif" alt="Bot Avatar" class="msg-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div class="msg-content">
+              <div class="msg-header">
+                <span class="msg-author">J.A.R.V.I.S.</span>
+                <span class="msg-badge">APP</span>
+                <span class="msg-time">Oggi alle 19:55</span>
+              </div>
+
+              <div class="discord-embed" style="border-left-color: #00d2ff; max-width: 520px;">
+                <div class="embed-title" style="color: #00d2ff;">🌐 Web Dashboard Ufficiale di J.A.R.V.I.S.</div>
+                <div class="embed-desc">
+                  Ecco il portale ufficiale di controllo cloud per gestire i tuoi server, visionare le statistiche e visualizzare le classifiche:
+                  <br><br>
+                  🔗 <strong>https://jarvis-v5-cto5.onrender.com/</strong>
+                </div>
+              </div>
+
+              <div class="discord-btn-group">
+                <a href="https://jarvis-v5-cto5.onrender.com/" target="_blank" class="discord-btn btn-active" style="text-decoration: none;">
+                  🌐 Apri Web Dashboard
+                </a>
+                <button class="discord-btn" onclick="alert('Permesso verificato: Administrator')">
+                  🔒 Comando Riservato Admin
+                </button>
+              </div>
+            </div>
+          </div>
+        `,
+        highlights: [
+          { title: "Standard Discord v14 Compliant", desc: "Tutti i comandi sono registrati globalmente tramite REST API v10." },
+          { title: "Permessi Granulari", desc: "Comandi di configurazione e pulizia disponibili solo per gli amministratori." },
+          { title: "Auto-Completamento & Suggerimenti", desc: "Descrizioni chiare dei parametri direttamente all'interno della barra chat." }
+        ]
+      }
+    };
+
+    // Apertura del Menu a Comparsa con caricamento dinamico
+    function openFeatureModal(featureKey) {
+      const data = featureData[featureKey];
+      if (!data) return;
+
+      // Aggiorna header modale
+      document.getElementById('modalHeaderIcon').textContent = data.icon;
+      document.getElementById('modalHeaderTitle').textContent = data.title;
+      document.getElementById('modalHeaderDesc').textContent = data.desc;
+
+      // Aggiorna pill attiva
+      document.querySelectorAll('.modal-pill').forEach(pill => {
+        pill.classList.remove('active');
+        if (pill.getAttribute('onclick')?.includes(featureKey)) {
+          pill.classList.add('active');
+        }
+      });
+
+      // Genera contenuto HTML con finestra Discord e checklist
+      const bodyEl = document.getElementById('modalBodyContent');
+      bodyEl.innerHTML = `
+        <div class="modal-discord-window">
+          <div class="modal-discord-bar">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="color: #80848e; font-size: 1.1rem;">#</span>
+              <span style="font-weight: 700; color: #fff; font-size: 0.9rem;">${data.channel}</span>
+              <span style="color: #80848e; font-size: 0.8rem; border-left: 1px solid #4e5058; padding-left: 10px;">Anteprima Ufficiale Discord v14</span>
+            </div>
+            <span style="font-size: 0.75rem; color: #00e676; font-weight: 700;">🟢 DISCORD RUNTIME</span>
+          </div>
+          <div class="modal-discord-content">
+            ${data.html}
+          </div>
+        </div>
+
+        <div class="modal-features-list">
+          ${data.highlights.map(h => `
+            <div class="modal-feature-item">
+              <span class="check">✓</span>
+              <div>
+                <strong>${h.title}</strong>
+                <p>${h.desc}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      // Mostra overlay
+      const overlay = document.getElementById('featureModalOverlay');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Switch funzionalità all'interno del Menu a Comparsa
+    function switchModalFeature(featureKey, pillBtn) {
+      document.querySelectorAll('.modal-pill').forEach(p => p.classList.remove('active'));
+      pillBtn.classList.add('active');
+      openFeatureModal(featureKey);
+    }
+
+    // Chiusura del Menu a Comparsa
+    function closeFeatureModal() {
+      const overlay = document.getElementById('featureModalOverlay');
+      overlay.classList.remove('open');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Chiusura cliccando all'esterno
+    function closeModalOnOverlay(e) {
+      if (e.target.id === 'featureModalOverlay') {
+        closeFeatureModal();
+      }
+    }
+
+    // Chiudi con tasto ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeFeatureModal();
+      }
+    });
+
+    // Test interattivo toggle ruoli nella preview
+    function toggleRoleBtn(btn, roleName) {
+      btn.classList.toggle('btn-active');
+      const hasRole = btn.classList.contains('btn-active');
+      alert(`${hasRole ? '✅ Ruolo aggiunto:' : '❌ Ruolo rimosso:'} @${roleName}`);
+    }
+
+    // Interactive switch toast
+    function toggleFeature(checkbox, featureName) {
+      const state = checkbox.checked ? 'attivato' : 'disattivato';
+      console.log(`Modulo [${featureName}] ${state}.`);
+    }
+
+    // FAQ Accordion
+    function toggleFaq(el) {
+      const parent = el.parentElement;
+      const isActive = parent.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+      if (!isActive) {
+        parent.classList.add('active');
+      }
+    }
+  </script>
+
 </body>
 </html>
+
