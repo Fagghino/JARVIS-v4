@@ -116,7 +116,7 @@ module.exports = (client) => {
     try {
       let content = fs.readFileSync(templatePath, "utf8");
 
-      if (templateName === "login.html") {
+      if (templateName === "login.html" || templateName === "landing.html") {
         const errorMsg = variables.error || "";
         if (errorMsg) {
           content = content
@@ -141,6 +141,66 @@ module.exports = (client) => {
     }
   }
 
+  // URL Dinamico di invito per il bot
+  function getBotInviteUrl() {
+    const id = client_id || (client?.user?.id) || "1086038166164504626";
+    return `https://discord.com/oauth2/authorize?client_id=${id}&permissions=8&scope=bot%20applications.commands`;
+  }
+
+  // Generatore HTML per le azioni nella navbar della Landing Page
+  function getLandingNavActionsHtml(user) {
+    if (user) {
+      const avatarUrl = user.avatar
+        ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`
+        : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.id) % 5}.png`;
+      return `
+        <div class="nav-user-logged">
+          <img src="${escapeHtml(avatarUrl)}" class="nav-user-avatar" alt="${escapeHtml(user.username)}">
+          <span class="nav-user-name">${escapeHtml(user.username)}</span>
+          <a href="/select-guild" class="nav-btn-action">I Miei Server</a>
+          <a href="/dashboard" class="nav-btn-action">Stato Bot</a>
+          <a href="/auth/logout" class="nav-btn-logout">Esci</a>
+        </div>
+      `;
+    }
+    return `
+      <a href="/auth/login" class="btn-login-discord">
+        <svg width="20" height="20" viewBox="0 0 127.14 96.36" fill="currentColor">
+          <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,69.43,69.43,0,0,1-10.5-5c.9-.65,1.76-1.34,2.58-2.06a75.48,75.48,0,0,0,73,0c.82.72,1.68,1.41,2.58,2.06a69.43,69.43,0,0,1-10.5,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,31-18.83C129,50.7,122.64,27.78,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
+        </svg>
+        <span>Accedi con Discord</span>
+      </a>
+    `;
+  }
+
+  // Generatore pulsanti Hero allineati a sinistra
+  function getLandingHeroCtaHtml(user) {
+    const inviteUrl = getBotInviteUrl();
+    if (user) {
+      return `
+        <a href="/select-guild" class="btn-hero-primary">
+          <span>⚙️ I Miei Server</span>
+        </a>
+        <a href="#plugins" class="btn-hero-secondary">
+          <span>✨ Funzioni</span>
+          <span>↓</span>
+        </a>
+      `;
+    }
+    return `
+      <a href="${escapeHtml(inviteUrl)}" target="_blank" class="btn-hero-primary">
+        <svg width="20" height="20" viewBox="0 0 127.14 96.36" fill="currentColor">
+          <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,69.43,69.43,0,0,1-10.5-5c.9-.65,1.76-1.34,2.58-2.06a75.48,75.48,0,0,0,73,0c.82.72,1.68,1.41,2.58,2.06a69.43,69.43,0,0,1-10.5,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,31-18.83C129,50.7,122.64,27.78,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
+        </svg>
+        <span>Aggiungi a Discord</span>
+      </a>
+      <a href="#plugins" class="btn-hero-secondary">
+        <span>✨ Funzioni</span>
+        <span>↓</span>
+      </a>
+    `;
+  }
+
   // Barra Profilo Utente con selettore Tema e Lingua
   function getUserBarHtml(user) {
     const avatarUrl = user && user.avatar
@@ -155,9 +215,12 @@ module.exports = (client) => {
           ${user ? `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(user.username)}" class="user-avatar">
           <span class="user-name">${escapeHtml(user.username)}</span>` : `<span>J.A.R.V.I.S. Panel</span>`}
         </div>
-        <div class="theme-lang-bar" style="display: flex; align-items: center; gap: 10px;">
-          <button id="themeToggleBtn" class="theme-toggle-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 12px; border-radius: 8px; cursor: pointer;">☀️ Light</button>
-          <select id="langSelect" class="lang-select" style="background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; cursor: pointer;">
+        <div class="theme-lang-bar" style="display: flex; align-items: center; gap: 8px;">
+          <a href="/" style="background: rgba(0, 210, 255, 0.12); border: 1px solid rgba(0, 210, 255, 0.3); color: var(--primary); padding: 5px 12px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.82rem;">🏠 Home</a>
+          <a href="/select-guild" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.82rem;">⚙️ Server</a>
+          <a href="/dashboard" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.82rem;">📊 Stato</a>
+          <button id="themeToggleBtn" class="theme-toggle-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;">☀️ Light</button>
+          <select id="langSelect" class="lang-select" style="background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 8px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;">
             <option value="it" style="background: #101623; color: #fff;">🇮🇹 ITA</option>
             <option value="en" style="background: #101623; color: #fff;">🇬🇧 ENG</option>
           </select>
@@ -328,16 +391,27 @@ module.exports = (client) => {
   // ROTTE PRINCIPALI WEB
   // ─────────────────────────────────────────────────────────────────────────
 
-  // Home Page (Generica Bot Status)
-  app.get("/", ensureInAnyBotGuild, async (req, res) => {
-    if (!req.session.user) {
-      let errorMsg = req.query.error || "";
-      if (!isOauthConfigured) {
-        errorMsg = "Il server OAuth2 non è configurato. Aggiungi le chiavi CLIENT_ID e CLIENT_SECRET nel file config/.env";
-      }
-      return renderTemplate(res, "login.html", { error: errorMsg });
+  // Home Page Ufficiale (Landing Page)
+  app.get("/", async (req, res) => {
+    let errorMsg = req.query.error || "";
+    if (!isOauthConfigured && (!req.session || !req.session.user)) {
+      errorMsg = "Il server OAuth2 non è configurato. Aggiungi le chiavi CLIENT_ID e CLIENT_SECRET nel file config/.env";
     }
 
+    const user = req.session && req.session.user ? req.session.user : null;
+    const inviteUrl = getBotInviteUrl();
+
+    renderTemplate(res, "landing.html", {
+      version,
+      inviteUrl,
+      navActionsHtml: getLandingNavActionsHtml(user),
+      heroCtaHtml: getLandingHeroCtaHtml(user),
+      error: errorMsg
+    });
+  });
+
+  // Metriche di Sistema & Bot Status (Accessibile a utenti autenticati)
+  app.get("/dashboard", ensureAuthenticated, ensureInAnyBotGuild, async (req, res) => {
     const user = req.session.user;
 
     const seconds = process.uptime();
@@ -542,7 +616,7 @@ module.exports = (client) => {
 
       req.session.guilds = guildsResponse.data;
 
-      res.redirect("/");
+      res.redirect("/select-guild");
     } catch (error) {
       console.error("❌ Errore autenticazione callback Discord:", error.response ? error.response.data : error.message);
       res.redirect("/?error=Autenticazione fallita.");
