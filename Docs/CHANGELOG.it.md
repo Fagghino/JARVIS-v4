@@ -12,8 +12,23 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - `commands/admin/sito.js`: Aggiunto comando slash riservato agli amministratori con verifica permessi (`PermissionFlagsBits.Administrator`), embed informativo e pulsante interattivo con link diretto alla Web Dashboard ufficiale su Render (`https://jarvis-v5-cto5.onrender.com/`).
 - **Asset Grafici Web Dashboard**:
   - `dashboard/public/images/banner.png`: Integrato il banner ufficiale di JARVIS per l'header della dashboard web.
+- **Landing Page Ufficiale & Rework Grafico Completo**:
+  - `dashboard/public/css/landing.css`: Nuova stylesheet dedicata e responsive per la landing page ufficiale del bot, con layout a griglia Bento, animazioni fluide a 60fps, componenti mockup Discord nativi (canali, embed con badge bot, rank card, pulsanti ruoli interattivi) e palette sci-fi Arc Reactor ciano/azzurro.
+  - `dashboard/views/landing.html`: Nuovo template HTML per la home page del bot (`/`), comprensivo di:
+    - Navbar sticky glassmorphism con mega-menu a comparsa ("Funzionalità") che elenca tutti gli 8 moduli per un'anteprima istantanea.
+    - Sezione Hero a centro schermo con testi e call-to-action allineati rigidamente a sinistra ("Aggiungi a Discord" e "Funzioni ↓"), affiancati da card grafica 3D con banner ufficiale e badge fluttuanti.
+    - Sezione Bento Grid modulare con switch on/off ed eventi al clic per aprire la finestra di anteprima interattiva.
+    - Modale a comparsa con finestra Discord live per mostrare concretamente il funzionamento di tutti gli 8 moduli (Livelli & XP, Moderazione, Reaction Roles, Benvenuto, Dashboard, Traduttore Google, Contatori Vocali, 17 Comandi Slash).
+    - Sezioni dedicate per anteprima Web Dashboard, tabella comparativa trasparente delle funzionalità, FAQ con accordion e footer multilink.
+- **Rotta Web Dedicata `/dashboard`**:
+  - `dashboard/server.js`: Creata rotta esplicita `GET /dashboard` per accedere direttamente al pannello delle metriche interne e salute del bot (uptime, memoria heap, latenza WS, stato connessione).
 
 ### Changed
+- **Esperienza Utente & Routing della Web Dashboard**:
+  - `dashboard/server.js`: Reingegnerizzato l'endpoint principale `GET /` per mostrare la nuova landing page pubblica a tutti i visitatori con gestione dinamica delle azioni (singolo pulsante "Accedi con Discord" per visitatori non loggati, widget profilo con collegamenti a server e metriche per utenti autenticati).
+  - `dashboard/server.js`: Ottimizzato il reindirizzamento al completamento dell'autenticazione OAuth2 (`GET /auth/callback`) verso la selezione server (`/select-guild`).
+  - `dashboard/server.js`: Integrati collegamenti rapidi di navigazione (`🏠 Home`, `⚙️ Server`, `📊 Stato`) nella barra utente globale.
+  - `dashboard/views/login.html`: Aggiornato per uniformare l'accesso alla nuova landing page modulare.
 - **Restyling Estetico Web Dashboard**:
   - `dashboard/public/css/style.css`: Aggiornata la combinazione cromatica dall'arancione/giallo (`#ff8c00`) alla palette sci-fi Arc Reactor Ciano & Azzurro (`#00b4d8`, `#38bdf8`, `#0077b6`, gradiente `linear-gradient(135deg, #00d2ff 0%, #0077b6 100%)`).
   - `dashboard/public/css/style.css`: Introdotta la classe `.banner-wrapper` con overlay a gradiente sfumato ed effetto header profilo Discord Nitro con avatar (`.avatar-container`) parzialmente sovrapposto al banner.
@@ -21,7 +36,6 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - `dashboard/public/css/style.css`: Ottimizzati i pulsanti d'azione con gradiente azzurro sci-fi e bagliori metallici per i podi della classifica (Oro, Argento, Ambra).
   - `dashboard/public/css/style.css`: Calibrati i contrasti, i bordi e l'overlay del banner per la modalità chiara (*Light Mode*).
   - `dashboard/views/dashboard.html`: Integrato il banner immersivo a tutto schermo e aggiunte micro-icone descrittive per ciascuna statistica (🌐 Web Server, 🤖 Connessione Discord, 🛡️ Server Attivi, ⚡ Uptime, 📶 Ping, 🧠 Memoria).
-  - `dashboard/views/login.html`: Implementato l'header con banner anche nella schermata di login, coordinato con l'avatar animato del bot.
   - `dashboard/views/leaderboard.html`: Aggiornato lo spinner di caricamento e i dettagli visivi alla palette ciano/azzurra.
   - `dashboard/views/select-guild.html`: Convertite le ombre di elevazione delle card server attive al tema ciano.
   - `dashboard/views/settings.html`: Armonizzati gli spinner di caricamento e gli stili form con il tema ciano.
