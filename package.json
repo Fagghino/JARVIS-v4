@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
+    "web": "node -e \"require('dotenv').config({ path: 'config/.env' }); require('./dashboard/server.js')({ guilds: { cache: new Map() } })\"",
     "deploy": "node deploy-commands.js",
     "build": "npm run deploy",
     "migrate": "node scripts/migrateSheetsToMongo.js",
