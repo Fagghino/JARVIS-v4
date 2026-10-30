@@ -212,13 +212,19 @@ JARVIS-v4/
 │   ├── GuildSettings.js              # Per-guild settings schema
 │   ├── ReactionRole.js               # Reaction roles & emoji mapping schema
 │   └── UserXP.js                     # User XP & level schema
-├── dashboard/                        # Express Web Dashboard
+├── dashboard/                        # Express Web Dashboard & Landing Page
 │   ├── server.js                     # Express server, OAuth2 & per-guild APIs
 │   ├── public/                       # Static assets
-│   │   ├── css/style.css             # Glassmorphism dark/light CSS stylesheet
+│   │   ├── css/
+│   │   │   ├── landing.css           # Modular landing page stylesheet
+│   │   │   └── style.css             # Glassmorphism dark/light CSS stylesheet
+│   │   ├── images/
+│   │   │   ├── avatar.gif            # Bot avatar asset
+│   │   │   └── banner.png            # Header & hero banner
 │   │   └── js/theme-lang.js          # Theme toggle & i18n frontend script
 │   └── views/                        # HTML5 templates
-│       ├── login.html                # Discord OAuth2 login page
+│       ├── landing.html              # Official homepage & interactive module preview
+│       ├── login.html                # Unified entry & login page
 │       ├── dashboard.html            # Main status & stats view
 │       ├── select-guild.html         # Guild selector with permission locking
 │       ├── leaderboard.html          # Dynamic server XP leaderboard
@@ -257,6 +263,7 @@ JARVIS-v4/
 | :--- | :--- | :--- |
 | `npm start` | `node index.js` | Run the bot & Web Dashboard in production mode |
 | `npm run dev` | `nodemon index.js` | Run in development mode with auto-reload |
+| `npm run web` | `node -e ...` | Start only the Web Dashboard / Landing Page locally (no Discord connection) |
 | `npm run deploy` | `node deploy-commands.js` | Deploy global slash commands to Discord API |
 | `npm run migrate` | `node scripts/migrateSheetsToMongo.js` | Migrate legacy Google Sheets data to MongoDB |
 | `npm run test` | `node --check ...` | Run syntax verification across all codebase files |
