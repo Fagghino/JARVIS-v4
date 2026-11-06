@@ -37,6 +37,8 @@ async function getGuildConfig(guildId) {
     guildId,
     welcomeChannelId: defaultConfig.welcomeChannelId || '',
     goodbyeChannelId: defaultConfig.goodbyeChannelId || '',
+    welcomeMessageText: 'Benvenuto nel server, {user}! Ora siamo in {count} membri!',
+    goodbyeMessageText: '{user} ha lasciato il server. Ci mancherai!',
     levelUpChannelId: defaultConfig.levelUpChannelId || '',
     totalChannelId: defaultConfig.totalChannelId || '',
     usersChannelId: defaultConfig.usersChannelId || '',
@@ -44,9 +46,11 @@ async function getGuildConfig(guildId) {
     newMemberRoleId: defaultConfig.newMemberRoleId || '',
     botRoleId: defaultConfig.botRoleId || '',
     inviteLink: defaultConfig.inviteLink || '',
+    botNickname: '',
     features: {
       xpEnabled: true,
       welcomeEnabled: true,
+      reactionRolesEnabled: true,
       counterEnabled: true
     }
   };
