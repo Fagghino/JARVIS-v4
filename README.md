@@ -38,7 +38,7 @@
   $$\text{Level} = \lfloor 0.1 \times \sqrt{\text{XP}} \rfloor$$
 - **Level-Up Embed Alerts**: Sends customizable rich embed notifications to designated level-up channels whenever a member reaches a new milestone.
 - **In-Memory Caching & Cloud Flush**: Manages XP updates in high-speed RAM cache (`xpCache`) and periodically flushes updates to MongoDB Atlas to maximize performance and avoid API throttling.
-- **Leaderboard Integration**: View server rankings directly on Discord via `/classifica` or on the Web Dashboard.
+- **Leaderboard Integration**: View server rankings directly on Discord via `/classifica` with real-time MongoDB synchronization.
 
 ---
 
@@ -93,7 +93,7 @@
 - **Per-Guild Permission Gating**: Guild selector screen (`/select-guild`) automatically enables accessible servers while locking unauthorized servers in gray with `🔒 Admin permissions required`.
 - **Theme Switcher**: Instant Dark Glassmorphism vs. Clean Light Mode toggle with `localStorage` persistence.
 - **Language Switcher**: Instant Italian (`🇮🇹 ITA`) vs. English (`🇬🇧 ENG`) language toggle across all views.
-- **Live Management**: Live memory consumption gauge, uptime counter, WebSocket ping, online guild statistics, real-time leaderboard, and runtime configuration settings.
+- **Live Management**: Live memory consumption gauge, uptime counter, WebSocket ping, online guild statistics, and runtime configuration settings with sidebar navigation.
 
 ---
 
@@ -226,9 +226,8 @@ JARVIS-v4/
 │       ├── landing.html              # Official homepage & interactive module preview
 │       ├── login.html                # Unified entry & login page
 │       ├── dashboard.html            # Main status & stats view
-│       ├── select-guild.html         # Guild selector with permission locking
-│       ├── leaderboard.html          # Dynamic server XP leaderboard
-│       ├── settings.html             # Per-guild admin settings panel
+│       ├── select-guild.html         # Guild selector with active & invite groups
+│       ├── settings.html             # Per-guild admin settings panel with sidebar
 │       └── unauthorized.html         # Access denied view
 ├── commands/                         # Slash Commands
 │   ├── admin/                        # Admin-only commands
