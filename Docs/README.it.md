@@ -38,7 +38,7 @@
   $$\text{Livello} = \lfloor 0.1 \times \sqrt{\text{XP}} \rfloor$$
 - **Embed di Notifica Level-Up**: Invia messaggi embed personalizzati nel canale dedicato quando un utente supera una soglia di livello.
 - **Cache in Memoria & Auto-Flush Cloud**: Gli aggiornamenti XP vengono gestiti in RAM (`xpCache`) e salvati periodicamente su MongoDB Atlas in batch, garantendo prestazioni elevate e riducendo il carico di rete.
-- **Classifica Interattiva**: Visualizzazione della classifica globale o per-server sia su Discord (`/classifica`) che sulla Web Dashboard.
+- **Classifica Interattiva**: Visualizzazione della classifica globale o per-server direttamente su Discord tramite il comando `/classifica` con sincronizzazione MongoDB in tempo reale.
 
 ---
 
@@ -93,7 +93,7 @@
 - **Selettore Server (`/select-guild`)**: Mostra le card dei server gestiti abilita quelle in cui l'utente ha i permessi admin e sfoca con lucchetto `🔒 Admin permissions required` i server non autorizzati.
 - **Selettore Tema (Chiaro / Scuro)**: Cambio tema grafico immediato con memoria su `localStorage`.
 - **Selettore Lingua (ITA / ENG)**: Traduzione istantanea dell'intera interfaccia tra Italiano ed Inglese.
-- **Gestione Live**: Monitoraggio in tempo reale di memoria RAM, uptime, ping WebSocket, classifica XP live e pannello di configurazione impostazioni per-server.
+- **Gestione Live**: Monitoraggio in tempo reale di memoria RAM, uptime, ping WebSocket e pannello di configurazione impostazioni per-server con navigazione a sidebar laterale.
 
 ---
 
@@ -226,9 +226,8 @@ JARVIS-v4/
 │       ├── landing.html              # Pagina iniziale ufficiale con anteprima interattiva dei moduli
 │       ├── login.html                # Pagina unificata di ingresso e login
 │       ├── dashboard.html            # Vista principali con statistiche del bot
-│       ├── select-guild.html         # Selettore server con controllo permessi
-│       ├── leaderboard.html          # Classifica XP dinamica del server
-│       ├── settings.html             # Pannello di configurazione admin per-server
+│       ├── select-guild.html         # Selettore server con gruppi server attivi e da invitare
+│       ├── settings.html             # Pannello di configurazione admin per-server con sidebar laterale
 │       └── unauthorized.html         # Pagina di accesso negato
 ├── commands/                         # Comandi Slash
 │   ├── admin/                        # Comandi riservati agli amministratori
