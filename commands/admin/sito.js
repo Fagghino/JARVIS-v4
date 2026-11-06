@@ -49,7 +49,7 @@ module.exports = {
       )
       .addFields({
         name: '🔗 Link diretto:',
-        value: `[Clicca qui per accedere alla Dashboard](${SITE_URL})\n${SITE_URL}`,
+        value: `[Clicca qui per accedere alla Dashboard](${SITE_URL})`,
       })
       .setFooter({
         text: 'JARVIS System • Web Dashboard',
