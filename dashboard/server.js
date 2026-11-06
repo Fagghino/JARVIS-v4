@@ -17,6 +17,8 @@ const { version } = require("../package.json");
 const defaultConfig = require("../config/config.js");
 const { getGuildConfig, updateGuildConfig } = require("../utils/guildSettings.js");
 const { loadXPData } = require("../misc/level.js");
+const ReactionRoleModel = require("../models/ReactionRole.js");
+const { addReactionRole, removeReactionRole } = require("../misc/reactionRoles.js");
 
 module.exports = (client) => {
   const app = express();
@@ -141,10 +143,14 @@ module.exports = (client) => {
     }
   }
 
-  // URL Dinamico di invito per il bot
-  function getBotInviteUrl() {
+  // URL Dinamico di invito per il bot (con supporto opzionale a guild_id)
+  function getBotInviteUrl(guildId = null) {
     const id = client_id || (client?.user?.id) || "1086038166164504626";
-    return `https://discord.com/oauth2/authorize?client_id=${id}&permissions=8&scope=bot%20applications.commands`;
+    let url = `https://discord.com/oauth2/authorize?client_id=${id}&permissions=8&scope=bot%20applications.commands`;
+    if (guildId) {
+      url += `&guild_id=${guildId}`;
+    }
+    return url;
   }
 
   // Generatore HTML per le azioni nella navbar della Landing Page
@@ -201,7 +207,7 @@ module.exports = (client) => {
     `;
   }
 
-  // Barra Profilo Utente con selettore Tema e Lingua
+  // Barra Profilo Utente Unificata (Stile Navbar Glassmorphism)
   function getUserBarHtml(user) {
     const avatarUrl = user && user.avatar
       ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64`
@@ -210,23 +216,29 @@ module.exports = (client) => {
       : "";
 
     return `
-      <div class="user-bar">
-        <div class="user-info">
-          ${user ? `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(user.username)}" class="user-avatar">
-          <span class="user-name">${escapeHtml(user.username)}</span>` : `<span>J.A.R.V.I.S. Panel</span>`}
+      <nav class="navbar">
+        <div class="container navbar-inner" style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+          <a href="/" class="nav-brand">
+            <img src="/images/avatar.gif" alt="JARVIS Logo" class="brand-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <span class="brand-title">J.A.R.V.I.S.</span>
+            <span class="brand-badge">v${version}</span>
+          </a>
+          <div class="nav-actions">
+            ${user ? `
+            <div class="nav-user-logged">
+              <img src="${escapeHtml(avatarUrl)}" class="nav-user-avatar" alt="${escapeHtml(user.username)}">
+              <span class="nav-user-name">${escapeHtml(user.username)}</span>
+              <a href="/" class="nav-btn-action">🏠 Home</a>
+              <a href="/select-guild" class="nav-btn-action">⚙️ Server</a>
+              <a href="/dashboard" class="nav-btn-action">📊 Stato</a>
+              <a href="/auth/logout" class="nav-btn-logout">Esci</a>
+            </div>
+            ` : `
+            <a href="/auth/login" class="btn-login-discord">Accedi con Discord</a>
+            `}
+          </div>
         </div>
-        <div class="theme-lang-bar" style="display: flex; align-items: center; gap: 8px;">
-          <a href="/" style="background: rgba(0, 210, 255, 0.12); border: 1px solid rgba(0, 210, 255, 0.3); color: var(--primary); padding: 5px 12px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.82rem;">🏠 Home</a>
-          <a href="/select-guild" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.82rem;">⚙️ Server</a>
-          <a href="/dashboard" style="background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.82rem;">📊 Stato</a>
-          <button id="themeToggleBtn" class="theme-toggle-btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;">☀️ Light</button>
-          <select id="langSelect" class="lang-select" style="background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: var(--text); padding: 5px 8px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;">
-            <option value="it" style="background: #101623; color: #fff;">🇮🇹 ITA</option>
-            <option value="en" style="background: #101623; color: #fff;">🇬🇧 ENG</option>
-          </select>
-          ${user ? `<a href="/auth/logout" class="btn-logout" data-i18n="logout">Esci</a>` : ""}
-        </div>
-      </div>
+      </nav>
     `;
   }
 
@@ -449,8 +461,7 @@ module.exports = (client) => {
     const memoryText = `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)} MB`;
     const discordJsVersion = require("discord.js").version;
 
-    const leaderboardBtnHtml = '<a href="/select-guild?mode=leaderboard" class="btn" data-i18n="leaderboardBtn">🏆 Classifica Server</a>';
-    const settingsBtnHtml = '<a href="/select-guild?mode=settings" class="btn btn-secondary" data-i18n="settingsBtn">⚙️ Impostazioni Bot</a>';
+    const settingsBtnHtml = '<a href="/select-guild" class="btn" data-i18n="settingsBtn">⚙️ Gestisci Server</a>';
 
     renderTemplate(res, "dashboard.html", {
       userBarHtml: getUserBarHtml(user),
@@ -464,89 +475,74 @@ module.exports = (client) => {
       memoryText,
       nodeVersion: process.version,
       discordJsVersion,
-      leaderboardBtnHtml,
       settingsBtnHtml
     });
   });
 
-  // Selezione Server con Griglia e Stati Abilitati/Disabilitati (Grigio)
-  app.get("/select-guild", ensureAuthenticated, ensureInAnyBotGuild, async (req, res) => {
+  // Selezione Server con suddivisione tra Server con JARVIS e Server in cui aggiungerlo
+  app.get("/select-guild", ensureAuthenticated, async (req, res) => {
     const user = req.session.user;
     const userGuilds = req.session.guilds || [];
-    const mode = req.query.mode || "settings"; // 'settings' oppure 'leaderboard'
+    const botGuilds = client.guilds ? client.guilds.cache : new Map();
 
-    const botGuilds = Array.from(client.guilds.cache.values());
-    let cardsHtml = "";
+    let presentCardsHtml = "";
+    let availableCardsHtml = "";
 
-    for (const bg of botGuilds) {
-      // Verifica se l'utente appartiene a questo server
-      const userGuildInfo = userGuilds.find(g => g.id === bg.id);
-      const isMember = !!userGuildInfo;
+    const sortedUserGuilds = [...userGuilds].sort((a, b) => a.name.localeCompare(b.name));
 
-      let isEligible = isMember;
-      let lockReason = "";
-      let lockKey = "";
+    for (const ug of sortedUserGuilds) {
+      const permissions = BigInt(ug.permissions || 0);
+      const isAdmin = (permissions & BigInt(0x8)) === BigInt(0x8) ||
+                      (permissions & BigInt(0x20)) === BigInt(0x20) ||
+                      Boolean(ug.owner);
 
-      if (!isMember) {
-        lockReason = "🔒 Non sei in questo server";
-        lockKey = "lockNotInServer";
-      } else if (mode === "settings") {
-        const permissions = BigInt(userGuildInfo.permissions);
-        const isAdmin = (permissions & BigInt(0x8)) === BigInt(0x8) || (permissions & BigInt(0x20)) === BigInt(0x20) || userGuildInfo.owner;
-        if (!isAdmin) {
-          isEligible = false;
-          lockReason = "🔒 Permessi Admin richiesti";
-          lockKey = "lockNoAdmin";
-        }
-      }
+      if (!isAdmin) continue; // Mostra solo i server in cui l'utente ha poteri di amministrazione
 
-      const iconUrl = bg.iconURL({ extension: "png", size: 128 }) || "https://cdn.discordapp.com/embed/avatars/0.png";
+      const iconUrl = ug.icon
+        ? `https://cdn.discordapp.com/icons/${ug.id}/${ug.icon}.png?size=128`
+        : "https://cdn.discordapp.com/embed/avatars/0.png";
 
-      if (isEligible) {
-        cardsHtml += `
+      const isBotPresent = botGuilds.has(ug.id);
+
+      if (isBotPresent) {
+        presentCardsHtml += `
           <div class="guild-card active-card">
-            <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(bg.name)}" class="guild-icon">
-            <div class="guild-name">${escapeHtml(bg.name)}</div>
+            <div class="guild-badge-status badge-connected">● Attivo</div>
+            <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(ug.name)}" class="guild-icon">
+            <div class="guild-name">${escapeHtml(ug.name)}</div>
             <div class="guild-actions">
-              ${mode === "settings"
-                ? `<a href="/settings/${bg.id}" class="btn" data-i18n="settingsBtn">⚙️ Impostazioni</a>`
-                : `<a href="/leaderboard/${bg.id}" class="btn" data-i18n="leaderboardBtn">🏆 Classifica</a>`
-              }
+              <a href="/settings/${ug.id}" class="btn btn-manage">⚙️ Gestisci Server</a>
             </div>
           </div>
         `;
       } else {
-        cardsHtml += `
-          <div class="guild-card disabled-card">
-            <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(bg.name)}" class="guild-icon">
-            <div class="guild-name">${escapeHtml(bg.name)}</div>
-            <div class="lock-badge" data-i18n="${lockKey}">${escapeHtml(lockReason)}</div>
+        const inviteUrl = getBotInviteUrl(ug.id);
+        availableCardsHtml += `
+          <div class="guild-card invite-card">
+            <div class="guild-badge-status badge-available">Disponibile</div>
+            <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(ug.name)}" class="guild-icon">
+            <div class="guild-name">${escapeHtml(ug.name)}</div>
+            <div class="guild-actions">
+              <a href="${escapeHtml(inviteUrl)}" target="_blank" class="btn btn-invite">➕ Aggiungi Bot</a>
+            </div>
           </div>
         `;
       }
     }
 
-    if (!cardsHtml) {
-      cardsHtml = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.8;">Nessun server disponibile.</p>`;
+    if (!presentCardsHtml) {
+      presentCardsHtml = `<p class="empty-state">Nessun server trovato con J.A.R.V.I.S. già attivo. Aggiungilo a uno dei tuoi server sottostanti!</p>`;
+    }
+
+    if (!availableCardsHtml) {
+      availableCardsHtml = `<p class="empty-state">Tutti i server di cui sei amministratore hanno già J.A.R.V.I.S. aggiunto!</p>`;
     }
 
     renderTemplate(res, "select-guild.html", {
       userBarHtml: getUserBarHtml(user),
-      guildsGridHtml: cardsHtml
+      presentCardsHtml,
+      availableCardsHtml
     });
-  });
-
-  // Classifica Server Dinamica
-  app.get("/leaderboard/:guildId", ensureAuthenticated, ensureInGuild, (req, res) => {
-    renderTemplate(res, "leaderboard.html", {
-      userBarHtml: getUserBarHtml(req.session.user),
-      guildId: req.params.guildId,
-      guildName: req.guild.name
-    });
-  });
-
-  app.get("/leaderboard", ensureAuthenticated, (req, res) => {
-    res.redirect("/select-guild?mode=leaderboard");
   });
 
   // Impostazioni Server Dinamiche
@@ -616,7 +612,7 @@ module.exports = (client) => {
 
       req.session.guilds = guildsResponse.data;
 
-      res.redirect("/select-guild");
+      res.redirect("/");
     } catch (error) {
       console.error("❌ Errore autenticazione callback Discord:", error.response ? error.response.data : error.message);
       res.redirect("/?error=Autenticazione fallita.");
@@ -632,52 +628,7 @@ module.exports = (client) => {
   // API ENDPOINTS (PER-GUILD)
   // ─────────────────────────────────────────────────────────────────────────
 
-  // API Leaderboard
-  app.get("/api/leaderboard/:guildId?", ensureAuthenticated, ensureGuildMemberApi, async (req, res) => {
-    try {
-      const targetGuildId = req.params.guildId || req.query.guildId;
-      if (!targetGuildId) return res.status(400).json({ message: "guildId richiesto." });
-
-      const xpData = await loadXPData(targetGuildId);
-      const guild = client.guilds.cache.get(targetGuildId);
-
-      const leaderboard = [];
-      const userIDs = Object.keys(xpData);
-
-      for (const userID of userIDs) {
-        const xpInfo = xpData[userID];
-        let member = null;
-        if (guild) {
-          member = guild.members.cache.get(userID) || await guild.members.fetch(userID).catch(() => null);
-        }
-
-        if (!member) continue;
-
-        const userObj = member.user;
-        leaderboard.push({
-          id: userID,
-          username: userObj.username,
-          xp: xpInfo.xp,
-          level: xpInfo.level,
-          avatarUrl: userObj.displayAvatarURL({ extension: "png", size: 64 }),
-        });
-      }
-
-      leaderboard.sort((a, b) => b.level !== a.level ? b.level - a.level : b.xp - a.xp);
-
-      const sortedLeaderboard = leaderboard.map((user, index) => ({
-        position: index + 1,
-        ...user,
-      }));
-
-      res.json(sortedLeaderboard);
-    } catch (err) {
-      console.error("Errore recupero classifica API:", err.message);
-      res.status(500).json({ message: "Impossibile recuperare i dati della classifica." });
-    }
-  });
-
-  // API Recupero Impostazioni
+  // API Recupero Impostazioni e Dati Server
   app.get("/api/settings/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
     const targetGuildId = req.params.guildId || req.query.guildId;
     const guild = client.guilds.cache.get(targetGuildId);
@@ -694,27 +645,54 @@ module.exports = (client) => {
       type: c.type,
     }));
 
-    const roles = guild.roles.cache.map((r) => ({
-      id: r.id,
-      name: r.name,
-    }));
+    const roles = guild.roles.cache
+      .filter((r) => r.id !== guild.id) // Escludi @everyone
+      .map((r) => ({
+        id: r.id,
+        name: r.name,
+        color: r.hexColor,
+      }));
+
+    const me = guild.members ? guild.members.me : null;
+    const botInfo = {
+      id: client.user ? client.user.id : "",
+      username: client.user ? client.user.username : "J.A.R.V.I.S.",
+      nickname: me ? me.nickname || "" : "",
+      avatarUrl: client.user ? client.user.displayAvatarURL({ extension: "png", size: 128 }) : "/images/avatar.gif",
+      status: client.user && client.user.presence ? client.user.presence.status : "online",
+      activity: client.user && client.user.presence && client.user.presence.activities && client.user.presence.activities[0]
+        ? {
+            name: client.user.presence.activities[0].name,
+            type: client.user.presence.activities[0].type
+          }
+        : { name: "PH 🖤🧡 | Multi-Server", type: 3 }
+    };
+
+    const stats = {
+      memberCount: guild.memberCount || 0,
+      channelCount: guild.channels.cache.size || 0,
+      roleCount: guild.roles.cache.size || 0
+    };
 
     res.json({
       currentConfig: guildConfig,
       channels,
       roles,
+      botInfo,
+      stats
     });
   });
 
   // API Salvataggio Impostazioni per-server (MongoDB)
   app.post("/api/settings/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
     const targetGuildId = req.params.guildId || req.query.guildId;
-    
+    const guild = client.guilds.cache.get(targetGuildId);
+
     // Whitelist dei campi consentiti per evitare Mass Assignment (ALTA-06)
     const settingsWhitelist = [
-      'welcomeChannelId', 'goodbyeChannelId', 'levelUpChannelId',
-      'totalChannelId', 'usersChannelId', 'botsChannelId',
-      'newMemberRoleId', 'botRoleId', 'inviteLink'
+      'welcomeChannelId', 'goodbyeChannelId', 'welcomeMessageText', 'goodbyeMessageText',
+      'levelUpChannelId', 'totalChannelId', 'usersChannelId', 'botsChannelId',
+      'newMemberRoleId', 'botRoleId', 'inviteLink', 'botNickname', 'features'
     ];
     
     const updatedSettings = {};
@@ -725,12 +703,103 @@ module.exports = (client) => {
     }
 
     try {
+      // Se viene passato botNickname e il bot ha i permessi, aggiorna il nickname nel server
+      if (req.body.botNickname !== undefined && guild && guild.members && guild.members.me) {
+        if (guild.members.me.permissions.has("ChangeNickname")) {
+          await guild.members.me.setNickname(req.body.botNickname.trim() || null).catch(err => {
+            console.warn(`⚠️ Impossibile aggiornare nickname bot su [${targetGuildId}]:`, err.message);
+          });
+        }
+      }
+
       await updateGuildConfig(targetGuildId, updatedSettings);
       console.log(`⚙️ Impostazioni aggiornate per il server [${targetGuildId}] via Web Dashboard!`);
       res.json({ message: "Impostazioni applicate e salvate su MongoDB con successo." });
     } catch (error) {
       console.error("Errore salvataggio impostazioni:", error);
-      res.status(500).json({ message: "Impossibile salvare le impostazioni." });
+      res.status(500).json({ message: "Impossibile salvare le impostazioni: " + error.message });
+    }
+  });
+
+  // API Reaction Roles: Lista per-server
+  app.get("/api/reaction-roles/:guildId", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
+    const targetGuildId = req.params.guildId;
+    try {
+      if (!ReactionRoleModel) return res.json([]);
+      const roles = await ReactionRoleModel.find({ guildId: targetGuildId }).lean();
+      res.json(roles || []);
+    } catch (err) {
+      res.status(500).json({ message: "Errore caricamento reaction roles: " + err.message });
+    }
+  });
+
+  // API Reaction Roles: Aggiunta / Creazione
+  app.post("/api/reaction-roles/:guildId", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
+    const targetGuildId = req.params.guildId;
+    const { channelId, messageId, title, rolesMap } = req.body;
+
+    if (!channelId || !messageId || !rolesMap || typeof rolesMap !== 'object') {
+      return res.status(400).json({ message: "Dati mancanti: channelId, messageId e rolesMap sono obbligatori." });
+    }
+
+    try {
+      await addReactionRole(targetGuildId, channelId, messageId, rolesMap, title || "");
+      
+      // Prova ad aggiungere le reazioni al messaggio Discord se presente
+      const guild = client.guilds.cache.get(targetGuildId);
+      if (guild) {
+        const channel = guild.channels.cache.get(channelId);
+        if (channel && channel.isTextBased()) {
+          const msg = await channel.messages.fetch(messageId).catch(() => null);
+          if (msg) {
+            for (const emoji of Object.keys(rolesMap)) {
+              await msg.react(emoji).catch(() => {});
+            }
+          }
+        }
+      }
+
+      res.json({ message: "Reaction Role salvato con successo." });
+    } catch (err) {
+      res.status(500).json({ message: "Errore salvataggio reaction role: " + err.message });
+    }
+  });
+
+  // API Reaction Roles: Eliminazione
+  app.delete("/api/reaction-roles/:guildId/:id", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
+    const targetGuildId = req.params.guildId;
+    const id = req.params.id;
+    try {
+      if (!ReactionRoleModel) return res.status(500).json({ message: "Modello non disponibile." });
+      
+      const doc = await ReactionRoleModel.findOne({ _id: id, guildId: targetGuildId });
+      if (!doc) {
+        return res.status(404).json({ message: "Reaction Role non trovato." });
+      }
+
+      await removeReactionRole(doc.channelId, doc.messageId);
+      res.json({ message: "Reaction Role eliminato con successo." });
+    } catch (err) {
+      res.status(500).json({ message: "Errore eliminazione reaction role: " + err.message });
+    }
+  });
+
+  // API Aggiornamento Presenza & Attività Bot
+  app.post("/api/bot-presence/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
+    const { activityName, activityType, status } = req.body;
+    if (client && client.user) {
+      try {
+        const typeNum = parseInt(activityType, 10) || 0;
+        client.user.setPresence({
+          activities: activityName ? [{ name: activityName, type: typeNum }] : [],
+          status: status || 'online'
+        });
+        res.json({ message: "Presenza e stato del bot aggiornati con successo." });
+      } catch (err) {
+        res.status(500).json({ message: "Errore aggiornamento presenza: " + err.message });
+      }
+    } else {
+      res.status(503).json({ message: "Bot client non connesso." });
     }
   });
 
