@@ -41,12 +41,19 @@ module.exports = (client) => {
             if (guildConfig.welcomeChannelId) {
                 const welcomeChannel = member.guild.channels.cache.get(guildConfig.welcomeChannelId);
                 if (welcomeChannel) {
+                    const defaultWelcomeText = 'Benvenuto nel server, {user}! Ora siamo in {count} membri!';
+                    const templateText = guildConfig.welcomeMessageText || defaultWelcomeText;
+                    const formattedDesc = templateText
+                        .replace(/{user}/g, `<@${member.id}>`)
+                        .replace(/{server}/g, member.guild.name)
+                        .replace(/{count}/g, member.guild.memberCount);
+
                     const welcomeEmbed = new EmbedBuilder()
                         .setColor(0x3498db)
                         .setTitle(member.user.bot ? '🤖 Nuovo Bot!' : '🎉 Benvenuto!')
                         .setDescription(member.user.bot
                             ? `Un bot si è unito al server: **${member.user.tag}**`
-                            : `Benvenuto nel server, <@${member.id}>!`)
+                            : formattedDesc)
                         .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
                         .addFields({ name: 'Membri totali:', value: `Ora siamo in **${member.guild.memberCount}**!`, inline: true });
 
@@ -72,12 +79,19 @@ module.exports = (client) => {
             if (guildConfig.goodbyeChannelId) {
                 const goodbyeChannel = member.guild.channels.cache.get(guildConfig.goodbyeChannelId);
                 if (goodbyeChannel) {
+                    const defaultGoodbyeText = '{user} ha lasciato il server. Ci mancherai!';
+                    const templateText = guildConfig.goodbyeMessageText || defaultGoodbyeText;
+                    const formattedDesc = templateText
+                        .replace(/{user}/g, `**${member.user.username}**`)
+                        .replace(/{server}/g, member.guild.name)
+                        .replace(/{count}/g, member.guild.memberCount);
+
                     const goodbyeEmbed = new EmbedBuilder()
                         .setColor(0xe74c3c)
                         .setTitle(member.user.bot ? '🤖 Bot rimosso' : '👋 Addio!')
                         .setDescription(member.user.bot
                             ? `Il bot **${member.user.tag}** ha lasciato il server.`
-                            : `**${member.user.tag}** ha lasciato il server. Ci mancherai!`)
+                            : formattedDesc)
                         .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
                         .addFields({ name: 'Membri rimanenti:', value: `Ora siamo in **${member.guild.memberCount}**`, inline: true })
                         .setTimestamp();
