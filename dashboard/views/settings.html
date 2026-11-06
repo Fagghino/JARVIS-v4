@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. - Gestione Server: <%= guildName %></title>
-  
+  <title>J.A.R.V.I.S. - Gestione Server: <%= guildName %>
+  </title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="/css/landing.css">
   <link rel="stylesheet" href="/css/style.css">
 
@@ -188,7 +192,7 @@
     }
 
     .tab-pane.active {
-      display: block;
+      display: block !important;
     }
 
     .pane-header {
@@ -261,7 +265,10 @@
     .cyber-slider {
       position: absolute;
       cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(255, 255, 255, 0.1);
       border: 1.5px solid rgba(255, 255, 255, 0.2);
       border-radius: 30px;
@@ -280,13 +287,13 @@
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .cyber-toggle input:checked + .cyber-slider {
+    .cyber-toggle input:checked+.cyber-slider {
       background: var(--cyan-gradient);
       border-color: var(--cyan-bright);
       box-shadow: 0 0 14px var(--cyan-glow);
     }
 
-    .cyber-toggle input:checked + .cyber-slider:before {
+    .cyber-toggle input:checked+.cyber-slider:before {
       transform: translateX(24px);
       background: #050b14;
     }
@@ -449,7 +456,8 @@
       font-size: 0.88rem;
     }
 
-    .roles-table th, .roles-table td {
+    .roles-table th,
+    .roles-table td {
       padding: 12px 16px;
       text-align: left;
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
@@ -496,7 +504,10 @@
     .role-modal {
       display: none;
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(10px);
       z-index: 2000;
@@ -543,697 +554,769 @@
     }
   </style>
 </head>
+
 <body>
   <%= userBarHtml %>
 
-  <div class="settings-page-wrap">
-    
-    <!-- Title & Navigation Bar -->
-    <div class="guild-title-bar">
-      <div class="guild-title-left">
-        <a href="/select-guild" class="btn-back-nav" title="Torna alla Selezione Server">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </a>
+    <div class="settings-page-wrap">
+
+      <!-- Title & Navigation Bar -->
+      <div class="guild-title-bar">
+        <div class="guild-title-left">
+          <a href="/select-guild" class="btn-back-nav" title="Torna alla Selezione Server">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <div>
+            <h1 class="guild-heading-name">
+              <%= guildName %>
+            </h1>
+            <div class="guild-sub">Pannello di Controllo</div>
+          </div>
+        </div>
         <div>
-          <h1 class="guild-heading-name"><%= guildName %></h1>
-          <div class="guild-sub">Pannello di Controllo e Configurazione Cloud MongoDB</div>
+          <a href="/select-guild" class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;">
+            ← I Miei Server
+          </a>
         </div>
       </div>
-      <div>
-        <a href="/select-guild" class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;">
-          ← I Miei Server
-        </a>
+
+      <!-- Alert Box -->
+      <div id="toastAlert" class="toast-alert"></div>
+
+      <!-- Loading State -->
+      <div id="settingsLoader" class="loader" style="padding: 60px 0; text-align: center;">
+        <div class="spinner" style="margin: 0 auto 16px auto;"></div>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Caricamento configurazioni e moduli da MongoDB Cloud...
+        </p>
       </div>
-    </div>
 
-    <!-- Alert Box -->
-    <div id="toastAlert" class="toast-alert"></div>
+      <!-- Main Two-Column Layout -->
+      <div id="settingsLayout" class="settings-layout" style="display: none;">
 
-    <!-- Loading State -->
-    <div id="settingsLoader" class="loader" style="padding: 60px 0; text-align: center;">
-      <div class="spinner" style="margin: 0 auto 16px auto;"></div>
-      <p style="color: var(--text-muted); font-size: 0.95rem;">Caricamento configurazioni e moduli da MongoDB Cloud...</p>
-    </div>
-
-    <!-- Main Two-Column Layout -->
-    <div id="settingsLayout" class="settings-layout" style="display: none;">
-      
-      <!-- Barra Laterale (Sidebar) -->
-      <aside class="settings-sidebar">
-        <div class="sidebar-menu">
-          <button class="sidebar-btn active" onclick="switchSettingsTab('tab-recap', this)">
-            <span class="tab-icon">📊</span>
-            <span>Dashboard & Recap</span>
-          </button>
-          <button class="sidebar-btn" onclick="switchSettingsTab('tab-bot', this)">
-            <span class="tab-icon">🤖</span>
-            <span>Personalizza Bot</span>
-          </button>
-          <button class="sidebar-btn" onclick="switchSettingsTab('tab-welcome', this)">
-            <span class="tab-icon">👋</span>
-            <span>Benvenuto & Addio</span>
-          </button>
-          <button class="sidebar-btn" onclick="switchSettingsTab('tab-roles', this)">
-            <span class="tab-icon">🎭</span>
-            <span>Reaction Roles</span>
-          </button>
-          <button class="sidebar-btn" onclick="switchSettingsTab('tab-counters', this)">
-            <span class="tab-icon">📈</span>
-            <span>Contatori Vocali</span>
-          </button>
-          <button class="sidebar-btn" onclick="switchSettingsTab('tab-levels', this)">
-            <span class="tab-icon">🏆</span>
-            <span>Livelli & XP</span>
-          </button>
-        </div>
-
-        <div class="sidebar-footer-box">
-          <button id="btnSyncMembers" class="btn-sync-sidebar">
-            <span>🔄</span>
-            <span>Sincronizza Membri</span>
-          </button>
-        </div>
-      </aside>
-
-      <!-- Area Contenuti (Main Panel) -->
-      <main class="settings-main">
-        <form id="masterSettingsForm">
-          
-          <!-- ================================================================
-               TAB 1: DASHBOARD & RECAP
-               ================================================================ -->
-          <div class="tab-pane active" id="tab-recap">
-            <div class="pane-header">
-              <div>
-                <h2 class="pane-title"><span>📊</span> Dashboard Server</h2>
-                <div class="pane-desc">Riepilogo delle statistiche della community e stato dei moduli J.A.R.V.I.S.</div>
-              </div>
-            </div>
-
-            <div class="recap-stats-grid">
-              <div class="recap-stat-card">
-                <div class="recap-stat-label">Membri Totali</div>
-                <div class="recap-stat-val" id="statMembersCount">0</div>
-              </div>
-              <div class="recap-stat-card">
-                <div class="recap-stat-label">Canali Rilevati</div>
-                <div class="recap-stat-val" id="statChannelsCount">0</div>
-              </div>
-              <div class="recap-stat-card">
-                <div class="recap-stat-label">Ruoli Configurati</div>
-                <div class="recap-stat-val" id="statRolesCount">0</div>
-              </div>
-              <div class="recap-stat-card">
-                <div class="recap-stat-label">Stato Bot</div>
-                <div class="recap-stat-val" style="color: #00e676; font-size: 1.15rem;">
-                  <span>🟢</span> Operativo
-                </div>
-              </div>
-            </div>
-
-            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
-              <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">⚡ Panoramica Moduli Attivi</h3>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;" id="modulesQuickRecap">
-                <!-- Generato dinamicamente via JS -->
-              </div>
-            </div>
-          </div>
-
-          <!-- ================================================================
-               TAB 2: PERSONALIZZAZIONE BOT
-               ================================================================ -->
-          <div class="tab-pane" id="tab-bot">
-            <div class="pane-header">
-              <div>
-                <h2 class="pane-title"><span>🤖</span> Personalizzazione Bot</h2>
-                <div class="pane-desc">Modifica l'identità visiva e le informazioni di presenza di J.A.R.V.I.S.</div>
-              </div>
-            </div>
-
-            <div class="form-row" style="margin-bottom: 24px;">
-              <div class="form-group">
-                <label class="form-label" for="botNickname">Nickname Bot per questo Server</label>
-                <input type="text" id="botNickname" name="botNickname" class="form-control" placeholder="Es. J.A.R.V.I.S. Assistant">
-                <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
-                  Cambia il nome visualizzato dal bot all'interno di questo server.
-                </span>
-              </div>
-            </div>
-
-            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
-              <h3 style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 14px;">📡 Stato di Attività & Presenza Globale</h3>
-              
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label" for="botActivityType">Tipo Attività</label>
-                  <select id="botActivityType" class="form-control">
-                    <option value="0">🎮 Sta giocando a</option>
-                    <option value="2">🎧 Sta ascoltando</option>
-                    <option value="3" selected>👁️ Sta guardando</option>
-                    <option value="5">🏆 Compete in</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="botActivityStatus">Stato Presenza</label>
-                  <select id="botActivityStatus" class="form-control">
-                    <option value="online">🟢 Online</option>
-                    <option value="idle">🟡 Assente (Idle)</option>
-                    <option value="dnd">🔴 Non disturbare (DND)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="botActivityName">Testo Attività</label>
-                <input type="text" id="botActivityName" class="form-control" placeholder="Es. PH 🖤🧡 | Multi-Server">
-              </div>
-
-              <button type="button" id="btnUpdatePresence" class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 18px;">
-                🔄 Applica Presenza Bot
-              </button>
-            </div>
-          </div>
-
-          <!-- ================================================================
-               TAB 3: BENVENUTO & ADDIO
-               ================================================================ -->
-          <div class="tab-pane" id="tab-welcome">
-            <div class="pane-header">
-              <div>
-                <h2 class="pane-title"><span>👋</span> Messaggi di Benvenuto & Addio</h2>
-                <div class="pane-desc">Accogli i nuovi membri e saluta chi lascia la community con annunci Embed dedicati.</div>
-              </div>
-            </div>
-
-            <!-- Slider Toggle Switch Master -->
-            <div class="feature-switch-bar">
-              <div class="switch-label-wrap">
-                <span style="font-size: 1.4rem;">👋</span>
-                <div>
-                  <div class="switch-title">Modulo Benvenuto & Addio</div>
-                  <div class="switch-sub">Attiva o disattiva l'invio automatico dei messaggi di benvenuto e ruoli.</div>
-                </div>
-              </div>
-              <label class="cyber-toggle">
-                <input type="checkbox" id="featureWelcomeEnabled" name="featureWelcomeEnabled" checked>
-                <span class="cyber-slider"></span>
-              </label>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="welcomeChannelId">Canale Benvenuto</label>
-                <select id="welcomeChannelId" name="welcomeChannelId" class="form-control text-channel-select"></select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="goodbyeChannelId">Canale Addio</label>
-                <select id="goodbyeChannelId" name="goodbyeChannelId" class="form-control text-channel-select"></select>
-              </div>
-            </div>
-
-            <!-- Testo Benvenuto Personalizzato -->
-            <div class="form-group">
-              <div class="textarea-header">
-                <label class="form-label" for="welcomeMessageText" style="margin-bottom: 0;">Testo Embed di Benvenuto</label>
-                <button type="button" class="btn-reset-text" onclick="resetWelcomeText()">
-                  🔄 Ripristina Default
-                </button>
-              </div>
-              <textarea id="welcomeMessageText" name="welcomeMessageText" class="form-control"></textarea>
-              <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
-                Variabili supportate: <code>{user}</code> (menziona l'utente), <code>{server}</code> (nome server), <code>{count}</code> (numero membri).
-              </span>
-            </div>
-
-            <!-- Testo Addio Personalizzato -->
-            <div class="form-group">
-              <div class="textarea-header">
-                <label class="form-label" for="goodbyeMessageText" style="margin-bottom: 0;">Testo Embed di Addio</label>
-                <button type="button" class="btn-reset-text" onclick="resetGoodbyeText()">
-                  🔄 Ripristina Default
-                </button>
-              </div>
-              <textarea id="goodbyeMessageText" name="goodbyeMessageText" class="form-control"></textarea>
-              <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
-                Variabili supportate: <code>{user}</code>, <code>{server}</code>, <code>{count}</code>.
-              </span>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="newMemberRoleId">Ruolo Automatico Nuovi Membri</label>
-                <select id="newMemberRoleId" name="newMemberRoleId" class="form-control role-select"></select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="botRoleId">Ruolo Automatico per i Bot</label>
-                <select id="botRoleId" name="botRoleId" class="form-control role-select"></select>
-              </div>
-            </div>
-
-            <div class="embed-badge-note">
-              <span style="font-size: 1.2rem;">ℹ️</span>
-              <div>
-                <strong>Formato Embed Grafico Discord Nativio:</strong> I messaggi di benvenuto e addio vengono sempre recapitati tramite box Embed Discord formattati con avatar dell'utente e contatore membri ad alta definizione.
-              </div>
-            </div>
-          </div>
-
-          <!-- ================================================================
-               TAB 4: REACTION ROLES (EMOJI)
-               ================================================================ -->
-          <div class="tab-pane" id="tab-roles">
-            <div class="pane-header">
-              <div>
-                <h2 class="pane-title"><span>🎭</span> Reaction Roles</h2>
-                <div class="pane-desc">Assegna ruoli automaticamente quando gli utenti cliccano su un'emoji sotto un messaggio.</div>
-              </div>
-              <button type="button" class="btn btn-secondary" onclick="openNewRoleModal()" style="font-size: 0.85rem; padding: 8px 16px;">
-                ➕ Aggiungi Reaction Role
-              </button>
-            </div>
-
-            <!-- Slider Toggle Switch Master -->
-            <div class="feature-switch-bar">
-              <div class="switch-label-wrap">
-                <span style="font-size: 1.4rem;">🎭</span>
-                <div>
-                  <div class="switch-title">Modulo Reaction Roles</div>
-                  <div class="switch-sub">Abilita o disabilita l'ascolto delle reazioni per l'assegnazione ruoli.</div>
-                </div>
-              </div>
-              <label class="cyber-toggle">
-                <input type="checkbox" id="featureReactionRolesEnabled" name="featureReactionRolesEnabled" checked>
-                <span class="cyber-slider"></span>
-              </label>
-            </div>
-
-            <div id="rolesListContainer">
-              <p style="color: var(--text-muted); font-size: 0.9rem;">Caricamento reaction roles configurati...</p>
-            </div>
-          </div>
-
-          <!-- ================================================================
-               TAB 5: CONTATORI VOCALI
-               ================================================================ -->
-          <div class="tab-pane" id="tab-counters">
-            <div class="pane-header">
-              <div>
-                <h2 class="pane-title"><span>📈</span> Canali Vocali Statistiche</h2>
-                <div class="pane-desc">Canali vocali bloccati che mostrano il conteggio aggiornato dei membri in tempo reale.</div>
-              </div>
-            </div>
-
-            <!-- Slider Toggle Switch Master -->
-            <div class="feature-switch-bar">
-              <div class="switch-label-wrap">
-                <span style="font-size: 1.4rem;">📈</span>
-                <div>
-                  <div class="switch-title">Modulo Contatori Vocali</div>
-                  <div class="switch-sub">Abilita l'aggiornamento automatico dei canali statistica del server.</div>
-                </div>
-              </div>
-              <label class="cyber-toggle">
-                <input type="checkbox" id="featureCounterEnabled" name="featureCounterEnabled" checked>
-                <span class="cyber-slider"></span>
-              </label>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="totalChannelId">Canale Contatore Membri Totali</label>
-              <select id="totalChannelId" name="totalChannelId" class="form-control voice-channel-select"></select>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="usersChannelId">Canale Contatore Utenti (Umani)</label>
-                <select id="usersChannelId" name="usersChannelId" class="form-control voice-channel-select"></select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="botsChannelId">Canale Contatore Bot</label>
-                <select id="botsChannelId" name="botsChannelId" class="form-control voice-channel-select"></select>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================================================================
-               TAB 6: LIVELLI & XP
-               ================================================================ -->
-          <div class="tab-pane" id="tab-levels">
-            <div class="pane-header">
-              <div>
-                <h2 class="pane-title"><span>🏆</span> Livelli & XP</h2>
-                <div class="pane-desc">Configura il sistema di progressione attività testuale e vocale del server.</div>
-              </div>
-            </div>
-
-            <!-- Slider Toggle Switch Master -->
-            <div class="feature-switch-bar">
-              <div class="switch-label-wrap">
-                <span style="font-size: 1.4rem;">🏆</span>
-                <div>
-                  <div class="switch-title">Modulo Livelli & XP</div>
-                  <div class="switch-sub">Assegna punti esperienza per messaggi e canali vocali.</div>
-                </div>
-              </div>
-              <label class="cyber-toggle">
-                <input type="checkbox" id="featureXpEnabled" name="featureXpEnabled" checked>
-                <span class="cyber-slider"></span>
-              </label>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="levelUpChannelId">Canale Notifiche Level Up</label>
-              <select id="levelUpChannelId" name="levelUpChannelId" class="form-control text-channel-select"></select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="inviteLink">Link di Invito Ufficiale del Server</label>
-              <input type="url" id="inviteLink" name="inviteLink" class="form-control" placeholder="https://discord.gg/...">
-            </div>
-          </div>
-
-          <!-- Barra di Salvataggio Master Inferiore -->
-          <div class="save-bar-bottom">
-            <button type="submit" id="btnMasterSave" class="btn-master-save">
-              <span>💾</span>
-              <span>Salva Impostazioni Server</span>
+        <!-- Barra Laterale (Sidebar) -->
+        <aside class="settings-sidebar">
+          <div class="sidebar-menu">
+            <button type="button" class="sidebar-btn active" data-tab="tab-recap"
+              onclick="switchSettingsTab('tab-recap', this)">
+              <span class="tab-icon">📊</span>
+              <span>Dashboard & Recap</span>
+            </button>
+            <button type="button" class="sidebar-btn" data-tab="tab-bot" onclick="switchSettingsTab('tab-bot', this)">
+              <span class="tab-icon">🤖</span>
+              <span>Personalizza Bot</span>
+            </button>
+            <button type="button" class="sidebar-btn" data-tab="tab-welcome"
+              onclick="switchSettingsTab('tab-welcome', this)">
+              <span class="tab-icon">👋</span>
+              <span>Benvenuto & Addio</span>
+            </button>
+            <button type="button" class="sidebar-btn" data-tab="tab-roles"
+              onclick="switchSettingsTab('tab-roles', this)">
+              <span class="tab-icon">🎭</span>
+              <span>Reaction Roles</span>
+            </button>
+            <button type="button" class="sidebar-btn" data-tab="tab-counters"
+              onclick="switchSettingsTab('tab-counters', this)">
+              <span class="tab-icon">📈</span>
+              <span>Contatori Vocali</span>
+            </button>
+            <button type="button" class="sidebar-btn" data-tab="tab-levels"
+              onclick="switchSettingsTab('tab-levels', this)">
+              <span class="tab-icon">🏆</span>
+              <span>Livelli & XP</span>
             </button>
           </div>
 
-        </form>
-      </main>
+          <div class="sidebar-footer-box">
+            <button type="button" id="btnSyncMembers" class="btn-sync-sidebar">
+              <span>🔄</span>
+              <span>Sincronizza Membri</span>
+            </button>
+          </div>
+        </aside>
+
+        <!-- Area Contenuti (Main Panel) -->
+        <main class="settings-main">
+          <form id="masterSettingsForm">
+
+            <!-- ================================================================
+               TAB 1: DASHBOARD & RECAP
+               ================================================================ -->
+            <div class="tab-pane active" id="tab-recap">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>📊</span> Dashboard Server</h2>
+                  <div class="pane-desc">Riepilogo delle statistiche della community e stato dei moduli J.A.R.V.I.S.
+                  </div>
+                </div>
+              </div>
+
+              <div class="recap-stats-grid">
+                <div class="recap-stat-card">
+                  <div class="recap-stat-label">Membri Totali</div>
+                  <div class="recap-stat-val" id="statMembersCount">0</div>
+                </div>
+                <div class="recap-stat-card">
+                  <div class="recap-stat-label">Canali Rilevati</div>
+                  <div class="recap-stat-val" id="statChannelsCount">0</div>
+                </div>
+                <div class="recap-stat-card">
+                  <div class="recap-stat-label">Ruoli Configurati</div>
+                  <div class="recap-stat-val" id="statRolesCount">0</div>
+                </div>
+                <div class="recap-stat-card">
+                  <div class="recap-stat-label">Stato Bot</div>
+                  <div class="recap-stat-val" style="color: #00e676; font-size: 1.15rem;">
+                    <span>🟢</span> Operativo
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px;">⚡ Panoramica Moduli
+                  Attivi</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;"
+                  id="modulesQuickRecap">
+                  <!-- Generato dinamicamente via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- ================================================================
+               TAB 2: PERSONALIZZAZIONE BOT
+               ================================================================ -->
+            <div class="tab-pane" id="tab-bot">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>🤖</span> Personalizzazione Bot</h2>
+                  <div class="pane-desc">Modifica l'identità visiva e le informazioni di presenza di J.A.R.V.I.S.</div>
+                </div>
+              </div>
+
+              <div class="form-row" style="margin-bottom: 24px;">
+                <div class="form-group">
+                  <label class="form-label" for="botNickname">Nickname Bot per questo Server</label>
+                  <input type="text" id="botNickname" name="botNickname" class="form-control"
+                    placeholder="Es. J.A.R.V.I.S. Assistant">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
+                    Cambia il nome visualizzato dal bot all'interno di questo server.
+                  </span>
+                </div>
+              </div>
+
+              <div
+                style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+                <h3 style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 14px;">📡 Stato di Attività &
+                  Presenza Globale</h3>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="botActivityType">Tipo Attività</label>
+                    <select id="botActivityType" class="form-control">
+                      <option value="0">🎮 Sta giocando a</option>
+                      <option value="2">🎧 Sta ascoltando</option>
+                      <option value="3" selected>👁️ Sta guardando</option>
+                      <option value="5">🏆 Compete in</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="botActivityStatus">Stato Presenza</label>
+                    <select id="botActivityStatus" class="form-control">
+                      <option value="online">🟢 Online</option>
+                      <option value="idle">🟡 Assente (Idle)</option>
+                      <option value="dnd">🔴 Non disturbare (DND)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="botActivityName">Testo Attività</label>
+                  <input type="text" id="botActivityName" class="form-control" placeholder="Es. PH 🖤🧡 | Multi-Server">
+                </div>
+
+                <button type="button" id="btnUpdatePresence" class="btn btn-secondary"
+                  style="font-size: 0.85rem; padding: 8px 18px;">
+                  🔄 Applica Presenza Bot
+                </button>
+              </div>
+            </div>
+
+            <!-- ================================================================
+               TAB 3: BENVENUTO & ADDIO
+               ================================================================ -->
+            <div class="tab-pane" id="tab-welcome">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>👋</span> Messaggi di Benvenuto & Addio</h2>
+                  <div class="pane-desc">Accogli i nuovi membri e saluta chi lascia la community con annunci Embed
+                    dedicati.</div>
+                </div>
+              </div>
+
+              <!-- Slider Toggle Switch Master -->
+              <div class="feature-switch-bar">
+                <div class="switch-label-wrap">
+                  <span style="font-size: 1.4rem;">👋</span>
+                  <div>
+                    <div class="switch-title">Modulo Benvenuto & Addio</div>
+                    <div class="switch-sub">Attiva o disattiva l'invio automatico dei messaggi di benvenuto e ruoli.
+                    </div>
+                  </div>
+                </div>
+                <label class="cyber-toggle">
+                  <input type="checkbox" id="featureWelcomeEnabled" name="featureWelcomeEnabled" checked>
+                  <span class="cyber-slider"></span>
+                </label>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="welcomeChannelId">Canale Benvenuto</label>
+                  <select id="welcomeChannelId" name="welcomeChannelId"
+                    class="form-control text-channel-select"></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="goodbyeChannelId">Canale Addio</label>
+                  <select id="goodbyeChannelId" name="goodbyeChannelId"
+                    class="form-control text-channel-select"></select>
+                </div>
+              </div>
+
+              <!-- Testo Benvenuto Personalizzato -->
+              <div class="form-group">
+                <div class="textarea-header">
+                  <label class="form-label" for="welcomeMessageText" style="margin-bottom: 0;">Testo Embed di
+                    Benvenuto</label>
+                  <button type="button" id="btnResetWelcomeText" class="btn-reset-text" onclick="resetWelcomeText()">
+                    🔄 Ripristina Default
+                  </button>
+                </div>
+                <textarea id="welcomeMessageText" name="welcomeMessageText" class="form-control"></textarea>
+                <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
+                  Variabili supportate: <code>{user}</code> (menziona l'utente), <code>{server}</code> (nome server),
+                  <code>{count}</code> (numero membri).
+                </span>
+              </div>
+
+              <!-- Testo Addio Personalizzato -->
+              <div class="form-group">
+                <div class="textarea-header">
+                  <label class="form-label" for="goodbyeMessageText" style="margin-bottom: 0;">Testo Embed di
+                    Addio</label>
+                  <button type="button" id="btnResetGoodbyeText" class="btn-reset-text" onclick="resetGoodbyeText()">
+                    🔄 Ripristina Default
+                  </button>
+                </div>
+                <textarea id="goodbyeMessageText" name="goodbyeMessageText" class="form-control"></textarea>
+                <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
+                  Variabili supportate: <code>{user}</code>, <code>{server}</code>, <code>{count}</code>.
+                </span>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="newMemberRoleId">Ruolo Automatico Nuovi Membri</label>
+                  <select id="newMemberRoleId" name="newMemberRoleId" class="form-control role-select"></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="botRoleId">Ruolo Automatico per i Bot</label>
+                  <select id="botRoleId" name="botRoleId" class="form-control role-select"></select>
+                </div>
+              </div>
+
+              <div class="embed-badge-note">
+                <span style="font-size: 1.2rem;">ℹ️</span>
+                <div>
+                  <strong>Formato Embed Grafico Discord Nativio:</strong> I messaggi di benvenuto e addio vengono sempre
+                  recapitati tramite box Embed Discord formattati con avatar dell'utente e contatore membri ad alta
+                  definizione.
+                </div>
+              </div>
+            </div>
+
+            <!-- ================================================================
+               TAB 4: REACTION ROLES (EMOJI)
+               ================================================================ -->
+            <div class="tab-pane" id="tab-roles">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>🎭</span> Reaction Roles</h2>
+                  <div class="pane-desc">Assegna ruoli automaticamente quando gli utenti cliccano su un'emoji sotto un
+                    messaggio.</div>
+                </div>
+                <button type="button" id="btnOpenNewRoleModal" class="btn btn-secondary" onclick="openNewRoleModal()"
+                  style="font-size: 0.85rem; padding: 8px 16px;">
+                  ➕ Aggiungi Reaction Role
+                </button>
+              </div>
+
+              <!-- Slider Toggle Switch Master -->
+              <div class="feature-switch-bar">
+                <div class="switch-label-wrap">
+                  <span style="font-size: 1.4rem;">🎭</span>
+                  <div>
+                    <div class="switch-title">Modulo Reaction Roles</div>
+                    <div class="switch-sub">Abilita o disabilita l'ascolto delle reazioni per l'assegnazione ruoli.
+                    </div>
+                  </div>
+                </div>
+                <label class="cyber-toggle">
+                  <input type="checkbox" id="featureReactionRolesEnabled" name="featureReactionRolesEnabled" checked>
+                  <span class="cyber-slider"></span>
+                </label>
+              </div>
+
+              <div id="rolesListContainer">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Caricamento reaction roles configurati...</p>
+              </div>
+            </div>
+
+            <!-- ================================================================
+               TAB 5: CONTATORI VOCALI
+               ================================================================ -->
+            <div class="tab-pane" id="tab-counters">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>📈</span> Canali Vocali Statistiche</h2>
+                  <div class="pane-desc">Canali vocali bloccati che mostrano il conteggio aggiornato dei membri in tempo
+                    reale.</div>
+                </div>
+              </div>
+
+              <!-- Slider Toggle Switch Master -->
+              <div class="feature-switch-bar">
+                <div class="switch-label-wrap">
+                  <span style="font-size: 1.4rem;">📈</span>
+                  <div>
+                    <div class="switch-title">Modulo Contatori Vocali</div>
+                    <div class="switch-sub">Abilita l'aggiornamento automatico dei canali statistica del server.</div>
+                  </div>
+                </div>
+                <label class="cyber-toggle">
+                  <input type="checkbox" id="featureCounterEnabled" name="featureCounterEnabled" checked>
+                  <span class="cyber-slider"></span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="totalChannelId">Canale Contatore Membri Totali</label>
+                <select id="totalChannelId" name="totalChannelId" class="form-control voice-channel-select"></select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="usersChannelId">Canale Contatore Utenti (Umani)</label>
+                  <select id="usersChannelId" name="usersChannelId" class="form-control voice-channel-select"></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="botsChannelId">Canale Contatore Bot</label>
+                  <select id="botsChannelId" name="botsChannelId" class="form-control voice-channel-select"></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================================================================
+               TAB 6: LIVELLI & XP
+               ================================================================ -->
+            <div class="tab-pane" id="tab-levels">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>🏆</span> Livelli & XP</h2>
+                  <div class="pane-desc">Configura il sistema di progressione attività testuale e vocale del server.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slider Toggle Switch Master -->
+              <div class="feature-switch-bar">
+                <div class="switch-label-wrap">
+                  <span style="font-size: 1.4rem;">🏆</span>
+                  <div>
+                    <div class="switch-title">Modulo Livelli & XP</div>
+                    <div class="switch-sub">Assegna punti esperienza per messaggi e canali vocali.</div>
+                  </div>
+                </div>
+                <label class="cyber-toggle">
+                  <input type="checkbox" id="featureXpEnabled" name="featureXpEnabled" checked>
+                  <span class="cyber-slider"></span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="levelUpChannelId">Canale Notifiche Level Up</label>
+                <select id="levelUpChannelId" name="levelUpChannelId" class="form-control text-channel-select"></select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inviteLink">Link di Invito Ufficiale del Server</label>
+                <input type="url" id="inviteLink" name="inviteLink" class="form-control"
+                  placeholder="https://discord.gg/...">
+              </div>
+            </div>
+
+            <!-- Barra di Salvataggio Master Inferiore -->
+            <div class="save-bar-bottom">
+              <button type="submit" id="btnMasterSave" class="btn-master-save">
+                <span>💾</span>
+                <span>Salva Impostazioni Server</span>
+              </button>
+            </div>
+
+          </form>
+        </main>
+
+      </div>
 
     </div>
 
-  </div>
-
-  <!-- ================================================================
+    <!-- ================================================================
        MODALE CREAZIONE REACTION ROLE
        ================================================================ -->
-  <div class="role-modal" id="newRoleModal">
-    <div class="role-modal-card">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-        <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff;">➕ Aggiungi Reaction Role</h3>
-        <button type="button" onclick="closeNewRoleModal()" style="background: transparent; border: none; color: #94a3b8; font-size: 1.3rem; cursor: pointer;">✕</button>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="modalRoleChannel">Canale Discord del Messaggio</label>
-        <select id="modalRoleChannel" class="form-control text-channel-select"></select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="modalRoleMsgId">ID Messaggio Discord</label>
-        <input type="text" id="modalRoleMsgId" class="form-control" placeholder="Es. 123456789012345678">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="modalRoleTitle">Titolo / Descrizione (Opzionale)</label>
-        <input type="text" id="modalRoleTitle" class="form-control" placeholder="Es. Ruoli Notifiche Server">
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="modalRoleEmoji">Emoji (es. 🔔 oppure :emoji:)</label>
-          <input type="text" id="modalRoleEmoji" class="form-control" placeholder="🔔">
+    <div class="role-modal" id="newRoleModal">
+      <div class="role-modal-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff;">➕ Aggiungi Reaction Role</h3>
+          <button type="button" id="btnCloseRoleModalIcon" onclick="closeNewRoleModal()"
+            style="background: transparent; border: none; color: #94a3b8; font-size: 1.3rem; cursor: pointer;">✕</button>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="modalRoleSelect">Ruolo da Assegnare</label>
-          <select id="modalRoleSelect" class="form-control role-select"></select>
-        </div>
-      </div>
 
-      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-        <button type="button" class="btn btn-secondary" onclick="closeNewRoleModal()" style="font-size: 0.88rem;">Annulla</button>
-        <button type="button" class="btn-master-save" onclick="saveNewReactionRole()" style="font-size: 0.88rem; padding: 10px 20px;">
-          Salva Regola
-        </button>
+        <div class="form-group">
+          <label class="form-label" for="modalRoleChannel">Canale Discord del Messaggio</label>
+          <select id="modalRoleChannel" class="form-control text-channel-select"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="modalRoleMsgId">ID Messaggio Discord</label>
+          <input type="text" id="modalRoleMsgId" class="form-control" placeholder="Es. 123456789012345678">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="modalRoleTitle">Titolo / Descrizione (Opzionale)</label>
+          <input type="text" id="modalRoleTitle" class="form-control" placeholder="Es. Ruoli Notifiche Server">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="modalRoleEmoji">Emoji (es. 🔔 oppure :emoji:)</label>
+            <input type="text" id="modalRoleEmoji" class="form-control" placeholder="🔔">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="modalRoleSelect">Ruolo da Assegnare</label>
+            <select id="modalRoleSelect" class="form-control role-select"></select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+          <button type="button" id="btnCancelRoleModal" class="btn btn-secondary" onclick="closeNewRoleModal()"
+            style="font-size: 0.88rem;">Annulla</button>
+          <button type="button" id="btnSaveRoleModal" class="btn-master-save" onclick="saveNewReactionRole()"
+            style="font-size: 0.88rem; padding: 10px 20px;">
+            Salva Regola
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- SCRIPT DI CONTROLLO INTERFACCIA -->
-  <script>
-    const currentGuildId = "<%= guildId %>";
+    <!-- SCRIPT DI CONTROLLO INTERFACCIA -->
+    <script>
+      const currentGuildId = "<%= guildId %>";
 
-    const DEFAULT_WELCOME = "Benvenuto nel server, {user}! Ora siamo in {count} membri!";
-    const DEFAULT_GOODBYE = "{user} ha lasciato il server. Ci mancherai!";
+      const DEFAULT_WELCOME = "Benvenuto nel server, {user}! Ora siamo in {count} membri!";
+      const DEFAULT_GOODBYE = "{user} ha lasciato il server. Ci mancherai!";
 
-    let serverChannels = [];
-    let serverRoles = [];
+      let serverChannels = [];
+      let serverRoles = [];
 
-    // Switch tra le schede nella barra laterale
-    function switchSettingsTab(tabId, btn) {
-      document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      // Switch tra le schede nella barra laterale
+      function switchSettingsTab(tabId, btn) {
+        document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
 
-      btn.classList.add('active');
-      const targetPane = document.getElementById(tabId);
-      if (targetPane) {
-        targetPane.classList.add('active');
-      }
-    }
-
-    function resetWelcomeText() {
-      document.getElementById('welcomeMessageText').value = DEFAULT_WELCOME;
-      showToast("Testo di benvenuto ripristinato al default.", "success");
-    }
-
-    function resetGoodbyeText() {
-      document.getElementById('goodbyeMessageText').value = DEFAULT_GOODBYE;
-      showToast("Testo di addio ripristinato al default.", "success");
-    }
-
-    function showToast(msg, type = "success") {
-      const box = document.getElementById("toastAlert");
-      box.textContent = msg;
-      box.className = `toast-alert toast-${type}`;
-      box.style.display = "block";
-      setTimeout(() => {
-        box.style.display = "none";
-      }, 5000);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Caricamento Dati Iniziali
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const res = await fetch(`/api/settings/${currentGuildId}`);
-        if (!res.ok) throw new Error("Impossibile caricare le impostazioni.");
-
-        const data = await res.json();
-        const { currentConfig, channels, roles, botInfo, stats } = data;
-
-        serverChannels = channels || [];
-        serverRoles = roles || [];
-
-        // Popola Statistiche Recap
-        if (stats) {
-          document.getElementById('statMembersCount').textContent = stats.memberCount.toLocaleString();
-          document.getElementById('statChannelsCount').textContent = stats.channelCount;
-          document.getElementById('statRolesCount').textContent = stats.roleCount;
+        if (btn && btn.classList) {
+          btn.classList.add('active');
+        } else {
+          const matchingBtn = document.querySelector(`.sidebar-btn[data-tab="${tabId}"]`);
+          if (matchingBtn) matchingBtn.classList.add('active');
         }
 
-        // Popola Bot Info
-        if (botInfo) {
-          document.getElementById('botNickname').value = botInfo.nickname || "";
-          if (botInfo.activity) {
-            document.getElementById('botActivityName').value = botInfo.activity.name || "";
-            document.getElementById('botActivityType').value = botInfo.activity.type || 0;
-          }
-          if (botInfo.status) {
-            document.getElementById('botActivityStatus').value = botInfo.status;
-          }
+        const targetPane = document.getElementById(tabId);
+        if (targetPane) {
+          targetPane.classList.add('active');
         }
-
-        // Popola Selettori Canali & Ruoli
-        populateSelects();
-
-        // Popola Valori Form
-        document.getElementById("welcomeChannelId").value = currentConfig.welcomeChannelId || "";
-        document.getElementById("goodbyeChannelId").value = currentConfig.goodbyeChannelId || "";
-        document.getElementById("welcomeMessageText").value = currentConfig.welcomeMessageText || DEFAULT_WELCOME;
-        document.getElementById("goodbyeMessageText").value = currentConfig.goodbyeMessageText || DEFAULT_GOODBYE;
-        document.getElementById("newMemberRoleId").value = currentConfig.newMemberRoleId || "";
-        document.getElementById("botRoleId").value = currentConfig.botRoleId || "";
-        document.getElementById("levelUpChannelId").value = currentConfig.levelUpChannelId || "";
-        document.getElementById("totalChannelId").value = currentConfig.totalChannelId || "";
-        document.getElementById("usersChannelId").value = currentConfig.usersChannelId || "";
-        document.getElementById("botsChannelId").value = currentConfig.botsChannelId || "";
-        document.getElementById("inviteLink").value = currentConfig.inviteLink || "";
-
-        // Popola Slider Toggle Switches
-        const feat = currentConfig.features || {};
-        document.getElementById("featureWelcomeEnabled").checked = feat.welcomeEnabled !== false;
-        document.getElementById("featureReactionRolesEnabled").checked = feat.reactionRolesEnabled !== false;
-        document.getElementById("featureCounterEnabled").checked = feat.counterEnabled !== false;
-        document.getElementById("featureXpEnabled").checked = feat.xpEnabled !== false;
-
-        // Render Quick Recap Moduli
-        renderQuickRecap(feat);
-
-        // Carica Reaction Roles
-        await loadReactionRoles();
-
-        document.getElementById("settingsLoader").style.display = "none";
-        document.getElementById("settingsLayout").style.display = "grid";
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById("settingsLoader").innerHTML = `<p style="color: var(--offline)">❌ Errore durante il caricamento delle impostazioni. Verifica che il bot sia online.</p>`;
       }
 
-      // Handler Submit Form Master
-      document.getElementById("masterSettingsForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btnSave = document.getElementById("btnMasterSave");
-        btnSave.disabled = true;
-        btnSave.innerHTML = "<span>💾</span><span>Salvataggio...</span>";
+      function resetWelcomeText() {
+        document.getElementById('welcomeMessageText').value = DEFAULT_WELCOME;
+        showToast("Testo di benvenuto ripristinato al default.", "success");
+      }
 
-        const payload = {
-          welcomeChannelId: document.getElementById("welcomeChannelId").value,
-          goodbyeChannelId: document.getElementById("goodbyeChannelId").value,
-          welcomeMessageText: document.getElementById("welcomeMessageText").value,
-          goodbyeMessageText: document.getElementById("goodbyeMessageText").value,
-          newMemberRoleId: document.getElementById("newMemberRoleId").value,
-          botRoleId: document.getElementById("botRoleId").value,
-          levelUpChannelId: document.getElementById("levelUpChannelId").value,
-          totalChannelId: document.getElementById("totalChannelId").value,
-          usersChannelId: document.getElementById("usersChannelId").value,
-          botsChannelId: document.getElementById("botsChannelId").value,
-          inviteLink: document.getElementById("inviteLink").value,
-          botNickname: document.getElementById("botNickname").value,
-          features: {
-            welcomeEnabled: document.getElementById("featureWelcomeEnabled").checked,
-            reactionRolesEnabled: document.getElementById("featureReactionRolesEnabled").checked,
-            counterEnabled: document.getElementById("featureCounterEnabled").checked,
-            xpEnabled: document.getElementById("featureXpEnabled").checked
-          }
-        };
+      function resetGoodbyeText() {
+        document.getElementById('goodbyeMessageText').value = DEFAULT_GOODBYE;
+        showToast("Testo di addio ripristinato al default.", "success");
+      }
 
-        try {
-          const res = await fetch(`/api/settings/${currentGuildId}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+      function showToast(msg, type = "success") {
+        const box = document.getElementById("toastAlert");
+        box.textContent = msg;
+        box.className = `toast-alert toast-${type}`;
+        box.style.display = "block";
+        setTimeout(() => {
+          box.style.display = "none";
+        }, 5000);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Esponi globalmente le funzioni per inline handlers o chiamate esterne
+      window.switchSettingsTab = switchSettingsTab;
+      window.resetWelcomeText = resetWelcomeText;
+      window.resetGoodbyeText = resetGoodbyeText;
+      window.showToast = showToast;
+      window.openNewRoleModal = openNewRoleModal;
+      window.closeNewRoleModal = closeNewRoleModal;
+      window.saveNewReactionRole = saveNewReactionRole;
+      window.deleteReactionRole = deleteReactionRole;
+
+      // Caricamento Dati Iniziali
+      document.addEventListener("DOMContentLoaded", async () => {
+        // 1. Registra i click listener espliciti per la navigazione delle tab della sidebar
+        document.querySelectorAll('.sidebar-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetTab = btn.getAttribute('data-tab');
+            if (targetTab) {
+              switchSettingsTab(targetTab, btn);
+            }
           });
-          const resData = await res.json();
-          if (res.ok) {
-            showToast("✅ Tutte le impostazioni del server sono state salvate con successo!", "success");
-            renderQuickRecap(payload.features);
-          } else {
-            showToast("❌ Errore durante il salvataggio: " + resData.message, "error");
-          }
-        } catch (err) {
-          showToast("❌ Errore di connessione.", "error");
-        } finally {
-          btnSave.disabled = false;
-          btnSave.innerHTML = "<span>💾</span><span>Salva Impostazioni Server</span>";
-        }
-      });
+        });
 
-      // Handler Aggiornamento Presenza Bot
-      document.getElementById("btnUpdatePresence").addEventListener("click", async () => {
-        const btn = document.getElementById("btnUpdatePresence");
-        btn.disabled = true;
-        btn.textContent = "Applicazione...";
-
-        const payload = {
-          activityName: document.getElementById("botActivityName").value,
-          activityType: document.getElementById("botActivityType").value,
-          status: document.getElementById("botActivityStatus").value
-        };
+        // 2. Registra listener per bottoni modale e reset
+        document.getElementById("btnResetWelcomeText")?.addEventListener("click", resetWelcomeText);
+        document.getElementById("btnResetGoodbyeText")?.addEventListener("click", resetGoodbyeText);
+        document.getElementById("btnOpenNewRoleModal")?.addEventListener("click", openNewRoleModal);
+        document.getElementById("btnCloseRoleModalIcon")?.addEventListener("click", closeNewRoleModal);
+        document.getElementById("btnCancelRoleModal")?.addEventListener("click", closeNewRoleModal);
+        document.getElementById("btnSaveRoleModal")?.addEventListener("click", saveNewReactionRole);
 
         try {
-          const res = await fetch(`/api/bot-presence/${currentGuildId}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+          const res = await fetch(`/api/settings/${currentGuildId}`);
+          if (!res.ok) throw new Error("Impossibile caricare le impostazioni.");
+
+          const data = await res.json();
+          const { currentConfig, channels, roles, botInfo, stats } = data;
+
+          serverChannels = channels || [];
+          serverRoles = roles || [];
+
+          // Popola Statistiche Recap
+          if (stats) {
+            document.getElementById('statMembersCount').textContent = stats.memberCount.toLocaleString();
+            document.getElementById('statChannelsCount').textContent = stats.channelCount;
+            document.getElementById('statRolesCount').textContent = stats.roleCount;
+          }
+
+          // Popola Bot Info
+          if (botInfo) {
+            document.getElementById('botNickname').value = botInfo.nickname || "";
+            if (botInfo.activity) {
+              document.getElementById('botActivityName').value = botInfo.activity.name || "";
+              document.getElementById('botActivityType').value = botInfo.activity.type || 0;
+            }
+            if (botInfo.status) {
+              document.getElementById('botActivityStatus').value = botInfo.status;
+            }
+          }
+
+          // Popola Selettori Canali & Ruoli
+          populateSelects();
+
+          // Popola Valori Form
+          document.getElementById("welcomeChannelId").value = currentConfig.welcomeChannelId || "";
+          document.getElementById("goodbyeChannelId").value = currentConfig.goodbyeChannelId || "";
+          document.getElementById("welcomeMessageText").value = currentConfig.welcomeMessageText || DEFAULT_WELCOME;
+          document.getElementById("goodbyeMessageText").value = currentConfig.goodbyeMessageText || DEFAULT_GOODBYE;
+          document.getElementById("newMemberRoleId").value = currentConfig.newMemberRoleId || "";
+          document.getElementById("botRoleId").value = currentConfig.botRoleId || "";
+          document.getElementById("levelUpChannelId").value = currentConfig.levelUpChannelId || "";
+          document.getElementById("totalChannelId").value = currentConfig.totalChannelId || "";
+          document.getElementById("usersChannelId").value = currentConfig.usersChannelId || "";
+          document.getElementById("botsChannelId").value = currentConfig.botsChannelId || "";
+          document.getElementById("inviteLink").value = currentConfig.inviteLink || "";
+
+          // Popola Slider Toggle Switches
+          const feat = currentConfig.features || {};
+          document.getElementById("featureWelcomeEnabled").checked = feat.welcomeEnabled !== false;
+          document.getElementById("featureReactionRolesEnabled").checked = feat.reactionRolesEnabled !== false;
+          document.getElementById("featureCounterEnabled").checked = feat.counterEnabled !== false;
+          document.getElementById("featureXpEnabled").checked = feat.xpEnabled !== false;
+
+          // Render Quick Recap Moduli
+          renderQuickRecap(feat);
+
+          // Carica Reaction Roles
+          await loadReactionRoles();
+
+          document.getElementById("settingsLoader").style.display = "none";
+          document.getElementById("settingsLayout").style.display = "grid";
+
+        } catch (err) {
+          console.error(err);
+          document.getElementById("settingsLoader").innerHTML = `<p style="color: var(--offline)">❌ Errore durante il caricamento delle impostazioni. Verifica che il bot sia online.</p>`;
+        }
+
+        // Handler Submit Form Master
+        document.getElementById("masterSettingsForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btnSave = document.getElementById("btnMasterSave");
+          btnSave.disabled = true;
+          btnSave.innerHTML = "<span>💾</span><span>Salvataggio...</span>";
+
+          const payload = {
+            welcomeChannelId: document.getElementById("welcomeChannelId").value,
+            goodbyeChannelId: document.getElementById("goodbyeChannelId").value,
+            welcomeMessageText: document.getElementById("welcomeMessageText").value,
+            goodbyeMessageText: document.getElementById("goodbyeMessageText").value,
+            newMemberRoleId: document.getElementById("newMemberRoleId").value,
+            botRoleId: document.getElementById("botRoleId").value,
+            levelUpChannelId: document.getElementById("levelUpChannelId").value,
+            totalChannelId: document.getElementById("totalChannelId").value,
+            usersChannelId: document.getElementById("usersChannelId").value,
+            botsChannelId: document.getElementById("botsChannelId").value,
+            inviteLink: document.getElementById("inviteLink").value,
+            botNickname: document.getElementById("botNickname").value,
+            features: {
+              welcomeEnabled: document.getElementById("featureWelcomeEnabled").checked,
+              reactionRolesEnabled: document.getElementById("featureReactionRolesEnabled").checked,
+              counterEnabled: document.getElementById("featureCounterEnabled").checked,
+              xpEnabled: document.getElementById("featureXpEnabled").checked
+            }
+          };
+
+          try {
+            const res = await fetch(`/api/settings/${currentGuildId}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            const resData = await res.json();
+            if (res.ok) {
+              showToast("✅ Tutte le impostazioni del server sono state salvate con successo!", "success");
+              renderQuickRecap(payload.features);
+            } else {
+              showToast("❌ Errore durante il salvataggio: " + resData.message, "error");
+            }
+          } catch (err) {
+            showToast("❌ Errore di connessione.", "error");
+          } finally {
+            btnSave.disabled = false;
+            btnSave.innerHTML = "<span>💾</span><span>Salva Impostazioni Server</span>";
+          }
+        });
+
+        // Handler Aggiornamento Presenza Bot
+        document.getElementById("btnUpdatePresence").addEventListener("click", async () => {
+          const btn = document.getElementById("btnUpdatePresence");
+          btn.disabled = true;
+          btn.textContent = "Applicazione...";
+
+          const payload = {
+            activityName: document.getElementById("botActivityName").value,
+            activityType: document.getElementById("botActivityType").value,
+            status: document.getElementById("botActivityStatus").value
+          };
+
+          try {
+            const res = await fetch(`/api/bot-presence/${currentGuildId}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            const resData = await res.json();
+            if (res.ok) {
+              showToast("✅ Stato e presenza bot applicati con successo!", "success");
+            } else {
+              showToast("❌ " + resData.message, "error");
+            }
+          } catch (err) {
+            showToast("❌ Errore di rete.", "error");
+          } finally {
+            btn.disabled = false;
+            btn.textContent = "🔄 Applica Presenza Bot";
+          }
+        });
+
+        // Handler Sincronizzazione Membri
+        document.getElementById("btnSyncMembers").addEventListener("click", async () => {
+          const btn = document.getElementById("btnSyncMembers");
+          btn.disabled = true;
+          btn.textContent = "Sincronizzazione...";
+
+          try {
+            const res = await fetch(`/api/sync-members/${currentGuildId}`, { method: "POST" });
+            const resData = await res.json();
+            if (res.ok) {
+              showToast(`✅ Sincronizzati ${resData.total || 0} membri su MongoDB Cloud!`, "success");
+            } else {
+              showToast("❌ " + resData.message, "error");
+            }
+          } catch (err) {
+            showToast("❌ Errore sincronizzazione membri.", "error");
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = "<span>🔄</span><span>Sincronizza Membri</span>";
+          }
+        });
+      });
+
+      function populateSelects() {
+        const textChannels = serverChannels.filter(c => c.type === 0);
+        const voiceChannels = serverChannels.filter(c => c.type === 2);
+
+        document.querySelectorAll(".text-channel-select").forEach(sel => {
+          sel.innerHTML = '<option value="">Nessun canale selezionato</option>';
+          textChannels.forEach(ch => {
+            const opt = document.createElement("option");
+            opt.value = ch.id;
+            opt.textContent = `# ${ch.name}`;
+            sel.appendChild(opt);
           });
-          const resData = await res.json();
-          if (res.ok) {
-            showToast("✅ Stato e presenza bot applicati con successo!", "success");
-          } else {
-            showToast("❌ " + resData.message, "error");
-          }
-        } catch (err) {
-          showToast("❌ Errore di rete.", "error");
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "🔄 Applica Presenza Bot";
-        }
-      });
-
-      // Handler Sincronizzazione Membri
-      document.getElementById("btnSyncMembers").addEventListener("click", async () => {
-        const btn = document.getElementById("btnSyncMembers");
-        btn.disabled = true;
-        btn.textContent = "Sincronizzazione...";
-
-        try {
-          const res = await fetch(`/api/sync-members/${currentGuildId}`, { method: "POST" });
-          const resData = await res.json();
-          if (res.ok) {
-            showToast(`✅ Sincronizzati ${resData.total || 0} membri su MongoDB Cloud!`, "success");
-          } else {
-            showToast("❌ " + resData.message, "error");
-          }
-        } catch (err) {
-          showToast("❌ Errore sincronizzazione membri.", "error");
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = "<span>🔄</span><span>Sincronizza Membri</span>";
-        }
-      });
-    });
-
-    function populateSelects() {
-      const textChannels = serverChannels.filter(c => c.type === 0);
-      const voiceChannels = serverChannels.filter(c => c.type === 2);
-
-      document.querySelectorAll(".text-channel-select").forEach(sel => {
-        sel.innerHTML = '<option value="">Nessun canale selezionato</option>';
-        textChannels.forEach(ch => {
-          const opt = document.createElement("option");
-          opt.value = ch.id;
-          opt.textContent = `# ${ch.name}`;
-          sel.appendChild(opt);
         });
-      });
 
-      document.querySelectorAll(".voice-channel-select").forEach(sel => {
-        sel.innerHTML = '<option value="">Nessun canale selezionato</option>';
-        voiceChannels.forEach(ch => {
-          const opt = document.createElement("option");
-          opt.value = ch.id;
-          opt.textContent = `🔊 ${ch.name}`;
-          sel.appendChild(opt);
+        document.querySelectorAll(".voice-channel-select").forEach(sel => {
+          sel.innerHTML = '<option value="">Nessun canale selezionato</option>';
+          voiceChannels.forEach(ch => {
+            const opt = document.createElement("option");
+            opt.value = ch.id;
+            opt.textContent = `🔊 ${ch.name}`;
+            sel.appendChild(opt);
+          });
         });
-      });
 
-      document.querySelectorAll(".role-select").forEach(sel => {
-        sel.innerHTML = '<option value="">Nessun ruolo selezionato</option>';
-        serverRoles.forEach(r => {
-          const opt = document.createElement("option");
-          opt.value = r.id;
-          opt.textContent = `@${r.name}`;
-          sel.appendChild(opt);
+        document.querySelectorAll(".role-select").forEach(sel => {
+          sel.innerHTML = '<option value="">Nessun ruolo selezionato</option>';
+          serverRoles.forEach(r => {
+            const opt = document.createElement("option");
+            opt.value = r.id;
+            opt.textContent = `@${r.name}`;
+            sel.appendChild(opt);
+          });
         });
-      });
-    }
+      }
 
-    function renderQuickRecap(features = {}) {
-      const listEl = document.getElementById("modulesQuickRecap");
-      const modules = [
-        { name: "Benvenuto & Addio", key: "welcomeEnabled", icon: "👋" },
-        { name: "Reaction Roles", key: "reactionRolesEnabled", icon: "🎭" },
-        { name: "Contatori Canali Vocali", key: "counterEnabled", icon: "📈" },
-        { name: "Sistema XP & Livelli", key: "xpEnabled", icon: "🏆" }
-      ];
+      function renderQuickRecap(features = {}) {
+        const listEl = document.getElementById("modulesQuickRecap");
+        const modules = [
+          { name: "Benvenuto & Addio", key: "welcomeEnabled", icon: "👋" },
+          { name: "Reaction Roles", key: "reactionRolesEnabled", icon: "🎭" },
+          { name: "Contatori Canali Vocali", key: "counterEnabled", icon: "📈" },
+          { name: "Sistema XP & Livelli", key: "xpEnabled", icon: "🏆" }
+        ];
 
-      listEl.innerHTML = modules.map(m => {
-        const isEnabled = features[m.key] !== false;
-        return `
+        listEl.innerHTML = modules.map(m => {
+          const isEnabled = features[m.key] !== false;
+          return `
           <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span>${m.icon}</span>
@@ -1244,27 +1327,27 @@
             </span>
           </div>
         `;
-      }).join('');
-    }
+        }).join('');
+      }
 
-    // Reaction Roles Logic
-    async function loadReactionRoles() {
-      const container = document.getElementById("rolesListContainer");
-      try {
-        const res = await fetch(`/api/reaction-roles/${currentGuildId}`);
-        if (!res.ok) throw new Error("Errore recupero reaction roles");
-        const list = await res.json();
+      // Reaction Roles Logic
+      async function loadReactionRoles() {
+        const container = document.getElementById("rolesListContainer");
+        try {
+          const res = await fetch(`/api/reaction-roles/${currentGuildId}`);
+          if (!res.ok) throw new Error("Errore recupero reaction roles");
+          const list = await res.json();
 
-        if (!list || list.length === 0) {
-          container.innerHTML = `
+          if (!list || list.length === 0) {
+            container.innerHTML = `
             <div style="padding: 24px; text-align: center; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; color: var(--text-muted); font-size: 0.88rem;">
               Nessun Reaction Role configurato su questo server. Clicca su "+ Aggiungi Reaction Role" in alto a destra per crearne uno!
             </div>
           `;
-          return;
-        }
+            return;
+          }
 
-        let html = `
+          let html = `
           <table class="roles-table">
             <thead>
               <tr>
@@ -1278,19 +1361,19 @@
             <tbody>
         `;
 
-        list.forEach(item => {
-          const channel = serverChannels.find(c => c.id === item.channelId);
-          const channelName = channel ? `# ${channel.name}` : item.channelId;
+          list.forEach(item => {
+            const channel = serverChannels.find(c => c.id === item.channelId);
+            const channelName = channel ? `# ${channel.name}` : item.channelId;
 
-          let rolesHtml = "";
-          const map = item.rolesMap || {};
-          for (const [emoji, roleId] of Object.entries(map)) {
-            const role = serverRoles.find(r => r.id === roleId);
-            const roleName = role ? `@${role.name}` : roleId;
-            rolesHtml += `<span class="role-badge"><span>${emoji}</span> <span>${roleName}</span></span>`;
-          }
+            let rolesHtml = "";
+            const map = item.rolesMap || {};
+            for (const [emoji, roleId] of Object.entries(map)) {
+              const role = serverRoles.find(r => r.id === roleId);
+              const roleName = role ? `@${role.name}` : roleId;
+              rolesHtml += `<span class="role-badge"><span>${emoji}</span> <span>${roleName}</span></span>`;
+            }
 
-          html += `
+            html += `
             <tr>
               <td><strong style="color: #00d2ff;">${channelName}</strong></td>
               <td><code style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #94a3b8;">${item.messageId}</code></td>
@@ -1303,81 +1386,82 @@
               </td>
             </tr>
           `;
-        });
+          });
 
-        html += `</tbody></table>`;
-        container.innerHTML = html;
+          html += `</tbody></table>`;
+          container.innerHTML = html;
 
-      } catch (err) {
-        console.error(err);
-        container.innerHTML = `<p style="color: #ff5252; font-size: 0.85rem;">Impossibile recuperare i Reaction Roles.</p>`;
-      }
-    }
-
-    function openNewRoleModal() {
-      document.getElementById("newRoleModal").classList.add("open");
-    }
-
-    function closeNewRoleModal() {
-      document.getElementById("newRoleModal").classList.remove("open");
-    }
-
-    async function saveNewReactionRole() {
-      const channelId = document.getElementById("modalRoleChannel").value;
-      const messageId = document.getElementById("modalRoleMsgId").value.trim();
-      const title = document.getElementById("modalRoleTitle").value.trim();
-      const emoji = document.getElementById("modalRoleEmoji").value.trim();
-      const roleId = document.getElementById("modalRoleSelect").value;
-
-      if (!channelId || !messageId || !emoji || !roleId) {
-        alert("Tutti i campi (Canale, ID Messaggio, Emoji e Ruolo) sono obbligatori!");
-        return;
-      }
-
-      const rolesMap = {};
-      rolesMap[emoji] = roleId;
-
-      try {
-        const res = await fetch(`/api/reaction-roles/${currentGuildId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ channelId, messageId, title, rolesMap })
-        });
-        const resData = await res.json();
-        if (res.ok) {
-          closeNewRoleModal();
-          showToast("✅ Reaction Role aggiunto e sincronizzato con successo!", "success");
-          await loadReactionRoles();
-          // Reset campi modale
-          document.getElementById("modalRoleMsgId").value = "";
-          document.getElementById("modalRoleTitle").value = "";
-          document.getElementById("modalRoleEmoji").value = "";
-        } else {
-          alert("❌ " + resData.message);
+        } catch (err) {
+          console.error(err);
+          container.innerHTML = `<p style="color: #ff5252; font-size: 0.85rem;">Impossibile recuperare i Reaction Roles.</p>`;
         }
-      } catch (err) {
-        alert("❌ Errore durante il salvataggio.");
       }
-    }
 
-    async function deleteReactionRole(id) {
-      if (!confirm("Sei sicuro di voler eliminare questa regola di reaction role?")) return;
+      function openNewRoleModal() {
+        document.getElementById("newRoleModal").classList.add("open");
+      }
 
-      try {
-        const res = await fetch(`/api/reaction-roles/${currentGuildId}/${id}`, {
-          method: "DELETE"
-        });
-        const resData = await res.json();
-        if (res.ok) {
-          showToast("✅ Reaction Role rimosso con successo.", "success");
-          await loadReactionRoles();
-        } else {
-          showToast("❌ " + resData.message, "error");
+      function closeNewRoleModal() {
+        document.getElementById("newRoleModal").classList.remove("open");
+      }
+
+      async function saveNewReactionRole() {
+        const channelId = document.getElementById("modalRoleChannel").value;
+        const messageId = document.getElementById("modalRoleMsgId").value.trim();
+        const title = document.getElementById("modalRoleTitle").value.trim();
+        const emoji = document.getElementById("modalRoleEmoji").value.trim();
+        const roleId = document.getElementById("modalRoleSelect").value;
+
+        if (!channelId || !messageId || !emoji || !roleId) {
+          alert("Tutti i campi (Canale, ID Messaggio, Emoji e Ruolo) sono obbligatori!");
+          return;
         }
-      } catch (err) {
-        showToast("❌ Errore durante l'eliminazione.", "error");
+
+        const rolesMap = {};
+        rolesMap[emoji] = roleId;
+
+        try {
+          const res = await fetch(`/api/reaction-roles/${currentGuildId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ channelId, messageId, title, rolesMap })
+          });
+          const resData = await res.json();
+          if (res.ok) {
+            closeNewRoleModal();
+            showToast("✅ Reaction Role aggiunto e sincronizzato con successo!", "success");
+            await loadReactionRoles();
+            // Reset campi modale
+            document.getElementById("modalRoleMsgId").value = "";
+            document.getElementById("modalRoleTitle").value = "";
+            document.getElementById("modalRoleEmoji").value = "";
+          } else {
+            alert("❌ " + resData.message);
+          }
+        } catch (err) {
+          alert("❌ Errore durante il salvataggio.");
+        }
       }
-    }
-  </script>
+
+      async function deleteReactionRole(id) {
+        if (!confirm("Sei sicuro di voler eliminare questa regola di reaction role?")) return;
+
+        try {
+          const res = await fetch(`/api/reaction-roles/${currentGuildId}/${id}`, {
+            method: "DELETE"
+          });
+          const resData = await res.json();
+          if (res.ok) {
+            showToast("✅ Reaction Role rimosso con successo.", "success");
+            await loadReactionRoles();
+          } else {
+            showToast("❌ " + resData.message, "error");
+          }
+        } catch (err) {
+          showToast("❌ Errore durante l'eliminazione.", "error");
+        }
+      }
+    </script>
 </body>
+
 </html>
