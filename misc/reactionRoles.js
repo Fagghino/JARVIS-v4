@@ -7,6 +7,7 @@
 
 const { isDBConnected } = require('./database');
 const ReactionRoleModel = require('../models/ReactionRole');
+const { getGuildConfig } = require('../utils/guildSettings');
 
 /**
  * Carica tutti i dati reaction-role da MongoDB
@@ -136,6 +137,12 @@ function getEmojiKey(reaction) {
 async function handleReactionAdd(reaction, user) {
   if (user.bot) return;
 
+  const guild = reaction.message.guild;
+  if (!guild) return;
+
+  const guildConfig = await getGuildConfig(guild.id);
+  if (guildConfig.features && guildConfig.features.reactionRolesEnabled === false) return;
+
   if (reaction.partial) {
     try { await reaction.fetch(); } catch (err) { return; }
   }
@@ -166,6 +173,12 @@ async function handleReactionAdd(reaction, user) {
  */
 async function handleReactionRemove(reaction, user) {
   if (user.bot) return;
+
+  const guild = reaction.message.guild;
+  if (!guild) return;
+
+  const guildConfig = await getGuildConfig(guild.id);
+  if (guildConfig.features && guildConfig.features.reactionRolesEnabled === false) return;
 
   if (reaction.partial) {
     try { await reaction.fetch(); } catch (err) { return; }
