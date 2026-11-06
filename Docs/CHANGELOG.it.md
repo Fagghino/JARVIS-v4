@@ -5,9 +5,35 @@ Tutte le modifiche rilevanti a questo progetto saranno documentate in questo fil
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.5.4] - 2026-10-29
+## [4.5.4] - 2026-11-06
 
 ### Added
+- **Pannello Impostazioni Server a Sidebar (`dashboard/views/settings.html`)**:
+  - Layout moderno a due colonne con sidebar laterale sticky di navigazione per le 6 sezioni di configurazione: Dashboard & Recap, Personalizzazione Bot, Benvenuto & Addio, Reaction Roles, Contatori Vocali, Livelli & XP.
+  - Implementati interruttori slider toggle ON/OFF per ciascun modulo e funzionalità del bot.
+  - Sezione Personalizzazione Bot con cambio nickname nel server, visualizzatore avatar/banner e gestione presenza/stato (Playing, Watching, Listening, Competing, Online, Idle, DND).
+  - Sezione Benvenuto e Addio con canali dedicati, ruoli automatici per membri e bot, editor di testo personalizzabile con variabili `{user}`, `{server}`, `{count}` e pulsanti di ripristino ai testi di default.
+  - Sezione Reaction Roles con tabella dei messaggi configurati, modale per creare nuove associazioni emoji ➔ ruolo e pulsanti di eliminazione rapida.
+  - Nuove API REST: `GET/POST/DELETE /api/reaction-roles` e `POST /api/bot-presence`.
+- **Rework Selezione Server (`dashboard/views/select-guild.html`)**:
+  - Navbar superiore unificata Glassmorphism con brand e widget profilo utente coerente con la Home.
+  - Divisione dinamica dei server tra Server Attivi (bot presente e configurabile) e Server Disponibili (bot assente ma invitabile con link OAuth2 precompilato).
+
+### Removed
+- **Rimozione Completa Classifica Web**:
+  - Eliminata la vista `dashboard/views/leaderboard.html` e rimosse le relative rotte `GET /leaderboard`, `GET /leaderboard/:guildId` e `GET /api/leaderboard/:guildId?`.
+  - Rimossi i collegamenti e i riferimenti alla classifica server dalla navbar, dal footer e dalla dashboard.
+- **Pulizia Landing Page**:
+  - Rimossa la sezione comparativa e la sezione FAQ per una presentazione più snella e priva di menzioni a bot terzi.
+  - Rimossi gli slider toggle non funzionali e le diciture di anteprima dalle card delle funzionalità.
+
+### Changed
+- **Reindirizzamento Login OAuth2**:
+  - `dashboard/server.js`: Reindirizzamento al completamento dell'accesso alla Home page (`/`) invece della selezione server.
+- **Logica Bot & Database**:
+  - `models/GuildSettings.js` & `utils/guildSettings.js`: Aggiunti campi `welcomeMessageText`, `goodbyeMessageText`, `botNickname` e `reactionRolesEnabled`.
+  - `misc/welcome.js`: Supporto ai template personalizzati di benvenuto e addio con sostituzione variabili `{user}`, `{server}`, `{count}`.
+  - `misc/reactionRoles.js`: Verifica dello stato del modulo `features.reactionRolesEnabled` prima di assegnare o rimuovere ruoli.
 - **Comando Amministratore `/sito`**:
   - `commands/admin/sito.js`: Aggiunto comando slash riservato agli amministratori con verifica permessi (`PermissionFlagsBits.Administrator`), embed informativo e pulsante interattivo con link diretto alla Web Dashboard ufficiale su Render (`https://jarvis-v5-cto5.onrender.com/`).
 - **Asset Grafici Web Dashboard**:
