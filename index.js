@@ -71,7 +71,7 @@ client.once("ready", () => {
   client.user.setPresence({
     activities: [
       {
-        name: "PH 🖤🧡 | Multi-Server",
+        name: "PH 🖤🧡",
         type: 3,
       },
     ],
