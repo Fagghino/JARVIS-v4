@@ -5,9 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.5.4] - 2026-10-29
+## [4.5.4] - 2026-11-06
 
 ### Added
+- **Server Settings Panel with Sidebar (`dashboard/views/settings.html`)**:
+  - Modern two-column layout with a sticky left navigation sidebar for 6 dedicated configuration tabs: Dashboard & Recap, Bot Customization, Welcome & Goodbye, Reaction Roles, Voice Counters, Levels & XP.
+  - Implemented glowing cyber slider toggle switches for every module and feature.
+  - Bot Customization section with per-guild nickname updater, avatar/banner display, and presence/status controller (Playing, Watching, Listening, Competing, Online, Idle, DND).
+  - Welcome & Goodbye section with channel selectors, autoroles for members/bots, customizable embed message editor supporting `{user}`, `{server}`, and `{count}` placeholders with default reset buttons.
+  - Reaction Roles manager with active message rules table, modal for creating new emoji ➔ role pairs, and quick deletion triggers.
+  - New REST API endpoints: `GET/POST/DELETE /api/reaction-roles` and `POST /api/bot-presence`.
+- **Server Selector Redesign (`dashboard/views/select-guild.html`)**:
+  - Unified glassmorphic top navbar matching the homepage brand identity and user account widget.
+  - Dynamic grouping into Active Servers (bot present and configurable) and Available Servers (bot absent but invitable with prefilled OAuth2 links).
+
+### Removed
+- **Complete Web Leaderboard Removal**:
+  - Deleted `dashboard/views/leaderboard.html` and removed routes `GET /leaderboard`, `GET /leaderboard/:guildId`, and `GET /api/leaderboard/:guildId?`.
+  - Removed all leaderboard links and references from navigation bars, footers, and status views.
+- **Landing Page Streamlining**:
+  - Removed the comparison table and FAQ accordion for a cleaner presentation without third-party bot references.
+  - Removed non-functional toggle switches and preview labels from feature cards.
+
+### Changed
+- **OAuth2 Login Flow**:
+  - `dashboard/server.js`: Redirected post-login callback to Home (`/`) instead of `/select-guild`.
+- **Bot Logic & Database**:
+  - `models/GuildSettings.js` & `utils/guildSettings.js`: Added `welcomeMessageText`, `goodbyeMessageText`, `botNickname`, and `reactionRolesEnabled`.
+  - `misc/welcome.js`: Dynamic templating for welcome and goodbye embeds supporting `{user}`, `{server}`, and `{count}` variables.
+  - `misc/reactionRoles.js`: Validates `features.reactionRolesEnabled` state before adding or removing roles.
 - **Admin `/sito` Slash Command**:
   - `commands/admin/sito.js`: Added an administrator-only slash command with permission checks (`PermissionFlagsBits.Administrator`), informational embed, and an interactive button linking directly to the official Render Web Dashboard (`https://jarvis-v5-cto5.onrender.com/`).
 - **Web Dashboard Graphic Assets**:
