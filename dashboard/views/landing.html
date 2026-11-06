@@ -36,7 +36,7 @@
           <!-- Dropdown Mega-Menu a comparsa -->
           <div class="nav-dropdown-menu" id="navDropdownMenu">
             <div class="dropdown-menu-header">
-              <span>Moduli J.A.R.V.I.S. • Clicca per vedere l'anteprima</span>
+              <span>Moduli J.A.R.V.I.S.</span>
             </div>
             <div class="dropdown-grid">
               <div class="dropdown-item" onclick="openFeatureModal('levels')">
@@ -100,8 +100,6 @@
         </li>
 
         <li><a href="#dashboard" class="nav-link">Web Dashboard</a></li>
-        <li><a href="#confronto" class="nav-link">Perché JARVIS</a></li>
-        <li><a href="#faq" class="nav-link">FAQ</a></li>
       </ul>
 
       <!-- SOLO Accedi con Discord in alto a destra (oppure User Bar se autenticato) -->
@@ -224,7 +222,7 @@
         <span class="section-tag">Moduli & Funzionalità</span>
         <h2 class="section-title">Tutto ciò di cui hai bisogno per far crescere il tuo server</h2>
         <p class="section-desc">
-          Moduli potenti, completamente personalizzabili e pronti all'uso con un semplice switch. Clicca su qualsiasi modulo per aprire il menu a comparsa e vedere come funziona in tempo reale.
+          Moduli potenti, completamente personalizzabili e pronti all'uso per gestire e potenziare la tua community su Discord.
         </p>
       </div>
 
@@ -234,18 +232,10 @@
         <div class="plugin-card" onclick="openFeatureModal('levels')">
           <div class="plugin-top">
             <div class="plugin-icon">🏆</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Livelli & XP')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">Livelli & XP</div>
           <div class="plugin-desc">
             Premia l'attività nei canali testuali e vocali con punti XP dinamici, rank card animate e assegnazione automatica di ruoli esclusivi.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
           </div>
         </div>
 
@@ -253,18 +243,10 @@
         <div class="plugin-card" onclick="openFeatureModal('moderation')">
           <div class="plugin-top">
             <div class="plugin-icon">🛡️</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Moderazione')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">Moderazione Avanzata</div>
           <div class="plugin-desc">
             Strumenti di pulizia rapida con /clear, gestione permessi nativa Discord v14 e audit trail protetto contro abusi e spam.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
           </div>
         </div>
 
@@ -272,18 +254,10 @@
         <div class="plugin-card" onclick="openFeatureModal('roles')">
           <div class="plugin-top">
             <div class="plugin-icon">🎭</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Reaction Roles')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">Reaction Roles</div>
           <div class="plugin-desc">
             Permetti ai membri di selezionare i propri ruoli premendo pulsanti interattivi eleganti sotto gli annunci ufficiali.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
           </div>
         </div>
 
@@ -291,18 +265,10 @@
         <div class="plugin-card" onclick="openFeatureModal('welcome')">
           <div class="plugin-top">
             <div class="plugin-icon">👋</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Benvenuto & Addio')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">Benvenuto & Addio</div>
           <div class="plugin-desc">
             Accogli i nuovi membri con banner grafici ad alto impatto, embed personalizzati e menzioni automatiche nei canali predefiniti.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
           </div>
         </div>
 
@@ -310,18 +276,10 @@
         <div class="plugin-card" onclick="openFeatureModal('dashboard')">
           <div class="plugin-top">
             <div class="plugin-icon">🌐</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Web Dashboard')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">Web Dashboard Cloud</div>
           <div class="plugin-desc">
-            Gestisci tutti i server in cui possiedi i permessi da un unico pannello responsive con statistiche, classifiche e switch in tempo reale.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
+            Gestisci tutti i server in cui possiedi i permessi da un unico pannello responsive con statistiche, classifiche e configurazione in tempo reale.
           </div>
         </div>
 
@@ -329,18 +287,10 @@
         <div class="plugin-card" onclick="openFeatureModal('translate')">
           <div class="plugin-top">
             <div class="plugin-icon">🌍</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Traduttore')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">Traduttore Multilingua</div>
           <div class="plugin-desc">
             Traduci istantaneamente qualsiasi messaggio in oltre 100 lingue tramite Google Translate API con il comando /translate.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
           </div>
         </div>
 
@@ -348,18 +298,10 @@
         <div class="plugin-card" onclick="openFeatureModal('counters')">
           <div class="plugin-top">
             <div class="plugin-icon">📈</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Contatori')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">Contatori Canali Vocali</div>
           <div class="plugin-desc">
             Visualizza il numero totale di membri, bot e utenti online direttamente tra i canali della barra laterale di Discord.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
           </div>
         </div>
 
@@ -367,18 +309,10 @@
         <div class="plugin-card" onclick="openFeatureModal('commands')">
           <div class="plugin-top">
             <div class="plugin-icon">⚡</div>
-            <label class="plugin-toggle" onclick="event.stopPropagation()">
-              <input type="checkbox" checked onchange="toggleFeature(this, 'Comandi Slash')">
-              <span class="toggle-slider"></span>
-            </label>
           </div>
           <div class="plugin-name">17 Comandi Slash Registrati</div>
           <div class="plugin-desc">
             Include comandi utility, rank, info bot, comandi admin e il nuovo comando esclusivo /sito per il link rapido alla dashboard.
-          </div>
-          <div class="plugin-footer-action">
-            <span>Guarda come funziona</span>
-            <span class="action-btn">Anteprima Live →</span>
           </div>
         </div>
 
@@ -456,144 +390,7 @@
     </div>
   </section>
 
-  <!-- ==========================================================================
-       CONFRONTO: PERCHÉ J.A.R.V.I.S.
-       ========================================================================== -->
-  <section class="section-compare" id="confronto">
-    <div class="container">
-      
-      <div class="section-header">
-        <span class="section-tag">Confronto Trasparente</span>
-        <h2 class="section-title">Perché scegliere J.A.R.V.I.S. rispetto ad altri bot</h2>
-        <p class="section-desc">
-          Tutte le funzionalità essenziali per la community sbloccate al 100%, senza paywall nascosti o abbonamenti esorbitanti.
-        </p>
-      </div>
 
-      <div class="compare-table-wrapper">
-        <table class="compare-table">
-          <thead>
-            <tr>
-              <th>Funzionalità</th>
-              <th class="col-jarvis">J.A.R.V.I.S. Bot</th>
-              <th>Bot con Paywall</th>
-              <th>Altri Bot Tradizionali</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Prezzo & Funzioni Complete</strong></td>
-              <td class="col-jarvis"><span class="check-yes">✓ 100% Gratuito</span></td>
-              <td><span class="check-no">✗ Limitato (Serve Premium)</span></td>
-              <td><span class="check-no">✗ Abbonamenti mensili</span></td>
-            </tr>
-            <tr>
-              <td><strong>Web Dashboard Multi-Server</strong></td>
-              <td class="col-jarvis"><span class="check-yes">✓ Inclusa con OAuth2</span></td>
-              <td><span class="check-yes">✓ Inclusa</span></td>
-              <td><span class="check-no">✗ Solo comandi testuali</span></td>
-            </tr>
-            <tr>
-              <td><strong>Livelli & Rank Card Personalizzate</strong></td>
-              <td class="col-jarvis"><span class="check-yes">✓ Senza Limiti</span></td>
-              <td><span class="check-no">✗ Blocchi su XP e ruoli</span></td>
-              <td><span class="check-yes">✓ Base</span></td>
-            </tr>
-            <tr>
-              <td><strong>Database MongoDB Atlas Dedicato</strong></td>
-              <td class="col-jarvis"><span class="check-yes">✓ Dati sempre al sicuro</span></td>
-              <td><span class="check-yes">✓ Cloud proprietario</span></td>
-              <td><span class="check-no">✗ File JSON locali fragili</span></td>
-            </tr>
-            <tr>
-              <td><strong>17 Comandi Slash Nativi v14</strong></td>
-              <td class="col-jarvis"><span class="check-yes">✓ Ultimo standard Discord</span></td>
-              <td><span class="check-yes">✓ Standard</span></td>
-              <td><span class="check-no">✗ Vecchi comandi con prefisso !</span></td>
-            </tr>
-            <tr>
-              <td><strong>Privacy & Controllo Completo</strong></td>
-              <td class="col-jarvis"><span class="check-yes">✓ Codice tuo & Zero ads</span></td>
-              <td><span class="check-no">✗ Tracciamento e pubblicità</span></td>
-              <td><span class="check-no">✗ Spesso offline</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       FAQ ACCORDION SECTION
-       ========================================================================== -->
-  <section class="section-faq" id="faq">
-    <div class="container">
-      
-      <div class="section-header">
-        <span class="section-tag">Domande Frequenti</span>
-        <h2 class="section-title">Hai delle domande su J.A.R.V.I.S.?</h2>
-        <p class="section-desc">
-          Ecco le risposte più comuni sulle funzionalità, la configurazione e la sicurezza del bot.
-        </p>
-      </div>
-
-      <div class="faq-list">
-        
-        <div class="faq-item active">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>Come aggiungo J.A.R.V.I.S. al mio server Discord?</span>
-            <span class="faq-icon">+</span>
-          </div>
-          <div class="faq-answer">
-            Ti basta cliccare sul pulsante "Aggiungi a Discord" presente nella schermata iniziale o nel menu. Verrai reindirizzato al portale ufficiale di autorizzazione di Discord dove potrai selezionare il tuo server e approvare i permessi necessari.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>Come funziona il nuovo comando /sito?</span>
-            <span class="faq-icon">+</span>
-          </div>
-          <div class="faq-answer">
-            Il comando <code>/sito</code> è riservato agli amministratori del server. Eseguendolo, il bot risponderà con un embed informativo e un pulsante che porta direttamente a questa Web Dashboard ufficiale (https://jarvis-v5-cto5.onrender.com/).
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>I dati dei livelli e dei membri vengono salvati?</span>
-            <span class="faq-icon">+</span>
-          </div>
-          <div class="faq-answer">
-            Sì! J.A.R.V.I.S. è collegato a un database cloud MongoDB Atlas ad alta affidabilità. Tutti i punti XP, i livelli raggiunti, le configurazioni dei canali e i reaction roles rimangono memorizzati in modo persistente anche dopo i riavvii del server.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>Chi può accedere alla Web Dashboard?</span>
-            <span class="faq-icon">+</span>
-          </div>
-          <div class="faq-answer">
-            L'accesso avviene tramite Discord OAuth2. Tutti gli utenti possono visualizzare le classifiche dei server in cui si trovano, mentre la modifica delle impostazioni e dei canali è riservata esclusivamente ai proprietari e ai membri con permessi di Amministratore o Gestione Server.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            <span>J.A.R.V.I.S. è compatibile con Discord v14?</span>
-            <span class="faq-icon">+</span>
-          </div>
-          <div class="faq-answer">
-            Assolutamente sì. J.A.R.V.I.S. è sviluppato con la libreria più recente discord.js v14.16, supporta comandi slash nativi, pulsanti interattivi, menu a tendina e rispetta gli standard di sicurezza di Discord.
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
 
   <!-- ==========================================================================
        FOOTER
@@ -630,7 +427,6 @@
           <div class="footer-col-title">Piattaforma</div>
           <ul class="footer-links">
             <li><a href="/select-guild">Web Dashboard</a></li>
-            <li><a href="/select-guild?mode=leaderboard">Classifica Server</a></li>
             <li><a href="/dashboard">Stato & Metriche</a></li>
             <li><a href="/auth/login">Accedi con Discord</a></li>
           </ul>
@@ -640,7 +436,6 @@
           <div class="footer-col-title">Info Progetto</div>
           <ul class="footer-links">
             <li><a href="https://github.com/Fagghino/JARVIS-v4" target="_blank">Repository GitHub</a></li>
-            <li><a href="#faq">Domande Frequenti</a></li>
             <li><a href="https://discord.com" target="_blank">Discord API Status</a></li>
             <li><a href="https://onrender.com" target="_blank">Cloud Hosting Render</a></li>
           </ul>
@@ -758,10 +553,7 @@
               </div>
 
               <div class="discord-btn-group">
-                <button class="discord-btn btn-active" onclick="alert('Classifica server aperta con successo!')">
-                  🏆 Visualizza Classifica Completa
-                </button>
-                <button class="discord-btn" onclick="alert('Punti XP attuali: 5,420 • Livello 18')">
+                <button class="discord-btn btn-active" onclick="alert('Punti XP attuali: 5,420 • Livello 18')">
                   📊 Le Mie Statistiche
                 </button>
               </div>
@@ -771,7 +563,7 @@
         highlights: [
           { title: "Guadagno XP Bilanciato", desc: "Punti XP calcolati per chat testuale e canali vocali con cooldown anti-spam." },
           { title: "Ruoli Premio Automatici", desc: "Sblocca ruoli esclusivi automaticamente al raggiungimento di determinati livelli." },
-          { title: "Classifica Web & Discord", desc: "Accessibile sia via comando /classifica che sulla Web Dashboard sincronizzata su MongoDB." }
+          { title: "Comando /classifica", desc: "Accessibile direttamente su Discord con il comando slash dedicato e sincronizzazione su MongoDB." }
         ]
       },
 
@@ -1110,7 +902,7 @@
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="color: #80848e; font-size: 1.1rem;">#</span>
               <span style="font-weight: 700; color: #fff; font-size: 0.9rem;">${data.channel}</span>
-              <span style="color: #80848e; font-size: 0.8rem; border-left: 1px solid #4e5058; padding-left: 10px;">Anteprima Ufficiale Discord v14</span>
+              <span style="color: #80848e; font-size: 0.8rem; border-left: 1px solid #4e5058; padding-left: 10px;">Interfaccia Ufficiale Discord v14</span>
             </div>
             <span style="font-size: 0.75rem; color: #00e676; font-weight: 700;">🟢 DISCORD RUNTIME</span>
           </div>
@@ -1171,22 +963,6 @@
       btn.classList.toggle('btn-active');
       const hasRole = btn.classList.contains('btn-active');
       alert(`${hasRole ? '✅ Ruolo aggiunto:' : '❌ Ruolo rimosso:'} @${roleName}`);
-    }
-
-    // Interactive switch toast
-    function toggleFeature(checkbox, featureName) {
-      const state = checkbox.checked ? 'attivato' : 'disattivato';
-      console.log(`Modulo [${featureName}] ${state}.`);
-    }
-
-    // FAQ Accordion
-    function toggleFaq(el) {
-      const parent = el.parentElement;
-      const isActive = parent.classList.contains('active');
-      document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
-      if (!isActive) {
-        parent.classList.add('active');
-      }
     }
   </script>
 
