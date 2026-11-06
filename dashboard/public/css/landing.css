@@ -789,7 +789,7 @@ body {
   font-size: 0.92rem;
   color: var(--text-muted);
   line-height: 1.5;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   flex-grow: 1;
 }
 
