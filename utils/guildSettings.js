@@ -52,6 +52,13 @@ async function getGuildConfig(guildId) {
       welcomeEnabled: true,
       reactionRolesEnabled: true,
       counterEnabled: true
+    },
+    commands: {
+      flip: true,
+      ping: true,
+      roll: true,
+      serverinfo: true,
+      userinfo: true
     }
   };
 
@@ -65,6 +72,10 @@ async function getGuildConfig(guildId) {
           features: {
             ...config.features,
             ...(dbConfig.features || {})
+          },
+          commands: {
+            ...config.commands,
+            ...(dbConfig.commands || {})
           }
         };
       }
@@ -94,6 +105,10 @@ async function updateGuildConfig(guildId, updatedFields) {
     features: {
       ...(current.features || {}),
       ...(updatedFields.features || {})
+    },
+    commands: {
+      ...(current.commands || {}),
+      ...(updatedFields.commands || {})
     }
   };
 
