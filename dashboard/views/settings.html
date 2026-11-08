@@ -552,6 +552,352 @@
       border: 1px solid rgba(255, 23, 68, 0.35);
       color: #ff5252;
     }
+
+    /* Ottimizzazioni Responsive per Dispositivi Mobile & Tablet */
+    @media (max-width: 768px) {
+      .settings-page-wrap {
+        margin: 16px auto 50px auto;
+        padding: 0 14px;
+      }
+
+      .guild-title-bar {
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 14px;
+      }
+
+      .guild-heading-name {
+        font-size: 1.35rem;
+      }
+
+      .guild-sub {
+        font-size: 0.78rem;
+      }
+
+      .settings-sidebar {
+        position: static;
+        padding: 10px;
+        border-radius: 16px;
+        margin-bottom: 12px;
+      }
+
+      .sidebar-menu {
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 8px;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+      }
+
+      .sidebar-btn {
+        width: auto;
+        flex-shrink: 0;
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+      }
+
+      .sidebar-footer-box {
+        margin-top: 10px;
+        padding-top: 10px;
+      }
+
+      .btn-sync-sidebar {
+        padding: 8px 12px;
+        font-size: 0.78rem;
+      }
+
+      .settings-main {
+        padding: 20px 16px;
+        border-radius: 18px;
+      }
+
+      .pane-header {
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        gap: 10px;
+      }
+
+      .pane-title {
+        font-size: 1.2rem;
+      }
+
+      .pane-desc {
+        font-size: 0.8rem;
+      }
+
+      .recap-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .recap-stat-card {
+        padding: 12px;
+      }
+
+      .recap-stat-val {
+        font-size: 1.25rem;
+      }
+
+      .feature-switch-bar {
+        padding: 12px 14px;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .switch-title {
+        font-size: 0.88rem;
+      }
+
+      .switch-sub {
+        font-size: 0.74rem;
+      }
+
+      .cyber-toggle {
+        flex-shrink: 0;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .save-bar-bottom {
+        margin-top: 24px;
+        padding-top: 16px;
+        justify-content: stretch;
+      }
+
+      .btn-master-save {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 20px;
+        font-size: 0.95rem;
+      }
+
+      #rolesListContainer {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .roles-table {
+        min-width: 520px;
+      }
+
+      .role-modal-card {
+        padding: 20px 16px;
+        margin: 10px;
+      }
+    }
+
+    /* ================================================================
+       CUSTOMIZZATORE PROFILO BOT (AVATAR, BANNER, NICKNAME)
+       ================================================================ */
+    .bot-customizer-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) 1fr;
+      gap: 28px;
+      margin-bottom: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .bot-customizer-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    .bot-profile-card {
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .bot-profile-banner {
+      height: 110px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #00b4d8 150%);
+      background-size: cover;
+      background-position: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .bot-profile-header {
+      padding: 0 18px 16px;
+      position: relative;
+    }
+
+    .bot-profile-avatar-wrap {
+      position: relative;
+      width: 76px;
+      height: 76px;
+      margin-top: -38px;
+      margin-bottom: 10px;
+    }
+
+    .bot-profile-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 4px solid #111827;
+      background: #0f172a;
+      object-fit: cover;
+      display: block;
+      transition: all 0.2s ease;
+    }
+
+    .bot-status-indicator {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #23a55a;
+      border: 3px solid #111827;
+    }
+
+    .bot-profile-names {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .bot-preview-nick {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .discord-badge-bot {
+      background: #5865F2;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .bot-preview-user {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .bot-profile-badges {
+      padding: 12px 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .profile-badge-pill {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .profile-badge-pill.customized {
+      background: rgba(0, 230, 118, 0.12);
+      color: #00e676;
+      border-color: rgba(0, 230, 118, 0.3);
+    }
+
+    .profile-badge-pill.pending {
+      background: rgba(255, 179, 0, 0.15);
+      color: #ffb300;
+      border-color: rgba(255, 179, 0, 0.35);
+    }
+
+    .profile-control-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .profile-control-card:hover {
+      border-color: rgba(0, 180, 216, 0.25);
+    }
+
+    .profile-control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .profile-control-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-reset-item {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset-item:hover {
+      background: rgba(255, 71, 87, 0.15);
+      border-color: rgba(255, 71, 87, 0.4);
+      color: #ff4757;
+    }
+
+    .btn-upload-item {
+      background: rgba(0, 180, 216, 0.12);
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      color: var(--cyan-bright);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-upload-item:hover {
+      background: rgba(0, 180, 216, 0.25);
+      color: #fff;
+    }
   </style>
 </head>
 
@@ -702,18 +1048,103 @@
               <div class="pane-header">
                 <div>
                   <h2 class="pane-title"><span>🤖</span> Personalizzazione Bot</h2>
-                  <div class="pane-desc">Personalizza il nome visualizzato del bot all'interno di questo server.</div>
+                  <div class="pane-desc">Personalizza il nome visualizzato, l'avatar e il banner del bot specificamente per questo server.</div>
                 </div>
               </div>
 
-              <div class="form-row" style="margin-bottom: 24px;">
-                <div class="form-group">
-                  <label class="form-label" for="botNickname">Nickname Bot per questo Server</label>
-                  <input type="text" id="botNickname" name="botNickname" class="form-control"
-                    placeholder="Es. J.A.R.V.I.S. Assistant">
-                  <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
-                    Cambia il nome visualizzato dal bot all'interno di questo server.
+              <div class="bot-customizer-grid">
+                <!-- Colonna Sinistra: Card Anteprima Profilo Discord del Server -->
+                <div>
+                  <label class="form-label" style="margin-bottom: 8px;">Anteprima Profilo in questo Server</label>
+                  <div class="bot-profile-card">
+                    <div class="bot-profile-banner" id="previewCardBanner"></div>
+                    <div class="bot-profile-header">
+                      <div class="bot-profile-avatar-wrap">
+                        <img id="previewCardAvatar" src="/images/avatar.gif" alt="Bot Avatar" class="bot-profile-avatar">
+                        <span class="bot-status-indicator" title="Online"></span>
+                      </div>
+                      <div class="bot-profile-info">
+                        <div class="bot-profile-names">
+                          <span class="bot-preview-nick" id="previewCardNick">J.A.R.V.I.S.</span>
+                          <span class="discord-badge-bot">BOT</span>
+                        </div>
+                        <div class="bot-preview-user" id="previewCardUser">@jarvis</div>
+                      </div>
+                    </div>
+                    <div class="bot-profile-badges">
+                      <span class="profile-badge-pill" id="badgeAvatarType">🌐 Avatar Globale</span>
+                      <span class="profile-badge-pill" id="badgeBannerType">🌐 Nessun Banner</span>
+                    </div>
+                  </div>
+                  <span style="font-size: 0.74rem; color: var(--text-muted); margin-top: 8px; display: block;">
+                    💡 Le modifiche ad avatar, banner e nome configurate in questa scheda saranno applicate <strong>esclusivamente in questo server</strong>.
                   </span>
+                </div>
+
+                <!-- Colonna Destra: Controlli di Configurazione -->
+                <div>
+                  <!-- 1. Nickname del Bot -->
+                  <div class="profile-control-card">
+                    <div class="profile-control-header">
+                      <span class="profile-control-title"><span>🏷️</span> Nickname nel Server</span>
+                      <button type="button" class="btn-reset-item" id="btnResetNickname" title="Ripristina il nome originale di default del bot">
+                        🔄 Reset Nome
+                      </button>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <input type="text" id="botNickname" name="botNickname" class="form-control"
+                        placeholder="Es. J.A.R.V.I.S. Assistant">
+                      <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; display: block;" id="nickStatusHint">
+                        Nome con cui il bot risponderà e interagirà all'interno di questo server.
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- 2. Avatar per questo Server -->
+                  <div class="profile-control-card">
+                    <div class="profile-control-header">
+                      <span class="profile-control-title"><span>🖼️</span> Avatar per questo Server</span>
+                      <button type="button" class="btn-reset-item" id="btnResetAvatar" title="Rimuovi l'avatar personalizzato e ripristina l'icona globale predefinita">
+                        🔄 Reset Avatar
+                      </button>
+                    </div>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+                      Carica un'immagine specifica da visualizzare come icona del bot solo su questo server.
+                    </p>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                      <input type="file" id="botAvatarFile" accept="image/png,image/jpeg,image/webp,image/gif" style="display: none;">
+                      <button type="button" class="btn-upload-item" id="btnChooseAvatar">
+                        <span>📁</span> Scegli Immagine Avatar
+                      </button>
+                      <span id="avatarFileLabel" style="font-size: 0.8rem; color: var(--text-muted);">Nessun file selezionato</span>
+                    </div>
+                    <span style="font-size: 0.74rem; color: var(--text-muted); margin-top: 8px; display: block;">
+                      Formati: PNG, JPG, WebP o GIF (consigliata forma quadrata es. 512x512, max 5 MB).
+                    </span>
+                  </div>
+
+                  <!-- 3. Banner per questo Server -->
+                  <div class="profile-control-card">
+                    <div class="profile-control-header">
+                      <span class="profile-control-title"><span>🎨</span> Banner per questo Server</span>
+                      <button type="button" class="btn-reset-item" id="btnResetBanner" title="Rimuovi il banner personalizzato del server">
+                        🔄 Reset Banner
+                      </button>
+                    </div>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+                      Carica un banner panoramico per personalizzare il profilo del bot in questo server.
+                    </p>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                      <input type="file" id="botBannerFile" accept="image/png,image/jpeg,image/webp,image/gif" style="display: none;">
+                      <button type="button" class="btn-upload-item" id="btnChooseBanner">
+                        <span>📁</span> Scegli Immagine Banner
+                      </button>
+                      <span id="bannerFileLabel" style="font-size: 0.8rem; color: var(--text-muted);">Nessun file selezionato</span>
+                    </div>
+                    <span style="font-size: 0.74rem; color: var(--text-muted); margin-top: 8px; display: block;">
+                      Formati: PNG, JPG, WebP o GIF (consigliato 960x540 o aspect ratio 16:9, max 5 MB). <em>Nota: soggetto a disponibilità/potenziamento server Discord.</em>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1114,6 +1545,122 @@
 
       let serverChannels = [];
       let serverRoles = [];
+      let currentBotInfo = null;
+      let pendingAvatarBase64 = undefined;
+      let pendingBannerBase64 = undefined;
+
+      // Aggiorna l'anteprima in tempo reale della card profilo del bot
+      function updateBotProfilePreview() {
+        if (!currentBotInfo) return;
+
+        const nickInput = document.getElementById("botNickname");
+        const previewNick = document.getElementById("previewCardNick");
+        const previewUser = document.getElementById("previewCardUser");
+        const previewAvatar = document.getElementById("previewCardAvatar");
+        const previewBanner = document.getElementById("previewCardBanner");
+        const badgeAvatar = document.getElementById("badgeAvatarType");
+        const badgeBanner = document.getElementById("badgeBannerType");
+
+        // 1. Nickname / Username
+        const displayNick = (nickInput && nickInput.value.trim()) || currentBotInfo.username || "J.A.R.V.I.S.";
+        if (previewNick) previewNick.textContent = displayNick;
+        if (previewUser) previewUser.textContent = `@${(currentBotInfo.username || "jarvis").toLowerCase()}`;
+
+        // 2. Avatar
+        if (pendingAvatarBase64 !== undefined) {
+          if (pendingAvatarBase64 === null) {
+            if (previewAvatar) previewAvatar.src = currentBotInfo.defaultAvatarUrl;
+            if (badgeAvatar) {
+              badgeAvatar.textContent = "🔄 Reset al default globale";
+              badgeAvatar.className = "profile-badge-pill pending";
+            }
+          } else {
+            if (previewAvatar) previewAvatar.src = pendingAvatarBase64;
+            if (badgeAvatar) {
+              badgeAvatar.textContent = "🟡 Avatar selezionato (da salvare)";
+              badgeAvatar.className = "profile-badge-pill pending";
+            }
+          }
+        } else {
+          if (currentBotInfo.serverAvatarUrl) {
+            if (previewAvatar) previewAvatar.src = currentBotInfo.serverAvatarUrl;
+            if (badgeAvatar) {
+              badgeAvatar.textContent = "🟢 Avatar Server Personalizzato";
+              badgeAvatar.className = "profile-badge-pill customized";
+            }
+          } else {
+            if (previewAvatar) previewAvatar.src = currentBotInfo.defaultAvatarUrl;
+            if (badgeAvatar) {
+              badgeAvatar.textContent = "🌐 Avatar Globale Predefinito";
+              badgeAvatar.className = "profile-badge-pill";
+            }
+          }
+        }
+
+        // 3. Banner
+        if (pendingBannerBase64 !== undefined) {
+          if (pendingBannerBase64 === null) {
+            if (previewBanner) previewBanner.style.backgroundImage = "none";
+            if (badgeBanner) {
+              badgeBanner.textContent = "🔄 Reset banner (rimozione)";
+              badgeBanner.className = "profile-badge-pill pending";
+            }
+          } else {
+            if (previewBanner) previewBanner.style.backgroundImage = `url("${pendingBannerBase64}")`;
+            if (badgeBanner) {
+              badgeBanner.textContent = "🟡 Banner selezionato (da salvare)";
+              badgeBanner.className = "profile-badge-pill pending";
+            }
+          }
+        } else {
+          if (currentBotInfo.serverBannerUrl) {
+            if (previewBanner) previewBanner.style.backgroundImage = `url("${currentBotInfo.serverBannerUrl}")`;
+            if (badgeBanner) {
+              badgeBanner.textContent = "🟢 Banner Server Personalizzato";
+              badgeBanner.className = "profile-badge-pill customized";
+            }
+          } else {
+            if (previewBanner) previewBanner.style.backgroundImage = "none";
+            if (badgeBanner) {
+              badgeBanner.textContent = "🌐 Nessun Banner";
+              badgeBanner.className = "profile-badge-pill";
+            }
+          }
+        }
+      }
+
+      function resetBotNickname() {
+        const input = document.getElementById("botNickname");
+        if (input && currentBotInfo) {
+          input.value = "";
+          updateBotProfilePreview();
+          const hint = document.getElementById("nickStatusHint");
+          if (hint) {
+            hint.innerHTML = `🔄 Nome ripristinato al default del bot (<strong>${currentBotInfo.username}</strong>). Clicca <em>Salva Impostazioni</em> per applicare.`;
+          }
+          showToast(`Nome ripristinato al default: ${currentBotInfo.username}`, "success");
+        }
+      }
+
+      function resetBotAvatar() {
+        pendingAvatarBase64 = null;
+        const fileInput = document.getElementById("botAvatarFile");
+        if (fileInput) fileInput.value = "";
+        const fileLabel = document.getElementById("avatarFileLabel");
+        if (fileLabel) fileLabel.textContent = "Ripristino icona predefinita impostato";
+        updateBotProfilePreview();
+        showToast("Icona avatar del server impostata su Ripristino predefinito.", "success");
+      }
+
+      function resetBotBanner() {
+        pendingBannerBase64 = null;
+        const fileInput = document.getElementById("botBannerFile");
+        if (fileInput) fileInput.value = "";
+        const fileLabel = document.getElementById("bannerFileLabel");
+        if (fileLabel) fileLabel.textContent = "Rimozione banner impostata";
+        updateBotProfilePreview();
+        showToast("Banner del server impostato su Rimozione.", "success");
+      }
 
       // Switch tra le schede nella barra laterale
       function switchSettingsTab(tabId, btn) {
@@ -1185,6 +1732,58 @@
         document.getElementById("btnCancelRoleModal")?.addEventListener("click", closeNewRoleModal);
         document.getElementById("btnSaveRoleModal")?.addEventListener("click", saveNewReactionRole);
 
+        // 3. Listener per personalizzazione bot (Nickname, Avatar, Banner)
+        document.getElementById("botNickname")?.addEventListener("input", updateBotProfilePreview);
+        document.getElementById("btnResetNickname")?.addEventListener("click", resetBotNickname);
+
+        const avatarFileInput = document.getElementById("botAvatarFile");
+        document.getElementById("btnChooseAvatar")?.addEventListener("click", () => {
+          avatarFileInput?.click();
+        });
+        avatarFileInput?.addEventListener("change", (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          if (file.size > 5 * 1024 * 1024) {
+            showToast("L'immagine dell'avatar supera i 5 MB consentiti.", "error");
+            file.value = "";
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            pendingAvatarBase64 = evt.target.result;
+            const fileLabel = document.getElementById("avatarFileLabel");
+            if (fileLabel) fileLabel.textContent = file.name;
+            updateBotProfilePreview();
+            showToast("Nuovo avatar selezionato! Clicca Salva per applicarlo a questo server.", "success");
+          };
+          reader.readAsDataURL(file);
+        });
+        document.getElementById("btnResetAvatar")?.addEventListener("click", resetBotAvatar);
+
+        const bannerFileInput = document.getElementById("botBannerFile");
+        document.getElementById("btnChooseBanner")?.addEventListener("click", () => {
+          bannerFileInput?.click();
+        });
+        bannerFileInput?.addEventListener("change", (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          if (file.size > 5 * 1024 * 1024) {
+            showToast("L'immagine del banner supera i 5 MB consentiti.", "error");
+            file.value = "";
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            pendingBannerBase64 = evt.target.result;
+            const fileLabel = document.getElementById("bannerFileLabel");
+            if (fileLabel) fileLabel.textContent = file.name;
+            updateBotProfilePreview();
+            showToast("Nuovo banner selezionato! Clicca Salva per applicarlo a questo server.", "success");
+          };
+          reader.readAsDataURL(file);
+        });
+        document.getElementById("btnResetBanner")?.addEventListener("click", resetBotBanner);
+
         try {
           const res = await fetch(`/api/settings/${currentGuildId}`);
           if (!res.ok) throw new Error("Impossibile caricare le impostazioni.");
@@ -1204,7 +1803,9 @@
 
           // Popola Bot Info
           if (botInfo) {
+            currentBotInfo = botInfo;
             document.getElementById('botNickname').value = botInfo.nickname || "";
+            updateBotProfilePreview();
           }
 
           // Popola Selettori Canali & Ruoli
@@ -1287,6 +1888,13 @@
             }
           };
 
+          if (pendingAvatarBase64 !== undefined) {
+            payload.botAvatar = pendingAvatarBase64;
+          }
+          if (pendingBannerBase64 !== undefined) {
+            payload.botBanner = pendingBannerBase64;
+          }
+
           try {
             const res = await fetch(`/api/settings/${currentGuildId}`, {
               method: "POST",
@@ -1295,7 +1903,27 @@
             });
             const resData = await res.json();
             if (res.ok) {
-              showToast("✅ Tutte le impostazioni del server sono state salvate con successo!", "success");
+              if (resData.profileNotice) {
+                showToast(`✅ Impostazioni salvate! ${resData.profileNotice}`, "success");
+              } else {
+                showToast("✅ Tutte le impostazioni del server sono state salvate con successo!", "success");
+              }
+              // Aggiorna stato locale dell'avatar e del banner
+              if (currentBotInfo) {
+                if (pendingAvatarBase64 !== undefined) {
+                  currentBotInfo.serverAvatarUrl = pendingAvatarBase64;
+                  pendingAvatarBase64 = undefined;
+                }
+                if (pendingBannerBase64 !== undefined) {
+                  currentBotInfo.serverBannerUrl = pendingBannerBase64;
+                  pendingBannerBase64 = undefined;
+                }
+              }
+              const fileAvatarLabel = document.getElementById("avatarFileLabel");
+              if (fileAvatarLabel) fileAvatarLabel.textContent = "Nessun file selezionato";
+              const fileBannerLabel = document.getElementById("bannerFileLabel");
+              if (fileBannerLabel) fileBannerLabel.textContent = "Nessun file selezionato";
+              updateBotProfilePreview();
               renderQuickRecap(payload.features, payload.commands);
             } else {
               showToast("❌ Errore durante il salvataggio: " + resData.message, "error");
