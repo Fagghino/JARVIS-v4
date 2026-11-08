@@ -5,21 +5,32 @@ Tutte le modifiche rilevanti a questo progetto saranno documentate in questo fil
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.5.4] - 2026-11-06
+## [4.5.4] - 2026-11-08
 
 ### Added
+- **Gestione Comandi per-server (`dashboard/views/settings.html`, `models/GuildSettings.js`, `utils/guildSettings.js`)**:
+  - Nuova scheda **"⚡ Comandi"** nel pannello delle impostazioni con switch toggle Cyber ON/OFF per i comandi slash, suddivisi per categorie:
+    - **Mini-giochi (Games)**: `/flip` (Moneta) e `/roll` (Dadi).
+    - **Informazioni & Utilità**: `/ping`, `/serverinfo` e `/userinfo`.
+  - Verifica in tempo reale in `index.js`: se un comando è disabilitato per quel server, il bot risponde all'utente con un avviso effimero che informa della disattivazione da parte degli amministratori.
+- **Categoria "Altro" nel Pannello Impostazioni (`dashboard/views/settings.html`)**:
+  - Nuova scheda **"⚙️ Altro"** dedicata al link di invito ufficiale del server (`inviteLink`), separata dalla scheda Livelli & XP per una navigazione più pulita.
 - **Pannello Impostazioni Server a Sidebar (`dashboard/views/settings.html`)**:
-  - Layout moderno a due colonne con sidebar laterale sticky di navigazione per le 6 sezioni di configurazione: Dashboard & Recap, Personalizzazione Bot, Benvenuto & Addio, Reaction Roles, Contatori Vocali, Livelli & XP.
+  - Layout moderno a due colonne con sidebar laterale sticky di navigazione (8 sezioni totali: Dashboard & Recap, Personalizza Bot, Benvenuto & Addio, Reaction Roles, Contatori Vocali, Livelli & XP, Comandi, Altro).
   - Implementati interruttori slider toggle ON/OFF per ciascun modulo e funzionalità del bot.
-  - Sezione Personalizzazione Bot con cambio nickname nel server, visualizzatore avatar/banner e gestione presenza/stato (Playing, Watching, Listening, Competing, Online, Idle, DND).
+  - Sezione Personalizzazione Bot con cambio nickname nel server e ripristino della presenza fissa nativa (`PH 🖤🧡`).
   - Sezione Benvenuto e Addio con canali dedicati, ruoli automatici per membri e bot, editor di testo personalizzabile con variabili `{user}`, `{server}`, `{count}` e pulsanti di ripristino ai testi di default.
   - Sezione Reaction Roles con tabella dei messaggi configurati, modale per creare nuove associazioni emoji ➔ ruolo e pulsanti di eliminazione rapida.
-  - Nuove API REST: `GET/POST/DELETE /api/reaction-roles` e `POST /api/bot-presence`.
+  - Nuove API REST: `GET/POST/DELETE /api/reaction-roles`.
 - **Rework Selezione Server (`dashboard/views/select-guild.html`)**:
   - Navbar superiore unificata Glassmorphism con brand e widget profilo utente coerente con la Home.
   - Divisione dinamica dei server tra Server Attivi (bot presente e configurabile) e Server Disponibili (bot assente ma invitabile con link OAuth2 precompilato).
 
 ### Removed
+- **Presenza Bot dal Pannello Impostazioni**:
+  - Rimossa la modifica dell'attività e stato globale del bot dal sito web (`dashboard/views/settings.html` e rotta `POST /api/bot-presence`), mantenendo unicamente la presenza globale standard configurata in `index.js`.
+- **Pulizia Cartella Config**:
+  - Rimossi i file locali obsoleti `config/credentials.json` (Google Cloud Service Account) e `config/atlas-credentials.env` (credenziali ridondanti dell'onboarding CLI MongoDB).
 - **Rimozione Completa Classifica Web**:
   - Eliminata la vista `dashboard/views/leaderboard.html` e rimosse le relative rotte `GET /leaderboard`, `GET /leaderboard/:guildId` e `GET /api/leaderboard/:guildId?`.
   - Rimossi i collegamenti e i riferimenti alla classifica server dalla navbar, dal footer e dalla dashboard.
@@ -28,6 +39,8 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Rimossi gli slider toggle non funzionali e le diciture di anteprima dalle card delle funzionalità.
 
 ### Changed
+- **Allineamento Configurazione Predefinita (`config/config.js`)**:
+  - Aggiunti i valori di default moderni per testi di benvenuto/addio, nickname e comandi.
 - **Reindirizzamento Login OAuth2**:
   - `dashboard/server.js`: Reindirizzamento al completamento dell'accesso alla Home page (`/`) invece della selezione server.
 - **Logica Bot & Database**:
