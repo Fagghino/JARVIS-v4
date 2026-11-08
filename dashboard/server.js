@@ -13,6 +13,7 @@ const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const { Routes } = require("discord.js");
 const { version } = require("../package.json");
 const defaultConfig = require("../config/config.js");
 const { getGuildConfig, updateGuildConfig } = require("../utils/guildSettings.js");
@@ -90,8 +91,8 @@ module.exports = (client) => {
     })
   );
 
-  app.use(express.json({ limit: '10kb' }));
-  app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
   app.use(express.static(path.join(__dirname, "public")));
 
   // Limitatori di richieste (ALTA-03)
@@ -655,11 +656,38 @@ module.exports = (client) => {
       }));
 
     const me = guild.members ? guild.members.me : null;
+    let serverAvatarUrl = null;
+    let serverBannerUrl = null;
+
+    if (me && me.avatar) {
+      serverAvatarUrl = me.avatarURL({ extension: "png", size: 256 });
+    }
+
+    // Tenta di recuperare dettagli avatar e banner per-server del bot via REST
+    try {
+      const memberRaw = await client.rest.get(Routes.guildMember(targetGuildId, client.user.id));
+      if (memberRaw) {
+        if (memberRaw.banner) {
+          serverBannerUrl = client.rest.cdn.guildMemberBanner(targetGuildId, client.user.id, memberRaw.banner, { extension: "png", size: 512 });
+        }
+        if (memberRaw.avatar && !serverAvatarUrl) {
+          serverAvatarUrl = client.rest.cdn.guildMemberAvatar(targetGuildId, client.user.id, memberRaw.avatar, { extension: "png", size: 256 });
+        }
+      }
+    } catch (e) {
+      // Ignora errori non bloccanti nel recupero dettagli REST
+    }
+
+    const defaultAvatarUrl = client.user ? client.user.displayAvatarURL({ extension: "png", size: 256 }) : "/images/avatar.gif";
+
     const botInfo = {
       id: client.user ? client.user.id : "",
       username: client.user ? client.user.username : "J.A.R.V.I.S.",
       nickname: me ? me.nickname || "" : "",
-      avatarUrl: client.user ? client.user.displayAvatarURL({ extension: "png", size: 128 }) : "/images/avatar.gif"
+      defaultAvatarUrl,
+      serverAvatarUrl,
+      avatarUrl: serverAvatarUrl || defaultAvatarUrl,
+      serverBannerUrl: serverBannerUrl || null
     };
 
     const stats = {
@@ -697,18 +725,79 @@ module.exports = (client) => {
     }
 
     try {
-      // Se viene passato botNickname e il bot ha i permessi, aggiorna il nickname nel server
-      if (req.body.botNickname !== undefined && guild && guild.members && guild.members.me) {
-        if (guild.members.me.permissions.has("ChangeNickname")) {
-          await guild.members.me.setNickname(req.body.botNickname.trim() || null).catch(err => {
-            console.warn(`⚠️ Impossibile aggiornare nickname bot su [${targetGuildId}]:`, err.message);
-          });
+      let profileNotice = null;
+
+      // Aggiornamento Profilo Bot nel Server (Nickname, Avatar, Banner per-server)
+      if (guild && guild.members && guild.members.me) {
+        const patchMe = {};
+        let hasProfileChanges = false;
+
+        // 1. Nickname
+        if (req.body.botNickname !== undefined) {
+          const trimmedNick = typeof req.body.botNickname === 'string' ? req.body.botNickname.trim() : '';
+          const currentNick = guild.members.me.nickname || '';
+          if (trimmedNick !== currentNick) {
+            if (guild.members.me.permissions.has("ChangeNickname")) {
+              patchMe.nick = trimmedNick || null;
+              hasProfileChanges = true;
+            } else {
+              profileNotice = "Il bot non ha il permesso 'Cambia Nickname' in questo server.";
+            }
+          }
+        }
+
+        // 2. Avatar (stringa Data URI Base64, oppure null per reset)
+        if (req.body.botAvatar !== undefined) {
+          if (req.body.botAvatar === null) {
+            patchMe.avatar = null;
+            hasProfileChanges = true;
+          } else if (typeof req.body.botAvatar === 'string' && req.body.botAvatar.startsWith('data:image/')) {
+            patchMe.avatar = req.body.botAvatar;
+            hasProfileChanges = true;
+          }
+        }
+
+        // 3. Banner (stringa Data URI Base64, oppure null per reset)
+        if (req.body.botBanner !== undefined) {
+          if (req.body.botBanner === null) {
+            patchMe.banner = null;
+            hasProfileChanges = true;
+          } else if (typeof req.body.botBanner === 'string' && req.body.botBanner.startsWith('data:image/')) {
+            patchMe.banner = req.body.botBanner;
+            hasProfileChanges = true;
+          }
+        }
+
+        if (hasProfileChanges) {
+          try {
+            await client.rest.patch(Routes.guildMember(targetGuildId), { body: patchMe });
+            console.log(`🤖 Profilo bot aggiornato sul server [${targetGuildId}] (nick: ${patchMe.nick !== undefined}, avatar: ${patchMe.avatar !== undefined}, banner: ${patchMe.banner !== undefined})`);
+          } catch (profileErr) {
+            console.warn(`⚠️ Errore aggiornamento profilo bot per [${targetGuildId}]:`, profileErr.message);
+            // Se fallisce per via del banner (richiede Nitro/boost o permessi), riprova applicando nick e avatar
+            if (patchMe.banner !== undefined && (patchMe.avatar !== undefined || patchMe.nick !== undefined)) {
+              const fallbackPatch = {};
+              if (patchMe.nick !== undefined) fallbackPatch.nick = patchMe.nick;
+              if (patchMe.avatar !== undefined) fallbackPatch.avatar = patchMe.avatar;
+              try {
+                await client.rest.patch(Routes.guildMember(targetGuildId), { body: fallbackPatch });
+                profileNotice = "Avatar e nickname salvati con successo. (Nota: Il banner personalizzato richiede requisiti di potenziamento/Nitro sul server Discord).";
+              } catch (fallbackErr) {
+                profileNotice = `Avviso profilo Discord: ${fallbackErr.message}`;
+              }
+            } else {
+              profileNotice = `Avviso profilo Discord: ${profileErr.message}`;
+            }
+          }
         }
       }
 
       await updateGuildConfig(targetGuildId, updatedSettings);
       console.log(`⚙️ Impostazioni aggiornate per il server [${targetGuildId}] via Web Dashboard!`);
-      res.json({ message: "Impostazioni applicate e salvate su MongoDB con successo." });
+      res.json({
+        message: "Impostazioni applicate e salvate su MongoDB con successo.",
+        profileNotice
+      });
     } catch (error) {
       console.error("Errore salvataggio impostazioni:", error);
       res.status(500).json({ message: "Impossibile salvare le impostazioni: " + error.message });
