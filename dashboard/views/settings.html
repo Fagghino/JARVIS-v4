@@ -627,6 +627,16 @@
               <span class="tab-icon">🏆</span>
               <span>Livelli & XP</span>
             </button>
+            <button type="button" class="sidebar-btn" data-tab="tab-commands"
+              onclick="switchSettingsTab('tab-commands', this)">
+              <span class="tab-icon">⚡</span>
+              <span>Comandi</span>
+            </button>
+            <button type="button" class="sidebar-btn" data-tab="tab-other"
+              onclick="switchSettingsTab('tab-other', this)">
+              <span class="tab-icon">⚙️</span>
+              <span>Altro</span>
+            </button>
           </div>
 
           <div class="sidebar-footer-box">
@@ -692,7 +702,7 @@
               <div class="pane-header">
                 <div>
                   <h2 class="pane-title"><span>🤖</span> Personalizzazione Bot</h2>
-                  <div class="pane-desc">Modifica l'identità visiva e le informazioni di presenza di J.A.R.V.I.S.</div>
+                  <div class="pane-desc">Personalizza il nome visualizzato del bot all'interno di questo server.</div>
                 </div>
               </div>
 
@@ -705,42 +715,6 @@
                     Cambia il nome visualizzato dal bot all'interno di questo server.
                   </span>
                 </div>
-              </div>
-
-              <div
-                style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
-                <h3 style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 14px;">📡 Stato di Attività &
-                  Presenza Globale</h3>
-
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label" for="botActivityType">Tipo Attività</label>
-                    <select id="botActivityType" class="form-control">
-                      <option value="0">🎮 Sta giocando a</option>
-                      <option value="2">🎧 Sta ascoltando</option>
-                      <option value="3" selected>👁️ Sta guardando</option>
-                      <option value="5">🏆 Compete in</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="botActivityStatus">Stato Presenza</label>
-                    <select id="botActivityStatus" class="form-control">
-                      <option value="online">🟢 Online</option>
-                      <option value="idle">🟡 Assente (Idle)</option>
-                      <option value="dnd">🔴 Non disturbare (DND)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="botActivityName">Testo Attività</label>
-                  <input type="text" id="botActivityName" class="form-control" placeholder="Es. PH 🖤🧡 | Multi-Server">
-                </div>
-
-                <button type="button" id="btnUpdatePresence" class="btn btn-secondary"
-                  style="font-size: 0.85rem; padding: 8px 18px;">
-                  🔄 Applica Presenza Bot
-                </button>
               </div>
             </div>
 
@@ -949,11 +923,122 @@
                 <label class="form-label" for="levelUpChannelId">Canale Notifiche Level Up</label>
                 <select id="levelUpChannelId" name="levelUpChannelId" class="form-control text-channel-select"></select>
               </div>
+            </div>
+
+            <!-- ================================================================
+               TAB 7: GESTIONE COMANDI
+               ================================================================ -->
+            <div class="tab-pane" id="tab-commands">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>⚡</span> Gestione Comandi</h2>
+                  <div class="pane-desc">Attiva o disattiva i singoli comandi slash del bot per questo server Discord.</div>
+                </div>
+              </div>
+
+              <!-- Categoria Mini-giochi (Games) -->
+              <div style="margin-bottom: 28px;">
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                  <span>🎮</span> Mini-giochi (Games)
+                </h3>
+
+                <div class="feature-switch-bar">
+                  <div class="switch-label-wrap">
+                    <span style="font-size: 1.4rem;">🪙</span>
+                    <div>
+                      <div class="switch-title">/flip (Lancio della Moneta)</div>
+                      <div class="switch-sub">Permette agli utenti di lanciare una moneta per ottenere Testa o Croce.</div>
+                    </div>
+                  </div>
+                  <label class="cyber-toggle">
+                    <input type="checkbox" id="cmd_flip" name="cmd_flip" checked>
+                    <span class="cyber-slider"></span>
+                  </label>
+                </div>
+
+                <div class="feature-switch-bar">
+                  <div class="switch-label-wrap">
+                    <span style="font-size: 1.4rem;">🎲</span>
+                    <div>
+                      <div class="switch-title">/roll (Lancio dei Dadi)</div>
+                      <div class="switch-sub">Permette agli utenti di lanciare uno o più dadi a scelta casuale.</div>
+                    </div>
+                  </div>
+                  <label class="cyber-toggle">
+                    <input type="checkbox" id="cmd_roll" name="cmd_roll" checked>
+                    <span class="cyber-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Categoria Informazioni & Utilità -->
+              <div style="margin-bottom: 16px;">
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                  <span>ℹ️</span> Informazioni & Utilità
+                </h3>
+
+                <div class="feature-switch-bar">
+                  <div class="switch-label-wrap">
+                    <span style="font-size: 1.4rem;">🏓</span>
+                    <div>
+                      <div class="switch-title">/ping (Latenza Bot)</div>
+                      <div class="switch-sub">Mostra il tempo di risposta del bot e la latenza del WebSocket Discord.</div>
+                    </div>
+                  </div>
+                  <label class="cyber-toggle">
+                    <input type="checkbox" id="cmd_ping" name="cmd_ping" checked>
+                    <span class="cyber-slider"></span>
+                  </label>
+                </div>
+
+                <div class="feature-switch-bar">
+                  <div class="switch-label-wrap">
+                    <span style="font-size: 1.4rem;">🏰</span>
+                    <div>
+                      <div class="switch-title">/serverinfo (Informazioni Server)</div>
+                      <div class="switch-sub">Fornisce statistiche dettagliate su canali, membri, ruoli e data di creazione.</div>
+                    </div>
+                  </div>
+                  <label class="cyber-toggle">
+                    <input type="checkbox" id="cmd_serverinfo" name="cmd_serverinfo" checked>
+                    <span class="cyber-slider"></span>
+                  </label>
+                </div>
+
+                <div class="feature-switch-bar">
+                  <div class="switch-label-wrap">
+                    <span style="font-size: 1.4rem;">👤</span>
+                    <div>
+                      <div class="switch-title">/userinfo (Informazioni Utente)</div>
+                      <div class="switch-sub">Visualizza informazioni complete, avatar, badge e ruoli dell'utente specificato.</div>
+                    </div>
+                  </div>
+                  <label class="cyber-toggle">
+                    <input type="checkbox" id="cmd_userinfo" name="cmd_userinfo" checked>
+                    <span class="cyber-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================================================================
+               TAB 8: ALTRO & LINK
+               ================================================================ -->
+            <div class="tab-pane" id="tab-other">
+              <div class="pane-header">
+                <div>
+                  <h2 class="pane-title"><span>⚙️</span> Altro</h2>
+                  <div class="pane-desc">Configurazioni generali aggiuntive e collegamenti del server Discord.</div>
+                </div>
+              </div>
 
               <div class="form-group">
                 <label class="form-label" for="inviteLink">Link di Invito Ufficiale del Server</label>
                 <input type="url" id="inviteLink" name="inviteLink" class="form-control"
                   placeholder="https://discord.gg/...">
+                <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; display: block;">
+                  Utilizzato dal comando <code>/invite</code> e mostrato nelle risposte e negli annunci del bot per invitare nuovi utenti nel server.
+                </span>
               </div>
             </div>
 
@@ -1120,13 +1205,6 @@
           // Popola Bot Info
           if (botInfo) {
             document.getElementById('botNickname').value = botInfo.nickname || "";
-            if (botInfo.activity) {
-              document.getElementById('botActivityName').value = botInfo.activity.name || "";
-              document.getElementById('botActivityType').value = botInfo.activity.type || 0;
-            }
-            if (botInfo.status) {
-              document.getElementById('botActivityStatus').value = botInfo.status;
-            }
           }
 
           // Popola Selettori Canali & Ruoli
@@ -1152,8 +1230,16 @@
           document.getElementById("featureCounterEnabled").checked = feat.counterEnabled !== false;
           document.getElementById("featureXpEnabled").checked = feat.xpEnabled !== false;
 
+          // Popola Slider Toggle Comandi
+          const cmds = currentConfig.commands || {};
+          document.getElementById("cmd_flip").checked = cmds.flip !== false;
+          document.getElementById("cmd_roll").checked = cmds.roll !== false;
+          document.getElementById("cmd_ping").checked = cmds.ping !== false;
+          document.getElementById("cmd_serverinfo").checked = cmds.serverinfo !== false;
+          document.getElementById("cmd_userinfo").checked = cmds.userinfo !== false;
+
           // Render Quick Recap Moduli
-          renderQuickRecap(feat);
+          renderQuickRecap(feat, cmds);
 
           // Carica Reaction Roles
           await loadReactionRoles();
@@ -1191,6 +1277,13 @@
               reactionRolesEnabled: document.getElementById("featureReactionRolesEnabled").checked,
               counterEnabled: document.getElementById("featureCounterEnabled").checked,
               xpEnabled: document.getElementById("featureXpEnabled").checked
+            },
+            commands: {
+              flip: document.getElementById("cmd_flip").checked,
+              roll: document.getElementById("cmd_roll").checked,
+              ping: document.getElementById("cmd_ping").checked,
+              serverinfo: document.getElementById("cmd_serverinfo").checked,
+              userinfo: document.getElementById("cmd_userinfo").checked
             }
           };
 
@@ -1203,7 +1296,7 @@
             const resData = await res.json();
             if (res.ok) {
               showToast("✅ Tutte le impostazioni del server sono state salvate con successo!", "success");
-              renderQuickRecap(payload.features);
+              renderQuickRecap(payload.features, payload.commands);
             } else {
               showToast("❌ Errore durante il salvataggio: " + resData.message, "error");
             }
@@ -1212,38 +1305,6 @@
           } finally {
             btnSave.disabled = false;
             btnSave.innerHTML = "<span>💾</span><span>Salva Impostazioni Server</span>";
-          }
-        });
-
-        // Handler Aggiornamento Presenza Bot
-        document.getElementById("btnUpdatePresence").addEventListener("click", async () => {
-          const btn = document.getElementById("btnUpdatePresence");
-          btn.disabled = true;
-          btn.textContent = "Applicazione...";
-
-          const payload = {
-            activityName: document.getElementById("botActivityName").value,
-            activityType: document.getElementById("botActivityType").value,
-            status: document.getElementById("botActivityStatus").value
-          };
-
-          try {
-            const res = await fetch(`/api/bot-presence/${currentGuildId}`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-            });
-            const resData = await res.json();
-            if (res.ok) {
-              showToast("✅ Stato e presenza bot applicati con successo!", "success");
-            } else {
-              showToast("❌ " + resData.message, "error");
-            }
-          } catch (err) {
-            showToast("❌ Errore di rete.", "error");
-          } finally {
-            btn.disabled = false;
-            btn.textContent = "🔄 Applica Presenza Bot";
           }
         });
 
@@ -1305,7 +1366,7 @@
         });
       }
 
-      function renderQuickRecap(features = {}) {
+      function renderQuickRecap(features = {}, commands = {}) {
         const listEl = document.getElementById("modulesQuickRecap");
         const modules = [
           { name: "Benvenuto & Addio", key: "welcomeEnabled", icon: "👋" },
@@ -1313,6 +1374,9 @@
           { name: "Contatori Canali Vocali", key: "counterEnabled", icon: "📈" },
           { name: "Sistema XP & Livelli", key: "xpEnabled", icon: "🏆" }
         ];
+
+        const cmdList = ['flip', 'ping', 'roll', 'serverinfo', 'userinfo'];
+        const activeCmdsCount = cmdList.filter(c => commands[c] !== false).length;
 
         listEl.innerHTML = modules.map(m => {
           const isEnabled = features[m.key] !== false;
@@ -1327,7 +1391,17 @@
             </span>
           </div>
         `;
-        }).join('');
+        }).join('') + `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>⚡</span>
+              <span style="font-size: 0.88rem; font-weight: 600; color: #fff;">Comandi Slash Attivi</span>
+            </div>
+            <span style="font-size: 0.72rem; font-weight: 700; color: #00d2ff; background: rgba(0,210,255,0.1); padding: 2px 8px; border-radius: 8px;">
+              ${activeCmdsCount} / 5 ATTIVI
+            </span>
+          </div>
+        `;
       }
 
       // Reaction Roles Logic
