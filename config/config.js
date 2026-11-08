@@ -7,7 +7,7 @@
  */
 
 module.exports = {
-  // Impostazioni predefinite per nuovi server (vuote finché l'admin non le configura tramite /set o Dashboard)
+  // Impostazioni predefinite per nuovi server (impostabili dagli admin tramite /set o Dashboard)
   serverId: '',
   inviteLink: '',
   usersChannelId: '',
@@ -15,7 +15,23 @@ module.exports = {
   totalChannelId: '',
   welcomeChannelId: '',
   goodbyeChannelId: '',
+  welcomeMessageText: 'Benvenuto nel server, {user}! Ora siamo in {count} membri!',
+  goodbyeMessageText: '{user} ha lasciato il server. Ci mancherai!',
   levelUpChannelId: '',
   newMemberRoleId: '',
-  botRoleId: ''
+  botRoleId: '',
+  botNickname: '',
+  features: {
+    xpEnabled: true,
+    welcomeEnabled: true,
+    reactionRolesEnabled: true,
+    counterEnabled: true
+  },
+  commands: {
+    flip: true,
+    ping: true,
+    roll: true,
+    serverinfo: true,
+    userinfo: true
+  }
 };
