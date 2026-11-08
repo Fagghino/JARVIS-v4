@@ -19,6 +19,13 @@ const guildSettingsSchema = new mongoose.Schema({
     welcomeEnabled: { type: Boolean, default: true },
     reactionRolesEnabled: { type: Boolean, default: true },
     counterEnabled: { type: Boolean, default: true }
+  },
+  commands: {
+    flip: { type: Boolean, default: true },
+    ping: { type: Boolean, default: true },
+    roll: { type: Boolean, default: true },
+    serverinfo: { type: Boolean, default: true },
+    userinfo: { type: Boolean, default: true }
   }
 }, { timestamps: true });
 
