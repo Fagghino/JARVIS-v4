@@ -659,14 +659,7 @@ module.exports = (client) => {
       id: client.user ? client.user.id : "",
       username: client.user ? client.user.username : "J.A.R.V.I.S.",
       nickname: me ? me.nickname || "" : "",
-      avatarUrl: client.user ? client.user.displayAvatarURL({ extension: "png", size: 128 }) : "/images/avatar.gif",
-      status: client.user && client.user.presence ? client.user.presence.status : "online",
-      activity: client.user && client.user.presence && client.user.presence.activities && client.user.presence.activities[0]
-        ? {
-            name: client.user.presence.activities[0].name,
-            type: client.user.presence.activities[0].type
-          }
-        : { name: "PH 🖤🧡 | Multi-Server", type: 3 }
+      avatarUrl: client.user ? client.user.displayAvatarURL({ extension: "png", size: 128 }) : "/images/avatar.gif"
     };
 
     const stats = {
@@ -693,7 +686,7 @@ module.exports = (client) => {
     const settingsWhitelist = [
       'welcomeChannelId', 'goodbyeChannelId', 'welcomeMessageText', 'goodbyeMessageText',
       'levelUpChannelId', 'totalChannelId', 'usersChannelId', 'botsChannelId',
-      'newMemberRoleId', 'botRoleId', 'inviteLink', 'botNickname', 'features'
+      'newMemberRoleId', 'botRoleId', 'inviteLink', 'botNickname', 'features', 'commands'
     ];
     
     const updatedSettings = {};
@@ -782,25 +775,6 @@ module.exports = (client) => {
       res.json({ message: "Reaction Role eliminato con successo." });
     } catch (err) {
       res.status(500).json({ message: "Errore eliminazione reaction role: " + err.message });
-    }
-  });
-
-  // API Aggiornamento Presenza & Attività Bot
-  app.post("/api/bot-presence/:guildId?", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
-    const { activityName, activityType, status } = req.body;
-    if (client && client.user) {
-      try {
-        const typeNum = parseInt(activityType, 10) || 0;
-        client.user.setPresence({
-          activities: activityName ? [{ name: activityName, type: typeNum }] : [],
-          status: status || 'online'
-        });
-        res.json({ message: "Presenza e stato del bot aggiornati con successo." });
-      } catch (err) {
-        res.status(500).json({ message: "Errore aggiornamento presenza: " + err.message });
-      }
-    } else {
-      res.status(503).json({ message: "Bot client non connesso." });
     }
   });
 
