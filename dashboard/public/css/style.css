@@ -662,10 +662,12 @@ body.light-theme h1 {
   -webkit-text-fill-color: transparent;
 }
 
-@media (max-width: 480px) {
-  .container { padding: 25px 15px; }
+@media (max-width: 768px) {
+  .container { padding: 20px 16px; margin: 16px auto; }
   .grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
-  h1 { font-size: 1.6rem; }
+  h1 { font-size: 1.5rem; }
   .btn-container { flex-direction: column; }
+  .user-bar { padding: 10px 14px; }
+  .banner-wrapper { height: 110px; }
 }
