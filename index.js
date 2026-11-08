@@ -126,6 +126,17 @@ client.on("interactionCreate", async (interaction) => {
     return interaction.reply({ content: cooldownMsg, ephemeral: true });
   }
 
+  // Controllo comandi disabilitati per-server
+  if (interaction.guildId) {
+    const guildConfig = await getGuildConfig(interaction.guildId);
+    if (guildConfig?.commands && guildConfig.commands[interaction.commandName] === false) {
+      return interaction.reply({
+        content: `⚠️ Il comando \`/${interaction.commandName}\` è attualmente disattivato dagli amministratori su questo server.`,
+        ephemeral: true
+      });
+    }
+  }
+
   try {
     await command.execute(interaction);
   } catch (error) {
