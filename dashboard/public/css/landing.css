@@ -1517,5 +1517,32 @@ body {
   .modal-body { padding: 16px; }
   .dropdown-grid { grid-template-columns: 1fr; }
   .pill-top-left, .pill-bottom-right { display: none; }
+
+  /* Navbar Mobile Optimizations */
+  .navbar-inner {
+    padding: 0 14px;
+    gap: 8px;
+  }
+  .brand-title {
+    font-size: 1.15rem;
+  }
+  .brand-badge {
+    display: none;
+  }
+  .nav-user-logged {
+    gap: 6px;
+    padding: 4px 8px;
+  }
+  .nav-user-name {
+    display: none;
+  }
+  .nav-btn-action {
+    padding: 4px 8px;
+    font-size: 0.74rem;
+  }
+  .nav-btn-logout {
+    padding: 4px 6px;
+    font-size: 0.74rem;
+  }
 }
 
