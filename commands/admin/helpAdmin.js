@@ -12,7 +12,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('help_admin')
     .setDescription('Mostra la lista dei comandi admin disponibili')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false),
 
   async execute(interaction) {
     const commands = interaction.client.commands;
@@ -34,7 +35,7 @@ module.exports = {
     const helpEmbed = new EmbedBuilder()
       .setAuthor({
         name: '🤖 Lista comandi Admin',
-        iconURL: 'https://images-ext-1.discordapp.net/external/3QfWnQUqqgQA0mkVqonyML1XgDhI6BAsq8hxumnoSms/%3Fsize%3D1024/https/cdn.discordapp.com/icons/1305900849633169438/68fadb896a1263600b3b320feb558202.webp?format=webp&width=512&height=512',
+        iconURL: interaction.client.user?.displayAvatarURL() || null,
       })
       .setColor(0x3498db)
       .setDescription('Ecco la lista dei comandi admin disponibili e le loro descrizioni.');
