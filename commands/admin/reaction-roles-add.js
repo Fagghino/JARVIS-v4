@@ -19,6 +19,7 @@ module.exports = {
     .setName('reaction-roles-add')
     .setDescription('Aggiunge una coppia emoji/ruolo a un messaggio reaction-role esistente (SOLO ADMIN)')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false)
     .addStringOption(opt =>
       opt.setName('titolo')
         .setDescription('Titolo del messaggio reaction-role da modificare')
