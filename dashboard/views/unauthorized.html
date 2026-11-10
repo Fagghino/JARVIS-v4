@@ -4,23 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JARVIS Bot - Accesso Negato</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/landing.css">
   <link rel="stylesheet" href="/css/style.css">
   <script src="/js/theme-lang.js" defer></script>
+  
+  <style>
+    body {
+      display: block;
+      min-height: 100vh;
+      background-color: var(--bg);
+      padding: 0;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .unauthorized-page-wrap {
+      max-width: 550px;
+      margin: 80px auto;
+      padding: 0 20px;
+    }
+
+    .unauthorized-page-wrap .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
   <%= userBarHtml %>
 
-  <div class="container" style="text-align: center; padding: 40px 20px;">
-    <div style="font-size: 3.5rem; margin-bottom: 15px;">🚫</div>
-    <h1 data-i18n="unauthorizedTitle">Accesso Negato</h1>
-    <p data-i18n="unauthorizedDesc" style="color: var(--text-muted); margin: 15px 0 25px 0; font-size: 1.05rem;">
-      Non fai parte di nessun server Discord in cui il bot JARVIS è attualmente presente.
-    </p>
+  <div class="unauthorized-page-wrap">
+    <div class="container" style="text-align: center; padding: 40px 24px;">
+      <div style="font-size: 3.5rem; margin-bottom: 15px;">🚫</div>
+      <h1 data-i18n="unauthorizedTitle" style="margin-bottom: 12px;">Accesso Negato</h1>
+      <p data-i18n="unauthorizedDesc" style="color: var(--text-muted); margin: 0 0 25px 0; font-size: 1.05rem; line-height: 1.6;">
+        Non fai parte di nessun server Discord in cui il bot JARVIS è attualmente presente.
+      </p>
 
-    <a href="/auth/logout" class="btn" style="display: inline-block; max-width: 250px;" data-i18n="logout">Esci</a>
+      <a href="/auth/logout" class="btn" style="display: inline-block; max-width: 250px;" data-i18n="logout">Esci</a>
+    </div>
   </div>
 </body>
 </html>

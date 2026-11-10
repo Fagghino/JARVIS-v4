@@ -4,91 +4,118 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JARVIS Bot - Dashboard</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/landing.css">
   <link rel="stylesheet" href="/css/style.css">
   <script src="/js/theme-lang.js" defer></script>
+
+  <style>
+    body {
+      display: block;
+      min-height: 100vh;
+      background-color: var(--bg);
+      padding: 0;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .dashboard-page-wrap {
+      max-width: 800px;
+      margin: 40px auto 80px auto;
+      padding: 0 20px;
+    }
+
+    .dashboard-page-wrap .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
   <!-- User Profile Bar -->
   <%= userBarHtml %>
 
-  <div class="container">
-    <div class="banner-wrapper">
-      <img src="/images/banner.png" alt="JARVIS Banner" class="banner-img">
-      <div class="banner-overlay"></div>
-    </div>
+  <div class="dashboard-page-wrap">
+    <div class="container">
+      <div class="banner-wrapper">
+        <img src="/images/banner.png" alt="JARVIS Banner" class="banner-img">
+        <div class="banner-overlay"></div>
+      </div>
 
-    <div class="header">
-      <div class="avatar-container">
-        <%= avatarHtml %>
-        <div class="status-dot <%= statusClass %>"></div>
+      <div class="header">
+        <div class="avatar-container">
+          <%= avatarHtml %>
+          <div class="status-dot <%= statusClass %>"></div>
+        </div>
+        <h1 data-i18n="dashboardTitle">J.A.R.V.I.S. Dashboard</h1>
+        <div class="version"><span data-i18n="botVersionPrefix">Versione Bot v</span><%= version %></div>
       </div>
-      <h1 data-i18n="dashboardTitle">J.A.R.V.I.S. Dashboard</h1>
-      <div class="version"><span data-i18n="botVersionPrefix">Versione Bot v</span><%= version %></div>
-    </div>
-    
-    <div class="grid">
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">🌐</span>
-          <div class="card-label" data-i18n="webServerStatus">Stato Web Server</div>
+      
+      <div class="grid">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🌐</span>
+            <div class="card-label" data-i18n="webServerStatus">Stato Web Server</div>
+          </div>
+          <div class="card-value status-text">
+            <span style="color: var(--online)" data-i18n="activeStatus">🟢 Attivo</span>
+          </div>
         </div>
-        <div class="card-value status-text">
-          <span style="color: var(--online)" data-i18n="activeStatus">🟢 Attivo</span>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🤖</span>
+            <div class="card-label" data-i18n="discordStatus">Connessione Discord</div>
+          </div>
+          <div class="card-value status-text">
+            <%= discordStatusHtml %>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🛡️</span>
+            <div class="card-label" data-i18n="activeServers">Server Attivi</div>
+          </div>
+          <div class="card-value"><%= guildsCount %></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">⚡</span>
+            <div class="card-label" data-i18n="botUptime">Uptime del Bot</div>
+          </div>
+          <div class="card-value"><%= uptimeText %></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">📶</span>
+            <div class="card-label" data-i18n="apiPing">Latenza API (Ping)</div>
+          </div>
+          <div class="card-value"><%= pingText %></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🧠</span>
+            <div class="card-label" data-i18n="memoryUsed">Memoria Utilizzata</div>
+          </div>
+          <div class="card-value"><%= memoryText %></div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">🤖</span>
-          <div class="card-label" data-i18n="discordStatus">Connessione Discord</div>
-        </div>
-        <div class="card-value status-text">
-          <%= discordStatusHtml %>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">🛡️</span>
-          <div class="card-label" data-i18n="activeServers">Server Attivi</div>
-        </div>
-        <div class="card-value"><%= guildsCount %></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">⚡</span>
-          <div class="card-label" data-i18n="botUptime">Uptime del Bot</div>
-        </div>
-        <div class="card-value"><%= uptimeText %></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">📶</span>
-          <div class="card-label" data-i18n="apiPing">Latenza API (Ping)</div>
-        </div>
-        <div class="card-value"><%= pingText %></div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <span class="card-icon">🧠</span>
-          <div class="card-label" data-i18n="memoryUsed">Memoria Utilizzata</div>
-        </div>
-        <div class="card-value"><%= memoryText %></div>
-      </div>
-    </div>
 
-    <!-- Sezioni Avanzate Dinamiche -->
-    <div class="btn-container">
-      <%= settingsBtnHtml %>
-    </div>
-    
-    <div class="footer-info">
-      <p data-i18n="footerInfo">Questo pannello monitora lo stato del bot J.A.R.V.I.S. e la sua connettività in tempo reale verso i server Discord.</p>
-      <div class="tech-badges">
-        <span class="tech-badge">Node.js <%= nodeVersion %></span>
-        <span class="tech-badge">discord.js v<%= discordJsVersion %></span>
-        <span class="tech-badge">Render Platform</span>
+      <!-- Sezioni Avanzate Dinamiche -->
+      <div class="btn-container">
+        <%= settingsBtnHtml %>
+      </div>
+      
+      <div class="footer-info">
+        <p data-i18n="footerInfo">Questo pannello monitora lo stato del bot J.A.R.V.I.S. e la sua connettività in tempo reale verso i server Discord.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Node.js <%= nodeVersion %></span>
+          <span class="tech-badge">discord.js v<%= discordJsVersion %></span>
+          <span class="tech-badge">Render Platform</span>
+        </div>
       </div>
     </div>
   </div>
