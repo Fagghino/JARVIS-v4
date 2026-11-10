@@ -4,32 +4,195 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Classifica XP - <%= guildName %></title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/landing.css">
   <link rel="stylesheet" href="/css/style.css">
   <script src="/js/theme-lang.js" defer></script>
+
+  <style>
+    body {
+      display: block;
+      min-height: 100vh;
+      background-color: var(--bg);
+      padding: 0;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .leaderboard-page-wrap {
+      max-width: 1000px;
+      margin: 40px auto 80px auto;
+      padding: 0 24px;
+    }
+
+    .leaderboard-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .leaderboard-header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .guild-icon-large {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan-primary, #00b4d8);
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.35);
+      object-fit: cover;
+    }
+
+    .btn-back-nav {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .btn-back-nav:hover {
+      background: rgba(0, 180, 216, 0.2);
+      border-color: #00d2ff;
+      color: #00d2ff;
+      transform: translateX(-3px);
+    }
+
+    .leaderboard-card-wrap {
+      background: rgba(13, 20, 36, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(0, 180, 216, 0.08);
+      overflow-x: auto;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .leaderboard-table th {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 12px 16px;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
+    }
+
+    .leaderboard-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 0.95rem;
+      vertical-align: middle;
+    }
+
+    .leaderboard-table tr:hover td {
+      background: rgba(0, 180, 216, 0.04);
+    }
+
+    .rank-cell {
+      font-weight: 800;
+      font-size: 1.15rem;
+      width: 60px;
+    }
+
+    .user-avatar-small {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .level-pill {
+      display: inline-block;
+      background: rgba(0, 210, 255, 0.12);
+      color: #00d2ff;
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .xp-text {
+      color: #fff;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+    }
+
+    .btn-manage-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: var(--cyan-gradient);
+      color: #050b14;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .btn-manage-sm:hover {
+      box-shadow: 0 6px 20px rgba(0, 180, 216, 0.5);
+      transform: scale(1.02);
+    }
+  </style>
 </head>
 <body>
   <%= userBarHtml %>
 
-  <div class="container" style="max-width: 900px; margin-top: 30px;">
-    <div class="title-bar" style="margin-bottom: 25px;">
-      <a href="/select-guild" class="btn-back" title="Torna alla Selezione Server">←</a>
+  <div class="leaderboard-page-wrap">
+    <div class="leaderboard-header-bar">
+      <div class="leaderboard-header-left">
+        <a href="/select-guild" class="btn-back-nav" title="Torna alla Selezione Server">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </a>
+        <img src="<%= guildIconUrl %>" alt="<%= guildName %>" class="guild-icon-large" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+        <div>
+          <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800; color: #fff;"><%= guildName %></h1>
+          <p style="margin: 4px 0 0 0; color: #94a3b8; font-size: 0.9rem;" data-i18n="leaderboardSubtitle">🏆 Classifica XP e Livelli dei Membri</p>
+        </div>
+      </div>
       <div>
-        <h1 style="margin: 0; font-size: 1.8rem;"><%= guildName %></h1>
-        <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem;" data-i18n="leaderboardSubtitle">Classifica XP e Livelli dei Membri</p>
+        <a href="/settings/<%= guildId %>" class="btn-manage-sm">⚙️ Impostazioni Server</a>
       </div>
     </div>
 
-    <div class="card" style="padding: 24px; overflow-x: auto;">
+    <div class="leaderboard-card-wrap">
       <%= leaderboardHtml %>
     </div>
 
-    <div class="footer-info" style="margin-top: 30px;">
-      <p>J.A.R.V.I.S. Multi-Server Leveling System</p>
+    <div class="footer-info" style="margin-top: 40px; text-align: center; color: #64748b; font-size: 0.85rem;">
+      <p>J.A.R.V.I.S. Multi-Server Leveling System • Classifica aggiornata in tempo reale</p>
     </div>
   </div>
 </body>
 </html>
-
