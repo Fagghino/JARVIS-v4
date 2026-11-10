@@ -12,14 +12,24 @@ module.exports = {
     .setName('clear')
     .setDescription('Cancella un numero specifico di messaggi (SOLO ADMIN)')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false)
     .addIntegerOption((option) =>
       option
         .setName('amount')
         .setDescription('Numero di messaggi da cancellare (tra 1 e 50)')
+        .setMinValue(1)
+        .setMaxValue(50)
         .setRequired(true)
     ),
 
   async execute(interaction) {
+    if (!interaction.guild || !interaction.channel) {
+      return interaction.reply({
+        content: '❌ Questo comando può essere usato solo all\'interno dei canali di un server.',
+        ephemeral: true,
+      });
+    }
+
     // Verifica permessi di amministratore
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       return interaction.reply({
@@ -51,11 +61,18 @@ module.exports = {
       // Elimina il messaggio di conferma dopo 5 secondi
       setTimeout(() => confirmationMessage.delete().catch(() => {}), 5000);
     } catch (error) {
-      console.error(error);
-      interaction.reply({
-        content: 'Si è verificato un errore durante la cancellazione dei messaggi.',
-        ephemeral: true, // Messaggio visibile solo all'utente
-      });
+      console.error('Errore durante la cancellazione dei messaggi:', error);
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp({
+          content: 'Si è verificato un errore durante la cancellazione dei messaggi.',
+          ephemeral: true,
+        }).catch(() => {});
+      } else {
+        await interaction.reply({
+          content: 'Si è verificato un errore durante la cancellazione dei messaggi.',
+          ephemeral: true,
+        }).catch(() => {});
+      }
     }
   },
 };
