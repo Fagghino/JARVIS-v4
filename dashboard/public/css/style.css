@@ -41,12 +41,9 @@ body {
     radial-gradient(circle at 90% 80%, rgba(0, 119, 182, 0.07) 0%, transparent 45%),
     radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.03) 0%, transparent 60%);
   color: var(--text);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
 }
 
@@ -64,7 +61,7 @@ body {
   position: relative;
   overflow: hidden;
   animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
 }
 
 .container::before {
