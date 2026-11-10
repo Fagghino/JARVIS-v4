@@ -10,9 +10,11 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('roll')
         .setDescription('Lancia un dado con un numero specifico di facce.')
+        .setDMPermission(false)
         .addIntegerOption(option =>
             option.setName('facce')
-                .setDescription('Numero di facce del dado')
+                .setDescription('Numero di facce del dado (minimo 2)')
+                .setMinValue(2)
                 .setRequired(true)),
     async execute(interaction) {
         const facce = interaction.options.getInteger('facce');
