@@ -3,7 +3,8 @@
  * lasciando attivi unicamente i comandi Globali del bot.
  */
 
-require('dotenv').config({ path: './config/.env' });
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../config/.env') });
 const { REST, Routes } = require('discord.js');
 
 const token = process.env.DISCORD_TOKEN;
