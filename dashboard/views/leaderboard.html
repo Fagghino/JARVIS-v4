@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classifica XP - <%= guildName %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme-lang.js" defer></script>
+</head>
+<body>
+  <%= userBarHtml %>
+
+  <div class="container" style="max-width: 900px; margin-top: 30px;">
+    <div class="title-bar" style="margin-bottom: 25px;">
+      <a href="/select-guild" class="btn-back" title="Torna alla Selezione Server">←</a>
+      <div>
+        <h1 style="margin: 0; font-size: 1.8rem;"><%= guildName %></h1>
+        <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem;" data-i18n="leaderboardSubtitle">Classifica XP e Livelli dei Membri</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding: 24px; overflow-x: auto;">
+      <%= leaderboardHtml %>
+    </div>
+
+    <div class="footer-info" style="margin-top: 30px;">
+      <p>J.A.R.V.I.S. Multi-Server Leveling System</p>
+    </div>
+  </div>
+</body>
+</html>
+
