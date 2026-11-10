@@ -8,7 +8,6 @@
 
 module.exports = {
   // Impostazioni predefinite per nuovi server (impostabili dagli admin tramite /set o Dashboard)
-  serverId: '',
   inviteLink: '',
   usersChannelId: '',
   botsChannelId: '',
