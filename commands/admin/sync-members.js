@@ -12,7 +12,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('sync-members')
     .setDescription('Sincronizza tutti i membri di questo server con il database MongoDB (SOLO ADMIN)')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false),
 
   async execute(interaction) {
     if (!interaction.guild) {
