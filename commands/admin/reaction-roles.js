@@ -19,6 +19,7 @@ module.exports = {
     .setName('reaction-roles')
     .setDescription('Crea un messaggio con ruoli assegnabili tramite reazione (SOLO ADMIN)')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false)
     // Canale di destinazione
     .addChannelOption(opt =>
       opt.setName('canale')
@@ -168,7 +169,7 @@ module.exports = {
       return interaction.reply({ content: '❌ Devi specificare almeno una coppia emoji/ruolo.', ephemeral: true });
     }
 
-    // Deferisce la risposta poiché l'invio dell'embed, le reazioni e il salvataggio su Sheets superano i 3 secondi di timeout
+    // Deferisce la risposta poiché l'invio dell'embed, le reazioni e il salvataggio su MongoDB possono richiedere alcuni secondi
     await interaction.deferReply({ ephemeral: true });
 
     // Costruisce la descrizione dell'embed con le coppie
