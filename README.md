@@ -8,7 +8,7 @@
 
   <p>
     <a href="https://github.com/Fagghino/JARVIS-v4"><img src="https://img.shields.io/badge/Version-v4.5.4-blue?style=for-the-badge&logo=discord&logoColor=white" alt="Version"></a>
-    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-16.x%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18.x%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"></a>
     <a href="https://discord.js.org/"><img src="https://img.shields.io/badge/Discord.js-v14-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord.js"></a>
     <a href="https://www.mongodb.com/cloud/atlas"><img src="https://img.shields.io/badge/Database-MongoDB_Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></a>
@@ -80,7 +80,7 @@
 ### 🌍 6. Public Utilities & Community Mini-Games
 - **`/traduci [text]`**: Instant multi-language translation powered by DeepL API and Google Translate API with automatic fallback.
 - **`/userinfo [user]`**: Displays in-depth profile details (avatar, join date, account creation date, guild roles list).
-- **`/server`**: Displays comprehensive server statistics (owner, creation date, boost tier, text/voice channels count).
+- **`/serverinfo`**: Displays comprehensive server statistics (owner, creation date, member and channel counts).
 - **`/ping`**: Measures real-time WebSocket and Discord REST API latency.
 - **`/roll [sides]`**: Rolls an N-sided custom dice (defaults to 6 sides).
 - **`/flip`**: Flips a coin returning a random *Heads* or *Tails* result.
@@ -98,8 +98,10 @@
 ---
 
 ### ☁️ 8. Multi-Server & Cloud-Native Architecture
-- **MongoDB Atlas Cloud Persistence**: Full data isolation per Discord guild ID (`GuildSettings`, `UserXP`, `ReactionRole`).
+- **MongoDB Atlas Cloud Persistence**: Full data isolation per Discord guild ID (`GuildSettings`, `UserXP`, `GuildActivity`, `ReactionRole`).
 - **Render Free Tier Ready**: Volatile filesystem safe — no hardcoded credentials or local state storage.
+- **Real-Time Staff Error Observability**: Instant Discord Webhook alert notifications with automatic token/secret sanitization and flood protection.
+- **Interactive Community Analytics**: Chart.js charts on the Web Dashboard showing daily message frequency, voice hours, and active user metrics.
 - **Keep-Alive Ready**: Fully compatible with UptimeRobot HTTP(s) pinging to prevent instance sleep.
 
 ---
@@ -112,9 +114,10 @@
 | :--- | :--- | :--- |
 | `/help` | Display public commands guide | Interactive command overview |
 | `/classifica` | View server XP & Level leaderboard | Paginated rankings sorted by level & XP |
+| `/rank` | Display personal level, XP & rank card | Shows progress bar, XP to next level & rank |
 | `/ping` | Check bot & API WebSocket latency | Displays latency in milliseconds |
 | `/userinfo` | Display user profile details | Avatar, join date, roles list |
-| `/server` | Display server statistics | Member count, boost tier, channel counts |
+| `/serverinfo` | Display server statistics | Member count, owner, channel counts |
 | `/roll` | Roll an N-sided dice | e.g. `/roll 20` for D20 roll |
 | `/flip` | Flip a coin | Randomly returns Heads or Tails |
 | `/traduci` | Translate text instantly | Uses DeepL & Google Translate fallback |
@@ -137,7 +140,7 @@
 
 ## 📦 Requirements
 
-- **Node.js**: `16.x` or higher
+- **Node.js**: `18.x` or higher
 - **npm**: `8.x` or higher
 - **Discord Application**: Bot Token & OAuth2 Client Secret from [Discord Developer Portal](https://discord.com/developers/applications)
 - **Database**: Free MongoDB Atlas Cluster (`Free M0` tier)
@@ -174,6 +177,9 @@ NODE_ENV=development
 
 # Database Cloud Connection (MongoDB Atlas)
 MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/<database_name>?retryWrites=true&w=majority
+
+# Discord Private Staff Webhook Alerts (Optional, recommended for Render)
+# STAFF_ERROR_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_ID/YOUR_TOKEN
 ```
 
 ### 4. Deploy Global Slash Commands
@@ -209,6 +215,7 @@ JARVIS-v4/
 │   ├── .env.example                  # Environment variables template file
 │   └── config.js                     # Global default fallback configurations
 ├── models/                           # Mongoose Schemas (MongoDB Atlas)
+│   ├── GuildActivity.js              # Daily activity & analytics schema (Chart.js)
 │   ├── GuildSettings.js              # Per-guild settings schema
 │   ├── ReactionRole.js               # Reaction roles & emoji mapping schema
 │   └── UserXP.js                     # User XP & level schema
@@ -221,10 +228,11 @@ JARVIS-v4/
 │   │   ├── images/
 │   │   │   ├── avatar.gif            # Bot avatar asset
 │   │   │   └── banner.png            # Header & hero banner
-│   │   └── js/theme-lang.js          # Theme toggle & i18n frontend script
+│   │   └── js/
+│   │       ├── settings.js           # Client-side settings controller script
+│   │       └── theme-lang.js         # Theme toggle & i18n frontend script
 │   └── views/                        # HTML5 templates
 │       ├── landing.html              # Official homepage & interactive module preview
-│       ├── login.html                # Unified entry & login page
 │       ├── dashboard.html            # Main status & stats view
 │       ├── select-guild.html         # Guild selector with active & invite groups
 │       ├── settings.html             # Per-guild admin settings panel with sidebar
@@ -238,10 +246,10 @@ JARVIS-v4/
 │   ├── reactionRoles.js              # Reaction add/remove event handlers
 │   ├── welcome.js                    # Member join/leave embed notifications
 │   └── counter.js                    # Auto-updating voice channel counters
-├── scripts/                          # Utility & Migration Scripts
-│   ├── migrateSheetsToMongo.js       # Historical data migration (Google Sheets -> MongoDB)
+├── scripts/                          # Utility Scripts
 │   └── clearGuildCommands.js         # Script to clear duplicate guild commands
 ├── utils/                            # Shared Utilities
+│   ├── alertWebhook.js               # Discord staff alert sender with sanitization
 │   ├── cooldown.js                   # User command rate-limiting manager
 │   ├── guildSettings.js              # MongoDB settings helper & cache
 │   ├── loadCommands.js               # Shared recursive slash command loader
@@ -261,11 +269,10 @@ JARVIS-v4/
 | Script | Command | Purpose |
 | :--- | :--- | :--- |
 | `npm start` | `node index.js` | Run the bot & Web Dashboard in production mode |
-| `npm run dev` | `nodemon index.js` | Run in development mode with auto-reload |
+| `npm run dev` | `node index.js` | Run in development mode |
 | `npm run web` | `node -e ...` | Start only the Web Dashboard / Landing Page locally (no Discord connection) |
 | `npm run deploy` | `node deploy-commands.js` | Deploy global slash commands to Discord API |
-| `npm run migrate` | `node scripts/migrateSheetsToMongo.js` | Migrate legacy Google Sheets data to MongoDB |
-| `npm run test` | `node --check ...` | Run syntax verification across all codebase files |
+| `npm run test` | `node -e ...` | Run syntax verification across all codebase files |
 
 ---
 
