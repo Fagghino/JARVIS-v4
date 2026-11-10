@@ -6,6 +6,8 @@
  */
 
 const mongoose = require('mongoose');
+const logger = require('../utils/logger');
+const { sendStaffAlert } = require('../utils/alertWebhook');
 
 let isConnected = false;
 
@@ -19,8 +21,8 @@ async function connectDB() {
   const mongoURI = process.env.MONGODB_URI;
 
   if (!mongoURI) {
-    console.warn('⚠️  [DB Warning] MONGODB_URI non è definita nel file config/.env.');
-    console.warn('   Il bot utilizzerà la modalità di compatibilità locale/fallback.');
+    logger.warn('⚠️ [DB Warning] MONGODB_URI non è definita nel file config/.env.');
+    logger.warn('   Il bot utilizzerà la modalità di compatibilità locale/fallback.');
     return false;
   }
 
@@ -29,10 +31,19 @@ async function connectDB() {
       serverSelectionTimeoutMS: 5000,
     });
     isConnected = true;
-    console.log('✅ Connesso con successo a MongoDB Atlas Cloud!');
+    logger.info('✅ Connesso con successo a MongoDB Atlas Cloud!');
+
+    // Listener per disconnessione inaspettata a runtime
+    mongoose.connection.on('disconnected', () => {
+      isConnected = false;
+      logger.warn('⚠️ [DB Warning] Connessione a MongoDB Atlas interrotta.');
+      sendStaffAlert('Disconnessione Database MongoDB', 'La connessione verso MongoDB Atlas è caduta. Tentativo di riconnessione automatico...');
+    });
+
     return true;
   } catch (error) {
-    console.error('❌ Errore di connessione a MongoDB:', error.message);
+    logger.error('❌ Errore di connessione a MongoDB:', error.message);
+    sendStaffAlert('Fallimento Connessione Database (MongoDB)', error);
     return false;
   }
 }
