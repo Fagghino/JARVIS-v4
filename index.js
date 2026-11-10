@@ -1,5 +1,6 @@
+const path = require("path");
 const { Client, GatewayIntentBits, Collection, Partials } = require("discord.js");
-require("dotenv").config({ path: "./config/.env" });
+require("dotenv").config({ path: path.resolve(__dirname, "config/.env") });
 
 // Valida variabili d'ambiente essenziali come prima cosa (MEDIA-06)
 const requiredEnvVars = ['DISCORD_TOKEN', 'DISCORD_CLIENT_ID', 'MONGODB_URI', 'SESSION_SECRET'];
@@ -19,8 +20,8 @@ const { handleXP, handleVoiceXP, flushCache } = require("./misc/level.js");
 const { handleReactionAdd, handleReactionRemove } = require("./misc/reactionRoles");
 const { getGuildConfig } = require("./utils/guildSettings.js");
 const fs = require("fs");
-const path = require("path");
 const { checkCooldown } = require("./utils/cooldown");
+const { sendStaffAlert } = require("./utils/alertWebhook");
 
 const startDashboard = require("./dashboard/server.js");
 
@@ -180,13 +181,23 @@ client.on("messageReactionRemove", (reaction, user) => {
   }
 })();
 
+// Gestione errori Discord Client
+client.on('error', (err) => {
+  console.error('❌ [Discord Client Error]:', err);
+  sendStaffAlert('Errore Gateway / Client Discord', err);
+});
+
 // Gestione eccezioni globali (ALTA-01)
 process.on('unhandledRejection', (reason, promise) => {
   console.error('⚠️ [unhandledRejection] Eccezione non gestita:', reason);
+  sendStaffAlert('Unhandled Promise Rejection', reason);
 });
 
 process.on('uncaughtException', async (err) => {
   console.error('❌ [uncaughtException] Errore critico in JARVIS:', err);
+  try {
+    await sendStaffAlert('Crash Imprevisto (uncaughtException)', err);
+  } catch (_) {}
   try {
     const { flushCache } = require("./misc/level.js");
     await flushCache();
@@ -204,7 +215,11 @@ process.on('SIGINT', async () => {
   } catch (err) {
     console.error('Errore durante il flush della cache XP in shutdown:', err);
   }
-  client.destroy();
+  try {
+    await client.destroy();
+  } catch (err) {
+    console.error('Errore durante la disconnessione del client Discord:', err);
+  }
   process.exit(0);
 });
 
@@ -215,6 +230,10 @@ process.on('SIGTERM', async () => {
   } catch (err) {
     console.error('Errore durante il flush della cache XP in shutdown:', err);
   }
-  client.destroy();
+  try {
+    await client.destroy();
+  } catch (err) {
+    console.error('Errore durante la disconnessione del client Discord:', err);
+  }
   process.exit(0);
 });
