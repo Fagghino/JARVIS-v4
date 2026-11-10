@@ -1,20 +1,25 @@
 /**
- * Comando /server - Informazioni sul server
+ * Comando /serverinfo - Informazioni sul server
  *
  * Mostra un embed con le statistiche del server:
  * ID, data di creazione, proprietario, conteggio membri e canali.
  */
 
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ChannelType } = require('discord.js');
 
 module.exports = {
   // Definizione del comando
   data: new SlashCommandBuilder()
-    .setName('server')
-    .setDescription('Mostra informazioni sul server'),
+    .setName('serverinfo')
+    .setDescription('Mostra informazioni sul server')
+    .setDMPermission(false),
 
   // Esecuzione del comando
   async execute(interaction) {
+    if (!interaction.guild) {
+      return interaction.reply({ content: '❌ Questo comando può essere usato solo in un server.', ephemeral: true });
+    }
+
     const { guild } = interaction; // Ottiene le informazioni del server
     const owner = await guild.fetchOwner(); // Ottiene il proprietario del server
 
@@ -26,9 +31,9 @@ module.exports = {
     const humanMembers = guild.members.cache.filter(member => !member.user.bot).size; // Solo persone
     const botMembers = totalMembers - humanMembers; // Solo bot
 
-    // Conta i canali
-    const textChannels = guild.channels.cache.filter(channel => channel.type === 0).size; // Testuali
-    const voiceChannels = guild.channels.cache.filter(channel => channel.type === 2).size; // Vocali
+    // Conta i canali tramite ChannelType enum
+    const textChannels = guild.channels.cache.filter(channel => channel.type === ChannelType.GuildText).size;
+    const voiceChannels = guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice).size;
     const totalChannels = textChannels + voiceChannels; // Totale canali testuali e vocali
 
     // Calcola timestamp
@@ -39,9 +44,9 @@ module.exports = {
       .setColor(0x3498db)
       .setAuthor({
         name: guild.name,
-        iconURL: guild.iconURL({ dynamic: true, size: 1024 }) || null
+        iconURL: guild.iconURL({ size: 1024 }) || null
       })
-      .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }) || null) // Icona del server in piccolo
+      .setThumbnail(guild.iconURL({ size: 1024 }) || null) // Icona del server in piccolo
       .addFields(
         { name: ':id: ID del server:', value: guild.id, inline: true },
         { name: ':calendar: Creato il:', value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:R>`, inline: true },
