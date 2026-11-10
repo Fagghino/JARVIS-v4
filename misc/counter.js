@@ -25,30 +25,36 @@ module.exports = (client) => {
                 return;
             }
 
-            let fetchedMembers;
-            try {
-                fetchedMembers = await guild.members.fetch({ time: 10000 });
-            } catch (fetchError) {
-                fetchedMembers = guild.members.cache;
-            }
+            // Usa guild.memberCount nativo per il totale
+            const totalMembers = guild.memberCount || guild.members.cache.size;
 
-            const totalMembers = fetchedMembers.size;
-            const users = fetchedMembers.filter(member => !member.user.bot).size;
-            const bots = fetchedMembers.filter(member => member.user.bot).size;
+            // Per la distinzione utenti/bot usa la cache esistente senza fetch globale continuo
+            const cachedMembers = guild.members.cache;
+            const bots = cachedMembers.filter(member => member.user.bot).size;
+            const users = Math.max(0, totalMembers - bots);
 
             if (guildConfig.totalChannelId) {
                 const totalChannel = guild.channels.cache.get(guildConfig.totalChannelId);
-                if (totalChannel) await totalChannel.setName(`ᴍᴇᴍʙʀɪ ᴛᴏᴛᴀʟɪ: ${totalMembers.toLocaleString()}`).catch(() => {});
+                const newName = `ᴍᴇᴍʙʀɪ ᴛᴏᴛᴀʟɪ: ${totalMembers.toLocaleString()}`;
+                if (totalChannel && totalChannel.name !== newName) {
+                    await totalChannel.setName(newName).catch(() => {});
+                }
             }
 
             if (guildConfig.usersChannelId) {
                 const usersChannel = guild.channels.cache.get(guildConfig.usersChannelId);
-                if (usersChannel) await usersChannel.setName(`ᴜᴛᴇɴᴛɪ: ${users.toLocaleString()}`).catch(() => {});
+                const newName = `ᴜᴛᴇɴᴛɪ: ${users.toLocaleString()}`;
+                if (usersChannel && usersChannel.name !== newName) {
+                    await usersChannel.setName(newName).catch(() => {});
+                }
             }
 
             if (guildConfig.botsChannelId) {
                 const botsChannel = guild.channels.cache.get(guildConfig.botsChannelId);
-                if (botsChannel) await botsChannel.setName(`ʙᴏᴛ: ${bots.toLocaleString()}`).catch(() => {});
+                const newName = `ʙᴏᴛ: ${bots.toLocaleString()}`;
+                if (botsChannel && botsChannel.name !== newName) {
+                    await botsChannel.setName(newName).catch(() => {});
+                }
             }
         } catch (error) {
             console.error(`❌ Errore aggiornamento counter per [${guild.id}]:`, error.message);
