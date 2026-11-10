@@ -5,6 +5,69 @@ Tutte le modifiche rilevanti a questo progetto saranno documentate in questo fil
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.6.0] - 2026-11-10
+
+### Added
+- **Comando Slash Personale `/rank` (`commands/public/rank.js`, `utils/cooldown.js`)**:
+  - Nuovo comando pubblico per visualizzare all'istante la propria scheda livello con calcolo della posizione in classifica nel server (`#X / Y`), badge livello, progress bar grafica con emoji quadretti, XP attuali e XP mancanti al prossimo livello.
+  - Cooldown dedicato di 3 secondi registrato nel gestore cooldown.
+- **Web Leaderboard Pubblica per Server (`dashboard/views/leaderboard.html`, `dashboard/server.js`)**:
+  - Nuova vista web responsive e rotta pubblica `GET /leaderboard/:guildId` che mostra la classifica dei membri ordinata per XP e livello.
+  - Pulsante rapido "🏆 Classifica" aggiunto nella schermata di selezione server (`select-guild.html`).
+- **Dashboard Analytics e Grafici Interattivi Chart.js (`models/GuildActivity.js`, `dashboard/views/settings.html`, `dashboard/public/js/settings.js`, `dashboard/server.js`)**:
+  - Nuovo modello Mongoose `GuildActivity` per il tracciamento aggregato giornaliero di messaggi, ore vocali, XP e membri attivi unici.
+  - Nuova rotta API protetta `GET /api/guilds/:guildId/analytics` con selettore temporale a 7, 14 e 30 giorni.
+  - Sezione grafici interattivi con Chart.js UMD nella scheda "Dashboard & Recap" delle impostazioni server con tema scuro, gradienti fluorescenti e tooltip.
+- **Allarmi Errori Staff in Tempo Reale via Webhook Discord (`utils/alertWebhook.js`, `index.js`, `misc/database.js`)**:
+  - Sistema di notifica su canale Discord staff per `uncaughtException`, `unhandledRejection`, disconnessioni MongoDB e anomalie Gateway Discord.
+  - Mascheramento automatico e sanitizzazione preventiva di token, password e credenziali negli stack trace (`sanitizeSecrets`).
+  - Meccanismo di debouncing / rate-limiting anti-spam per silenziare errori identici a raffica (max 1 alert ogni 5 minuti per tipo).
+  - Icone personalizzate salvate in `Docs/assets/image/webhook-sentinel.png` e `webhook-sentinel-stark.png`.
+- **Cooldown Anti-Spam Assegnazione XP Messaggi (`misc/level.js`)**:
+  - Rate-limit temporale di 60 secondi per utente sull'assegnazione XP testuale con pulizia preventiva automatica della mappa in memoria.
+
+### Changed
+- **Sostituzione Axios con `fetch` Nativo Node 18+ (`dashboard/server.js`, `package.json`)**:
+  - Eliminata la dipendenza esterna `axios` nello scambio OAuth2, azzerando 1 vulnerabilità critica e tutte le 13 vulnerabilità ad alta gravità segnalate da `npm audit`.
+- **Ottimizzazione Flush Cache XP su MongoDB (`misc/level.js`)**:
+  - Implementato tracciamento selettivo degli utenti modificati (`dirtyUsers = new Set()`), inviando a MongoDB Atlas solo i record realmente variati ed eliminando i `bulkWrite` massivi a vuoto.
+- **Ottimizzazione Query Classifica (`commands/public/classifica.js`)**:
+  - Sostituito il download non limitato di tutti i membri via Discord Gateway (`guild.members.fetch()`) con query diretta e indicizzata su MongoDB `UserXP.find().sort().limit(100)`.
+- **Ottimizzazione Contatori Server Vocali (`misc/counter.js`)**:
+  - Sostituito il fetch globale continuo dei membri con `guild.memberCount` nativo e aggiunto controllo di guardia `channel.name !== newName` per prevenire il rate limit HTTP 429 da parte di Discord.
+- **Allineamento Denominazione Comando `/serverinfo` (`commands/public/serverinfo.js`, `utils/cooldown.js`)**:
+  - Allineato il comando slash da `/server` a `.setName('serverinfo')` e aggiornata la chiave di cooldown `serverinfo: 5`.
+- **Hardening Content Security Policy (CSP) (`dashboard/server.js`, `dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
+  - Estratte 629 righe di script JavaScript inline da `settings.html` nel file statico separato `public/js/settings.js` collegato tramite attributo dati `data-guild-id`.
+  - Abilitato `https://cdn.jsdelivr.net` nella CSP di Helmet per il caricamento sicuro di Chart.js.
+- **Snellimento Sessioni Web (`dashboard/server.js`)**:
+  - Filtrato l'array `req.session.guilds` salvando solo le proprietà essenziali (`id`, `name`, `icon`, `owner`, `permissions`), riducendo drasticamente il payload salvato su MongoDB session store.
+- **Cache Template in Produzione (`dashboard/server.js`)**:
+  - Introdotto caching in memoria dei file HTML compilati quando `NODE_ENV === 'production'`.
+- **Robustezza Comandi Slash e Protezione DM (`commands/*/*.js`)**:
+  - Aggiunto `.setDMPermission(false)` e guard di sicurezza per impedire l'esecuzione in messaggi diretti su tutti i 15 comandi di server.
+  - Sanificato `/userinfo` con fallback su `interaction.options.getUser()` se il membro non è nella cache e troncamento lista ruoli a 1000 caratteri.
+  - Inserito `deferReply()` immediato e validazione testo in `/traduci`.
+  - Aggiunto timeout di rete (8000ms) a `makeHttpsPost` in `utils/translator.js`.
+  - Sostituiti magic numbers con enum `ChannelType` e `ActivityType`, e isolati i `customId` dei selettori in `/set`.
+  - Rimossa l'opzione deprecata `{ dynamic: true }` da tutti gli avatar.
+- **Shutdown Pulito Asincrono (`index.js`)**:
+  - Gestione dei segnali `SIGINT` e `SIGTERM` aggiornata con `await client.destroy()` per la chiusura corretta del WebSocket Discord prima del flush XP.
+- **Ancoraggio Percorsi `.env` (`index.js`, `deploy-commands.js`, `scripts/clearGuildCommands.js`)**:
+  - Utilizzo di `path.resolve(__dirname, 'config/.env')` per permettere l'avvio del bot da qualsiasi directory.
+
+### Removed
+- **Script di Migrazione Obsoleto**:
+  - Eliminato lo script non funzionante `scripts/migrateSheetsToMongo.js` e rimossa la voce `"migrate"` in `package.json`.
+- **File Template Duplicato**:
+  - Rimosso `dashboard/views/login.html` (clone di 46 KB identico a `landing.html`).
+- **Codice Morto**:
+  - Rimosso il middleware inutilizzato `ensureGuildMemberApi` in `dashboard/server.js`.
+  - Rimossa la proprietà orfana `serverId` in `config/config.js`.
+  - Rimossi i commenti storici legati a Google Sheets in `reaction-roles.js`.
+  - Rimosso l'indice singolo ridondante su `UserXP.guildId` (già coperto dagli indici composti).
+  - Rimossi gli URL CDN avatar hardcoded obsoleti in `help.js` e `helpAdmin.js`.
+
 ## [4.5.4] - 2026-11-08
 
 ### Added
