@@ -11,14 +11,44 @@ const { EmbedBuilder } = require('discord.js');
 const { getGuildConfig } = require('../utils/guildSettings');
 const { isDBConnected } = require('./database');
 const UserXPModel = require('../models/UserXP');
+const GuildActivityModel = require('../models/GuildActivity');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Cache XP in memoria per-server: xpCache[guildId][userId] = { xp, level, username }
 // ─────────────────────────────────────────────────────────────────────────────
 const xpCache = {};
 const loadedGuilds = new Set();
+const dirtyUsers = new Set(); // Traccia solo "guildId:userId" modificati per ottimizzare bulkWrite
 let cacheDirty = false;
 let flushLock = false;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Buffer Attività Giornaliera (IDEA-004 Analytics): dailyActivityCache[guildId] = { date, messages, voiceMinutes, xpGained, activeUsers }
+// ─────────────────────────────────────────────────────────────────────────────
+const dailyActivityCache = new Map();
+
+function getTodayString() {
+  return new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+}
+
+/**
+ * Registra attività per le analytics giornaliere del server
+ */
+function recordActivity(guildId, { messages = 0, voiceMinutes = 0, xpGained = 0, userId = null } = {}) {
+  if (!guildId) return;
+  const today = getTodayString();
+  let entry = dailyActivityCache.get(guildId);
+
+  if (!entry || entry.date !== today) {
+    entry = { date: today, messages: 0, voiceMinutes: 0, xpGained: 0, activeUsers: new Set() };
+    dailyActivityCache.set(guildId, entry);
+  }
+
+  entry.messages += messages;
+  entry.voiceMinutes += voiceMinutes;
+  entry.xpGained += xpGained;
+  if (userId) entry.activeUsers.add(userId);
+}
 
 /**
  * Assicura che i dati XP di uno specifico server siano caricati in memoria
@@ -51,19 +81,39 @@ async function ensureGuildCache(guildId) {
 }
 
 /**
- * Scrive le modifiche dalla cache in memoria su MongoDB
+ * Segna un utente come modificato nella cache
+ * @param {string} guildId
+ * @param {string} userId
+ */
+function markUserDirty(guildId, userId) {
+  if (!guildId || !userId) return;
+  dirtyUsers.add(`${guildId}:${userId}`);
+  cacheDirty = true;
+}
+
+/**
+ * Scrive le modifiche dalla cache in memoria su MongoDB salvando SOLO gli utenti modificati
+ * e sincronizza le statistiche aggregate di attività giornaliera (IDEA-004)
  */
 async function flushCache() {
-  if (!cacheDirty || flushLock) return;
+  const hasDirtyUsers = cacheDirty && dirtyUsers.size > 0;
+  const hasDailyActivity = dailyActivityCache.size > 0;
+
+  if ((!hasDirtyUsers && !hasDailyActivity) || flushLock) return;
   flushLock = true;
 
   try {
-    if (isDBConnected() && UserXPModel) {
-      const operations = [];
+    if (isDBConnected()) {
+      // 1. Flush UserXP
+      if (hasDirtyUsers && UserXPModel) {
+        const operations = [];
+        const keysToFlush = Array.from(dirtyUsers);
 
-      for (const gId of Object.keys(xpCache)) {
-        for (const uId of Object.keys(xpCache[gId])) {
-          const userData = xpCache[gId][uId];
+        for (const key of keysToFlush) {
+          const [gId, uId] = key.split(':');
+          const userData = xpCache[gId]?.[uId];
+          if (!userData) continue;
+
           operations.push({
             updateOne: {
               filter: { guildId: gId, userId: uId },
@@ -78,15 +128,49 @@ async function flushCache() {
             }
           });
         }
+
+        if (operations.length > 0) {
+          await UserXPModel.bulkWrite(operations);
+        }
+
+        // Rimuove solo le chiavi scritte con successo
+        keysToFlush.forEach(k => dirtyUsers.delete(k));
+        if (dirtyUsers.size === 0) {
+          cacheDirty = false;
+        }
       }
 
-      if (operations.length > 0) {
-        await UserXPModel.bulkWrite(operations);
+      // 2. Flush GuildActivity (IDEA-004)
+      if (hasDailyActivity && GuildActivityModel) {
+        const activityOps = [];
+        for (const [gId, act] of dailyActivityCache.entries()) {
+          if (act.messages === 0 && act.voiceMinutes === 0 && act.xpGained === 0) continue;
+          activityOps.push({
+            updateOne: {
+              filter: { guildId: gId, date: act.date },
+              update: {
+                $inc: {
+                  messages: act.messages,
+                  voiceMinutes: act.voiceMinutes,
+                  xpGained: act.xpGained
+                },
+                $addToSet: {
+                  activeUsers: { $each: Array.from(act.activeUsers) }
+                }
+              },
+              upsert: true
+            }
+          });
+        }
+
+        if (activityOps.length > 0) {
+          await GuildActivityModel.bulkWrite(activityOps);
+        }
+        dailyActivityCache.clear();
       }
-      cacheDirty = false;
     }
   } catch (error) {
-    console.error('❌ Errore flush cache XP su MongoDB:', error.message);
+    console.error('❌ Errore flush cache XP / Analytics su MongoDB:', error.message);
   } finally {
     flushLock = false;
   }
@@ -164,14 +248,42 @@ async function addXP(client, userID, xpAmount, guild, username = 'Utente') {
     }
   }
 
+  dirtyUsers.add(`${guildId}:${userID}`);
   cacheDirty = true;
 }
 
+// Map di cooldown per messaggi: `${guildId}:${userId}` -> timestamp (IDEA-002)
+const messageXpCooldowns = new Map();
+const MESSAGE_XP_COOLDOWN_MS = 60 * 1000; // 60 secondi
+
 /**
- * Gestisce l'assegnazione di XP quando un utente invia un messaggio
+ * Gestisce l'assegnazione di XP quando un utente invia un messaggio con cooldown anti-spam (IDEA-002)
  */
 async function handleXP(client, message) {
   if (!message.guild || message.author.bot) return;
+
+  const key = `${message.guild.id}:${message.author.id}`;
+  const now = Date.now();
+  const lastXpTime = messageXpCooldowns.get(key);
+
+  if (lastXpTime && now - lastXpTime < MESSAGE_XP_COOLDOWN_MS) {
+    return; // Ignora se l'utente ha già guadagnato XP negli ultimi 60 secondi
+  }
+
+  messageXpCooldowns.set(key, now);
+
+  // Pulizia periodica preventiva della Map per evitare accumulo indefinito di memoria
+  if (messageXpCooldowns.size > 10000) {
+    for (const [k, timestamp] of messageXpCooldowns.entries()) {
+      if (now - timestamp > MESSAGE_XP_COOLDOWN_MS) {
+        messageXpCooldowns.delete(k);
+      }
+    }
+  }
+
+  // Traccia attività giornaliera server (IDEA-004)
+  recordActivity(message.guild.id, { messages: 1, xpGained: 10, userId: message.author.id });
+
   await addXP(client, message.author.id, 10, message.guild, message.author.username);
 }
 
@@ -216,7 +328,11 @@ async function handleVoiceXP(client) {
           }
         }
 
+        dirtyUsers.add(`${guild.id}:${uId}`);
         cacheDirty = true;
+
+        // Traccia attività vocale giornaliera (IDEA-004: 30 secondi = 0.5 minuti)
+        recordActivity(guild.id, { voiceMinutes: 0.5, xpGained: 5, userId: uId });
       }
     });
   }
@@ -227,7 +343,9 @@ module.exports = {
   handleVoiceXP,
   loadXPData,
   flushCache,
+  markUserDirty,
   getLevel,
   getNextLevelXP,
   addXP,
+  recordActivity,
 };
