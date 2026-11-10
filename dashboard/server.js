@@ -233,7 +233,7 @@ module.exports = (client) => {
 
     return `
       <nav class="navbar">
-        <div class="container navbar-inner" style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+        <div class="container navbar-inner" style="max-width: 1200px; margin: 0 auto; padding: 0 24px; background: transparent; border: none; box-shadow: none;">
           <a href="/" class="nav-brand">
             <img src="/images/avatar.gif" alt="JARVIS Logo" class="brand-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
             <span class="brand-title">J.A.R.V.I.S.</span>
@@ -495,8 +495,8 @@ module.exports = (client) => {
             <img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(ug.name)}" class="guild-icon">
             <div class="guild-name">${escapeHtml(ug.name)}</div>
             <div class="guild-actions">
-              <a href="/settings/${ug.id}" class="btn btn-manage">⚙️ Gestisci Server</a>
-              <a href="/leaderboard/${ug.id}" class="btn" style="margin-left: 8px; background: rgba(0,210,255,0.15); color: #00d2ff; border: 1px solid rgba(0,210,255,0.3);">🏆 Classifica</a>
+              <a href="/settings/${ug.id}" class="btn-manage">⚙️ Gestisci Server</a>
+              <a href="/leaderboard/${ug.id}" class="btn-leaderboard">🏆 Classifica</a>
             </div>
           </div>
         `;
@@ -565,34 +565,66 @@ module.exports = (client) => {
       if (topUsers.length === 0) {
         rowsHtml = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px;">Nessun dato XP registrato per questo server.</td></tr>`;
       } else {
+        // Pre-fetch missing members / users from Discord API so their real avatars and names are displayed
+        const missingUserIds = topUsers
+          .map(u => u.userId)
+          .filter(id => id && !guild.members.cache.has(id));
+
+        if (missingUserIds.length > 0) {
+          try {
+            await guild.members.fetch({ user: missingUserIds });
+          } catch (_) {
+            // Bulk fetch could fail if some IDs are not in guild or invalid; fallback to client.users
+          }
+
+          const stillMissing = topUsers
+            .map(u => u.userId)
+            .filter(id => id && !guild.members.cache.has(id) && !client.users.cache.has(id))
+            .slice(0, 50);
+
+          if (stillMissing.length > 0) {
+            await Promise.allSettled(stillMissing.map(id => client.users.fetch(id).catch(() => null)));
+          }
+        }
+
         rowsHtml = topUsers.map((u, index) => {
           const rankNum = index + 1;
-          const rankClass = rankNum === 1 ? 'rank-1' : (rankNum === 2 ? 'rank-2' : (rankNum === 3 ? 'rank-3' : ''));
           const rankBadge = rankNum === 1 ? '🥇' : (rankNum === 2 ? '🥈' : (rankNum === 3 ? '🥉' : `#${rankNum}`));
 
-          const cachedMember = guild.members.cache.get(u.userId);
-          const avatarUrl = cachedMember
-            ? cachedMember.user.displayAvatarURL({ size: 64 })
-            : "https://cdn.discordapp.com/embed/avatars/0.png";
-          const displayName = cachedMember ? cachedMember.user.username : (u.username || "Utente");
+          const member = guild.members.cache.get(u.userId);
+          const user = member?.user || client.users.cache.get(u.userId);
+
+          let avatarUrl;
+          if (member) {
+            avatarUrl = member.displayAvatarURL({ extension: 'png', size: 64 });
+          } else if (user) {
+            avatarUrl = user.displayAvatarURL({ extension: 'png', size: 64 });
+          } else {
+            const defaultIndex = u.userId ? Number((BigInt(u.userId) >> 22n) % 6n) : 0;
+            avatarUrl = `https://cdn.discordapp.com/embed/avatars/${defaultIndex}.png`;
+          }
+
+          const displayName = member
+            ? (member.nickname || member.user.displayName || member.user.username)
+            : (user ? (user.displayName || user.username) : (u.username || "Utente"));
 
           return `
             <tr>
-              <td class="rank ${rankClass}">${rankBadge}</td>
+              <td class="rank-cell">${rankBadge}</td>
               <td>
                 <div style="display: flex; align-items: center; gap: 12px;">
-                  <img src="${escapeHtml(avatarUrl)}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%;">
-                  <strong>${escapeHtml(displayName)}</strong>
+                  <img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(displayName)}" class="user-avatar-small" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                  <strong style="color: #fff; font-size: 0.95rem;">${escapeHtml(displayName)}</strong>
                 </div>
               </td>
-              <td><span style="background: rgba(0,210,255,0.1); color: #00d2ff; padding: 4px 10px; border-radius: 8px; font-weight: 700;">Lv. ${u.level || 0}</span></td>
-              <td><strong style="color: var(--text);">${(u.xp || 0).toLocaleString()} XP</strong></td>
+              <td><span class="level-pill">Lv. ${u.level || 0}</span></td>
+              <td><span class="xp-text">${(u.xp || 0).toLocaleString()} XP</span></td>
             </tr>
           `;
         }).join("");
       }
     } catch (err) {
-      rowsHtml = `<tr><td colspan="4" style="color: #ff5252; text-align: center;">Errore durante il caricamento della classifica: ${escapeHtml(err.message)}</td></tr>`;
+      rowsHtml = `<tr><td colspan="4" style="color: #ff5252; text-align: center; padding: 20px;">Errore durante il caricamento della classifica: ${escapeHtml(err.message)}</td></tr>`;
     }
 
     const leaderboardHtml = `
@@ -611,9 +643,12 @@ module.exports = (client) => {
       </table>
     `;
 
+    const guildIconUrl = (guild.iconURL && guild.iconURL({ extension: 'png', size: 128 })) || "https://cdn.discordapp.com/embed/avatars/0.png";
+
     renderTemplate(res, "leaderboard.html", {
       guildName: guild.name,
       guildId,
+      guildIconUrl,
       userBarHtml,
       leaderboardHtml
     });
