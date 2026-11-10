@@ -18,7 +18,8 @@ const cooldowns = new Map();
 const COOLDOWN_SECONDS = {
   classifica: 10,   // Interroga MongoDB Atlas
   traduci: 5,       // Chiama API esterna
-  server: 5,        // Fetch membri
+  serverinfo: 5,    // Fetch membri
+  rank: 3,          // Scheda rank personale
   help: 3,
   help_admin: 3,
   ping: 3,
