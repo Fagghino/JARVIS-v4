@@ -56,6 +56,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Anchored `.env` File Paths (`index.js`, `deploy-commands.js`, `scripts/clearGuildCommands.js`)**:
   - Used `path.resolve(__dirname, 'config/.env')` ensuring reliable process startups from any working directory.
 
+### Fixed
+- **UI Alignment & Spacing in Server Selection View (`dashboard/views/select-guild.html`)**:
+  - Aligned "⚙️ Gestisci Server" and "🏆 Classifica" buttons with flex-column layout (`gap: 10px`), `box-sizing: border-box`, and dedicated `.btn-leaderboard` styling ensuring pixel-perfect matching dimensions.
+- **Web Leaderboard Responsive Layout & Top Bar Navbar Distortion (`dashboard/views/leaderboard.html`, `dashboard/public/css/style.css`)**:
+  - Fixed distorted bot avatar (`avatar.gif`), unstyled blue links, and squeezed layout in `leaderboard.html` by linking `landing.css`, isolating the view inside `.leaderboard-page-wrap`, and adding defensive CSS resets for `.navbar .container`.
+  - Added dedicated server header bar with server icon (`guildIconUrl`), back navigation button, and "⚙️ Impostazioni Server" quick action.
+- **Discord Member Avatars Resolution in Web Leaderboard (`dashboard/server.js`)**:
+  - Implemented asynchronous pre-fetching (`guild.members.fetch` with fallback to `client.users.fetch`) for members missing from Discord.js memory cache, fixing default generic avatar fallbacks for active members (e.g. `purple_rabbit_`).
+
 ### Removed
 - **Broken Migration Script**:
   - Deleted crashed script `scripts/migrateSheetsToMongo.js` and removed npm script `"migrate"` from `package.json`.

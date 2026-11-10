@@ -56,6 +56,15 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Ancoraggio Percorsi `.env` (`index.js`, `deploy-commands.js`, `scripts/clearGuildCommands.js`)**:
   - Utilizzo di `path.resolve(__dirname, 'config/.env')` per permettere l'avvio del bot da qualsiasi directory.
 
+### Fixed
+- **UI Allineamento e Spaziatura Schermata Selezione Server (`dashboard/views/select-guild.html`)**:
+  - Allineati i pulsanti "⚙️ Gestisci Server" e "🏆 Classifica" con layout a colonna flexbox (`gap: 10px`), `box-sizing: border-box` e classe `.btn-leaderboard` per garantire dimensioni identiche al pixel.
+- **Risoluzione Layout e Distorsione Top Bar Classifica Web (`dashboard/views/leaderboard.html`, `dashboard/public/css/style.css`)**:
+  - Risolta la distorsione dell'avatar del bot (`avatar.gif`), il testo dei link non formattato e il layout compresso nella vista `leaderboard.html` collegando correttamente `landing.css`, isolando la visualizzazione in un wrapper dedicato (`.leaderboard-page-wrap`) e aggiungendo un reset CSS difensivo per `.navbar .container`.
+  - Aggiunto header bar completo con icona server dinamica (`guildIconUrl`), pulsante freccia indietro e scorciatoia "⚙️ Impostazioni Server".
+- **Risoluzione Avatar Membri Discord nella Classifica (`dashboard/server.js`)**:
+  - Implementato pre-fetching asincrono (`guild.members.fetch` con fallback su `client.users.fetch`) per i membri non presenti nella cache in memoria di Discord.js, risolvendo l'anomalia per cui gli utenti del server (es. `purple_rabbit_`) visualizzavano l'avatar blu predefinito anziché la propria immagine profilo Discord.
+
 ### Removed
 - **Script di Migrazione Obsoleto**:
   - Eliminato lo script non funzionante `scripts/migrateSheetsToMongo.js` e rimossa la voce `"migrate"` in `package.json`.
