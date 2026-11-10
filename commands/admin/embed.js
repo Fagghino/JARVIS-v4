@@ -23,7 +23,8 @@ module.exports = {
                 .setRequired(true)
                 .setMaxLength(4096)
         )
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDMPermission(false),
 
     async execute(interaction) {
         const titolo = interaction.options.getString('titolo');
