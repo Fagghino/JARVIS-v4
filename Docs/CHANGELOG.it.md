@@ -64,6 +64,8 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Aggiunto header bar completo con icona server dinamica (`guildIconUrl`), pulsante freccia indietro e scorciatoia "⚙️ Impostazioni Server".
 - **Risoluzione Avatar Membri Discord nella Classifica (`dashboard/server.js`)**:
   - Implementato pre-fetching asincrono (`guild.members.fetch` con fallback su `client.users.fetch`) per i membri non presenti nella cache in memoria di Discord.js, risolvendo l'anomalia per cui gli utenti del server (es. `purple_rabbit_`) visualizzavano l'avatar blu predefinito anziché la propria immagine profilo Discord.
+- **Risoluzione Layout Top Bar Pagine Dashboard e Accesso Negato (`dashboard/views/dashboard.html`, `dashboard/views/unauthorized.html`, `dashboard/public/css/style.css`)**:
+  - Collegato `landing.css`, rimossa l'impostazione flexbox centrata sul `body` in `style.css` e aggiunti wrapper responsive dedicati per eliminare la distorsione dell'avatar del bot e formattare correttamente la navbar sticky.
 
 ### Removed
 - **Script di Migrazione Obsoleto**:

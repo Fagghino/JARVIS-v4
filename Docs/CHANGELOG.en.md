@@ -64,6 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added dedicated server header bar with server icon (`guildIconUrl`), back navigation button, and "⚙️ Impostazioni Server" quick action.
 - **Discord Member Avatars Resolution in Web Leaderboard (`dashboard/server.js`)**:
   - Implemented asynchronous pre-fetching (`guild.members.fetch` with fallback to `client.users.fetch`) for members missing from Discord.js memory cache, fixing default generic avatar fallbacks for active members (e.g. `purple_rabbit_`).
+- **Dashboard & Unauthorized Views Top Bar Layout Resolution (`dashboard/views/dashboard.html`, `dashboard/views/unauthorized.html`, `dashboard/public/css/style.css`)**:
+  - Linked `landing.css`, removed viewport flex-centering on `body` in `style.css`, and introduced dedicated responsive wrappers to eliminate bot avatar distortion and correctly render the sticky glass navigation bar.
 
 ### Removed
 - **Broken Migration Script**:
