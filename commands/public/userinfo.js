@@ -11,6 +11,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('userinfo')
     .setDescription('Mostra informazioni sull\'utente')
+    .setDMPermission(false)
     .addUserOption(option =>
       option
         .setName('utente')
@@ -18,34 +19,50 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    // Ottieni l'utente selezionato o chi ha eseguito il comando
-    const member = interaction.options.getMember('utente') || interaction.member;
-    const user = member.user;
+    if (!interaction.guild) {
+      return interaction.reply({ content: '❌ Questo comando può essere usato solo all\'interno di un server.', ephemeral: true });
+    }
 
-    // Formatta i ruoli dell'utente come menzioni
-    const roles = member.roles.cache
-      .filter(role => role.name !== '@everyone')
-      .map(role => `<@&${role.id}>`)
-      .join(', ') || 'Nessun ruolo';
+    // Ottieni l'utente selezionato o chi ha eseguito il comando
+    const targetUser = interaction.options.getUser('utente') || interaction.user;
+    const member = interaction.guild.members.cache.get(targetUser.id) || (await interaction.guild.members.fetch(targetUser.id).catch(() => null));
+
+    // Formatta i ruoli dell'utente come menzioni con protezione per lunghezza massima campo embed
+    let roles = 'Nessun ruolo';
+    if (member && member.roles && member.roles.cache) {
+      const roleMentions = member.roles.cache
+        .filter(role => role.name !== '@everyone')
+        .map(role => `<@&${role.id}>`)
+        .join(', ');
+      if (roleMentions) {
+        roles = roleMentions.length > 1000 ? roleMentions.substring(0, 995) + '...' : roleMentions;
+      }
+    } else {
+      roles = 'Utente non presente in questo server';
+    }
 
     // Timestamp formattati per Discord
-    const accountCreatedTimestamp = `<t:${Math.floor(user.createdAt.getTime() / 1000)}:R>`;
-    const serverJoinedTimestamp = `<t:${Math.floor(member.joinedAt.getTime() / 1000)}:R>`;
+    const accountCreatedTimestamp = targetUser.createdAt
+      ? `<t:${Math.floor(targetUser.createdAt.getTime() / 1000)}:R>`
+      : 'Non disponibile';
+    const serverJoinedTimestamp = member && member.joinedAt
+      ? `<t:${Math.floor(member.joinedAt.getTime() / 1000)}:R>`
+      : 'Non disponibile';
 
     // Crea l'embed con le informazioni dell'utente
     const userInfoEmbed = new EmbedBuilder()
       .setColor(0x3498db)
-      .setTitle(`Informazioni su ${user.username}`)
-      .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+      .setTitle(`Informazioni su ${targetUser.username}`)
+      .setThumbnail(targetUser.displayAvatarURL({ size: 1024 }))
       .addFields(
         { name: ':calendar: Da quanto tempo ha creato l\'account:', value: accountCreatedTimestamp, inline: true },
         { name: ':calendar: Da quanto tempo è nel server:', value: serverJoinedTimestamp, inline: true },
-        { name: ':id: ID Utente:', value: user.id, inline: true },
+        { name: ':id: ID Utente:', value: targetUser.id, inline: true },
         { name: ':people_hugging: Ruoli:', value: roles, inline: false }
       )
       .setFooter({
         text: `Richiesto da ${interaction.user.tag}`,
-        iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+        iconURL: interaction.user.displayAvatarURL(),
       });
 
     await interaction.reply({ embeds: [userInfoEmbed] });
