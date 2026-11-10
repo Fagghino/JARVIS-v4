@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const userXPSchema = new mongoose.Schema({
-  guildId: { type: String, required: true, index: true },
-  userId: { type: String, required: true, index: true },
+  guildId: { type: String, required: true },
+  userId: { type: String, required: true },
   username: { type: String, default: 'Unknown' },
   xp: { type: Number, default: 0 },
   level: { type: Number, default: 0 }
