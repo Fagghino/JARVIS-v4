@@ -9,7 +9,8 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('flip')
-        .setDescription('Lancia una moneta e mostra il risultato.'),
+        .setDescription('Lancia una moneta e mostra il risultato.')
+        .setDMPermission(false),
     async execute(interaction) {
         // Genera risultato casuale: Testa o Croce
         const risultato = Math.random() < 0.5 ? 'Testa' : 'Croce';
