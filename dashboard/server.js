@@ -10,7 +10,6 @@ const express = require("express");
 const session = require("express-session");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const { Routes } = require("discord.js");
@@ -42,7 +41,7 @@ module.exports = (client) => {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
         scriptSrcAttr: ["'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -111,6 +110,20 @@ module.exports = (client) => {
   app.use("/api", apiLimiter);
   app.use("/auth", authLimiter);
 
+  // Cache in memoria dei template per produzione (PERF-003)
+  const templateCache = new Map();
+
+  function getTemplateContent(templatePath, templateName) {
+    if (process.env.NODE_ENV === "production" && templateCache.has(templateName)) {
+      return templateCache.get(templateName);
+    }
+    const content = fs.readFileSync(templatePath, "utf8");
+    if (process.env.NODE_ENV === "production") {
+      templateCache.set(templateName, content);
+    }
+    return content;
+  }
+
   function renderTemplate(res, templateName, variables = {}) {
     const templatePath = path.join(__dirname, "views", templateName);
     if (!fs.existsSync(templatePath)) {
@@ -118,9 +131,9 @@ module.exports = (client) => {
     }
 
     try {
-      let content = fs.readFileSync(templatePath, "utf8");
+      let content = getTemplateContent(templatePath, templateName);
 
-      if (templateName === "login.html" || templateName === "landing.html") {
+      if (templateName === "landing.html") {
         const errorMsg = variables.error || "";
         if (errorMsg) {
           content = content
@@ -147,7 +160,8 @@ module.exports = (client) => {
 
   // URL Dinamico di invito per il bot (con supporto opzionale a guild_id)
   function getBotInviteUrl(guildId = null) {
-    const id = client_id || (client?.user?.id) || "1086038166164504626";
+    const id = client_id || client?.user?.id;
+    if (!id) return "#";
     let url = `https://discord.com/oauth2/authorize?client_id=${id}&permissions=8&scope=bot%20applications.commands`;
     if (guildId) {
       url += `&guild_id=${guildId}`;
@@ -369,38 +383,6 @@ module.exports = (client) => {
 
   app.use("/api", requireJsonContent);
 
-  // Middleware Verifica Membro per API (Risposta JSON)
-  async function ensureGuildMemberApi(req, res, next) {
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({ message: "Non autenticato." });
-    }
-
-    const targetGuildId = req.params.guildId || req.query.guildId || req.body?.guildId;
-    if (!targetGuildId) {
-      return res.status(400).json({ message: "guildId richiesto." });
-    }
-
-    const userId = req.session.user.id;
-    const guild = client.guilds.cache.get(targetGuildId);
-
-    if (!guild) {
-      return res.status(404).json({ message: "Server Discord non accessibile dal Bot." });
-    }
-
-    try {
-      const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
-      if (!member) {
-        return res.status(403).json({ message: "Accesso negato: non sei membro di questo server." });
-      }
-
-      req.guild = guild;
-      req.member = member;
-      next();
-    } catch (error) {
-      res.status(500).json({ message: "Errore durante la verifica dei permessi." });
-    }
-  }
-
   // ─────────────────────────────────────────────────────────────────────────
   // ROTTE PRINCIPALI WEB
   // ─────────────────────────────────────────────────────────────────────────
@@ -514,6 +496,7 @@ module.exports = (client) => {
             <div class="guild-name">${escapeHtml(ug.name)}</div>
             <div class="guild-actions">
               <a href="/settings/${ug.id}" class="btn btn-manage">⚙️ Gestisci Server</a>
+              <a href="/leaderboard/${ug.id}" class="btn" style="margin-left: 8px; background: rgba(0,210,255,0.15); color: #00d2ff; border: 1px solid rgba(0,210,255,0.3);">🏆 Classifica</a>
             </div>
           </div>
         `;
@@ -556,6 +539,86 @@ module.exports = (client) => {
     });
   });
 
+  // Classifica Server Dinamica Web (IDEA-001, DASH-002)
+  app.get("/leaderboard/:guildId", ensureAuthenticated, ensureInGuild, async (req, res) => {
+    const guildId = req.params.guildId;
+    const guild = req.guild;
+    const userBarHtml = getUserBarHtml(req.session.user);
+
+    let rowsHtml = "";
+    try {
+      const UserXPModel = require("../models/UserXP.js");
+      const { isDBConnected } = require("../misc/database.js");
+      const { loadXPData } = require("../misc/level.js");
+
+      let topUsers = [];
+      if (isDBConnected() && UserXPModel) {
+        topUsers = await UserXPModel.find({ guildId }).sort({ xp: -1 }).limit(100).lean();
+      } else {
+        const xpData = await loadXPData(guildId);
+        topUsers = Object.entries(xpData)
+          .map(([userId, u]) => ({ userId, username: u.username, xp: u.xp || 0, level: u.level || 0 }))
+          .sort((a, b) => b.xp - a.xp)
+          .slice(0, 100);
+      }
+
+      if (topUsers.length === 0) {
+        rowsHtml = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px;">Nessun dato XP registrato per questo server.</td></tr>`;
+      } else {
+        rowsHtml = topUsers.map((u, index) => {
+          const rankNum = index + 1;
+          const rankClass = rankNum === 1 ? 'rank-1' : (rankNum === 2 ? 'rank-2' : (rankNum === 3 ? 'rank-3' : ''));
+          const rankBadge = rankNum === 1 ? '🥇' : (rankNum === 2 ? '🥈' : (rankNum === 3 ? '🥉' : `#${rankNum}`));
+
+          const cachedMember = guild.members.cache.get(u.userId);
+          const avatarUrl = cachedMember
+            ? cachedMember.user.displayAvatarURL({ size: 64 })
+            : "https://cdn.discordapp.com/embed/avatars/0.png";
+          const displayName = cachedMember ? cachedMember.user.username : (u.username || "Utente");
+
+          return `
+            <tr>
+              <td class="rank ${rankClass}">${rankBadge}</td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <img src="${escapeHtml(avatarUrl)}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%;">
+                  <strong>${escapeHtml(displayName)}</strong>
+                </div>
+              </td>
+              <td><span style="background: rgba(0,210,255,0.1); color: #00d2ff; padding: 4px 10px; border-radius: 8px; font-weight: 700;">Lv. ${u.level || 0}</span></td>
+              <td><strong style="color: var(--text);">${(u.xp || 0).toLocaleString()} XP</strong></td>
+            </tr>
+          `;
+        }).join("");
+      }
+    } catch (err) {
+      rowsHtml = `<tr><td colspan="4" style="color: #ff5252; text-align: center;">Errore durante il caricamento della classifica: ${escapeHtml(err.message)}</td></tr>`;
+    }
+
+    const leaderboardHtml = `
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Pos.</th>
+            <th>Utente</th>
+            <th>Livello</th>
+            <th>Punti XP</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    `;
+
+    renderTemplate(res, "leaderboard.html", {
+      guildName: guild.name,
+      guildId,
+      userBarHtml,
+      leaderboardHtml
+    });
+  });
+
   app.get("/settings", ensureAuthenticated, (req, res) => {
     res.redirect("/select-guild?mode=settings");
   });
@@ -584,39 +647,65 @@ module.exports = (client) => {
     delete req.session.oauthState;
 
     try {
-      const tokenResponse = await axios.post(
-        "https://discord.com/api/oauth2/token",
-        new URLSearchParams({
+      const tokenRes = await fetch("https://discord.com/api/oauth2/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
           client_id,
           client_secret,
           grant_type: "authorization_code",
           code,
           redirect_uri,
         }),
-        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-      );
+      });
 
-      const accessToken = tokenResponse.data.access_token;
+      if (!tokenRes.ok) {
+        throw new Error(`Token exchange fallito (${tokenRes.status})`);
+      }
 
-      const userResponse = await axios.get("https://discord.com/api/users/@me", {
+      const tokenData = await tokenRes.json();
+      const accessToken = tokenData.access_token;
+
+      const userRes = await fetch("https://discord.com/api/users/@me", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      const guildsResponse = await axios.get("https://discord.com/api/users/@me/guilds", {
+      if (!userRes.ok) {
+        throw new Error(`Recupero utente fallito (${userRes.status})`);
+      }
+
+      const userData = await userRes.json();
+
+      const guildsRes = await fetch("https://discord.com/api/users/@me/guilds", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+
+      if (!guildsRes.ok) {
+        throw new Error(`Recupero gilde fallito (${guildsRes.status})`);
+      }
+
+      const rawGuilds = await guildsRes.json();
 
       req.session.user = {
-        id: userResponse.data.id,
-        username: userResponse.data.username,
-        avatar: userResponse.data.avatar,
+        id: userData.id,
+        username: userData.username,
+        avatar: userData.avatar,
       };
 
-      req.session.guilds = guildsResponse.data;
+      // DASH-001: Memorizza solo i campi essenziali per ridurre drasticamente la dimensione della sessione in MongoDB
+      req.session.guilds = Array.isArray(rawGuilds)
+        ? rawGuilds.map((g) => ({
+            id: g.id,
+            name: g.name,
+            icon: g.icon,
+            owner: g.owner,
+            permissions: g.permissions,
+          }))
+        : [];
 
       res.redirect("/");
     } catch (error) {
-      console.error("❌ Errore autenticazione callback Discord:", error.response ? error.response.data : error.message);
+      console.error("❌ Errore autenticazione callback Discord:", error.message);
       res.redirect("/?error=Autenticazione fallita.");
     }
   });
@@ -878,22 +967,41 @@ module.exports = (client) => {
       const allMembers = guild.members.cache;
 
       const xpData = await loadXPData(targetGuildId);
+      const operations = [];
       let addedCount = 0;
       let updatedCount = 0;
 
       allMembers.forEach((member) => {
         if (member.user.bot) return;
-        const userID = member.id;
-        if (!xpData[userID]) {
-          xpData[userID] = { xp: 0, level: 0 };
+        const userId = member.id;
+        const username = member.user.username;
+
+        if (!xpData[userId]) {
+          xpData[userId] = { xp: 0, level: 0, username };
           addedCount++;
         } else {
+          xpData[userId].username = username;
           updatedCount++;
         }
+
+        operations.push({
+          updateOne: {
+            filter: { guildId: targetGuildId, userId },
+            update: {
+              $set: { username },
+              $setOnInsert: { xp: 0, level: 0 }
+            },
+            upsert: true
+          }
+        });
       });
 
-      const { flushCache } = require("../misc/level.js");
-      await flushCache();
+      const { isDBConnected } = require("../misc/database.js");
+      const UserXPModel = require("../models/UserXP.js");
+
+      if (isDBConnected() && UserXPModel && operations.length > 0) {
+        await UserXPModel.bulkWrite(operations);
+      }
 
       res.json({
         message: "Sincronizzazione completata.",
@@ -903,6 +1011,59 @@ module.exports = (client) => {
       });
     } catch (error) {
       res.status(500).json({ message: `Errore: ${error.message}` });
+    }
+  });
+
+  // API Analytics per Grafici Storici Attività (IDEA-004)
+  const GuildActivityModel = require("../models/GuildActivity.js");
+
+  app.get("/api/guilds/:guildId/analytics", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
+    try {
+      const targetGuildId = req.params.guildId;
+      const days = Math.min(Math.max(parseInt(req.query.days) || 7, 1), 30);
+
+      const activities = await GuildActivityModel.find({ guildId: targetGuildId })
+        .sort({ date: -1 })
+        .limit(days)
+        .lean();
+
+      // Mappa per data
+      const mapByDate = new Map();
+      activities.forEach(a => mapByDate.set(a.date, a));
+
+      const labels = [];
+      const messages = [];
+      const voiceHours = [];
+      const activeUsers = [];
+      const xpGained = [];
+
+      const now = new Date();
+      for (let i = days - 1; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().slice(0, 10);
+        const act = mapByDate.get(dateStr);
+
+        const label = d.toLocaleDateString("it-IT", { day: "2-digit", month: "short" });
+        labels.push(label);
+        messages.push(act ? act.messages : 0);
+        voiceHours.push(act ? +(act.voiceMinutes / 60).toFixed(1) : 0);
+        activeUsers.push(act && Array.isArray(act.activeUsers) ? act.activeUsers.length : 0);
+        xpGained.push(act ? act.xpGained : 0);
+      }
+
+      res.json({
+        success: true,
+        days,
+        labels,
+        messages,
+        voiceHours,
+        activeUsers,
+        xpGained
+      });
+    } catch (error) {
+      console.error("Errore API analytics:", error.message);
+      res.status(500).json({ success: false, message: "Errore nel caricamento delle analytics." });
     }
   });
 
