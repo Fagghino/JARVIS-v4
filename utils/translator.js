@@ -53,6 +53,10 @@ function makeHttpsPost(url, headers, bodyData) {
       });
     });
 
+    req.setTimeout(8000, () => {
+      req.destroy(new Error('Timeout richiesta HTTPS (8s)'));
+    });
+
     req.on('error', (e) => {
       reject(e);
     });
