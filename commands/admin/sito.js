@@ -14,13 +14,14 @@ const {
   PermissionFlagsBits,
 } = require('discord.js');
 
-const SITE_URL = process.env.SITE_URL || 'https://jarvis-v5-cto5.onrender.com/';
+const SITE_URL = process.env.SITE_URL || `http://localhost:${process.env.PORT || 8080}`;
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('sito')
     .setDescription('Mostra il link del sito web e della Web Dashboard di JARVIS (SOLO ADMIN)')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false),
 
   async execute(interaction) {
     // Verifica che il comando sia eseguito in un server
