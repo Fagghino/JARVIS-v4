@@ -170,6 +170,9 @@
     .guild-actions {
       margin-top: auto;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .btn-manage {
@@ -178,6 +181,7 @@
       justify-content: center;
       gap: 8px;
       width: 100%;
+      box-sizing: border-box;
       padding: 12px 18px;
       background: var(--cyan-gradient);
       color: #050b14;
@@ -191,6 +195,32 @@
 
     .btn-manage:hover {
       box-shadow: 0 6px 20px rgba(0, 180, 216, 0.5);
+      transform: scale(1.02);
+    }
+
+    .btn-leaderboard {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 18px;
+      background: rgba(0, 180, 216, 0.08);
+      border: 1px solid rgba(0, 180, 216, 0.28);
+      color: #00d2ff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .btn-leaderboard:hover {
+      background: rgba(0, 180, 216, 0.2);
+      border-color: #00d2ff;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
       transform: scale(1.02);
     }
 
