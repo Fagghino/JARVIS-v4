@@ -5,12 +5,15 @@
  */
 
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const UserXPModel = require('../../models/UserXP.js');
+const { isDBConnected } = require('../../misc/database.js');
 const { loadXPData } = require('../../misc/level.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('classifica')
-    .setDescription('Mostra la classifica dei membri di questo server'),
+    .setDescription('Mostra la classifica dei membri di questo server')
+    .setDMPermission(false),
 
   async execute(interaction) {
     if (!interaction.guild) {
@@ -19,24 +22,33 @@ module.exports = {
 
     await interaction.deferReply();
 
-    // Carica i dati XP del server corrente
-    const xpData = await loadXPData(interaction.guildId);
+    // Query indicizzata su MongoDB ({ guildId: 1, xp: -1 }) limitata ai primi 100 utenti
+    let leaderboard = [];
 
-    try {
-      await interaction.guild.members.fetch();
-    } catch (err) {
-      console.warn("Impossibile fare il fetch dei membri:", err);
+    if (isDBConnected() && UserXPModel) {
+      const topDocs = await UserXPModel.find({ guildId: interaction.guildId })
+        .sort({ xp: -1 })
+        .limit(100)
+        .lean();
+
+      leaderboard = topDocs.map(doc => ({
+        userID: doc.userId,
+        username: doc.username || 'Unknown',
+        xp: doc.xp || 0,
+        level: doc.level || 0,
+      }));
+    } else {
+      const xpData = await loadXPData(interaction.guildId);
+      leaderboard = Object.keys(xpData)
+        .map(userID => ({
+          userID,
+          username: xpData[userID]?.username || 'Unknown',
+          xp: xpData[userID]?.xp || 0,
+          level: xpData[userID]?.level || 0,
+        }))
+        .sort((a, b) => b.xp - a.xp)
+        .slice(0, 100);
     }
-
-    // Crea array ordinato per XP includendo solo membri del server corrente
-    const leaderboard = Object.keys(xpData)
-      .filter(userID => interaction.guild.members.cache.has(userID))
-      .map(userID => ({
-        userID,
-        xp: xpData[userID].xp,
-        level: xpData[userID].level,
-      }))
-      .sort((a, b) => b.xp - a.xp);
 
     if (leaderboard.length === 0) {
       return interaction.editReply({ content: '📊 Nessun utente ha ancora accumulato XP in questo server.' });
