@@ -5,12 +5,12 @@
  * li registra a livello globale su Discord API per tutti i server in cui è presente il bot.
  */
 
+const path = require('path');
 const { REST, Routes } = require('discord.js');
-require('dotenv').config({ path: './config/.env' });
+require('dotenv').config({ path: path.resolve(__dirname, 'config/.env') });
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
 const fs = require('fs');
-const path = require('path');
 const { loadCommandsFromDir, printLoadStats } = require('./utils/loadCommands');
 
 /**
