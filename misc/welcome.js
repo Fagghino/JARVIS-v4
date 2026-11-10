@@ -54,7 +54,7 @@ module.exports = (client) => {
                         .setDescription(member.user.bot
                             ? `Un bot si è unito al server: **${member.user.tag}**`
                             : formattedDesc)
-                        .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
+                        .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
                         .addFields({ name: 'Membri totali:', value: `Ora siamo in **${member.guild.memberCount}**!`, inline: true });
 
                     await welcomeChannel.send({ embeds: [welcomeEmbed] }).catch(err =>
@@ -92,7 +92,7 @@ module.exports = (client) => {
                         .setDescription(member.user.bot
                             ? `Il bot **${member.user.tag}** ha lasciato il server.`
                             : formattedDesc)
-                        .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
+                        .setThumbnail(member.user.displayAvatarURL({ size: 256 }))
                         .addFields({ name: 'Membri rimanenti:', value: `Ora siamo in **${member.guild.memberCount}**`, inline: true })
                         .setTimestamp();
 
