@@ -5,14 +5,15 @@
  * selezionando canali e ruoli tramite menu interattivi. Le modifiche vengono salvate su MongoDB Cloud.
  */
 
-const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, ChannelSelectMenuBuilder, RoleSelectMenuBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, ChannelSelectMenuBuilder, RoleSelectMenuBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const { updateGuildConfig } = require('../../utils/guildSettings');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('set')
         .setDescription('Imposta un canale o un ruolo per questo server (SOLO ADMIN)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDMPermission(false),
 
     async execute(interaction) {
         if (!interaction.guild) {
@@ -37,7 +38,7 @@ module.exports = {
         const typeSelect = new ActionRowBuilder()
             .addComponents(
                 new StringSelectMenuBuilder()
-                    .setCustomId('select_type')
+                    .setCustomId(`select_type_${interaction.id}`)
                     .setPlaceholder('Seleziona cosa vuoi configurare per questo server')
                     .addOptions(options)
             );
@@ -50,7 +51,7 @@ module.exports = {
         });
 
         collector.on('collect', async (i) => {
-            if (i.customId === 'select_type') {
+            if (i.customId === `select_type_${interaction.id}`) {
                 const selectedType = i.values[0];
                 let component;
 
@@ -67,7 +68,7 @@ module.exports = {
                             new ChannelSelectMenuBuilder()
                                 .setCustomId(`select_channel_${selectedType}`)
                                 .setPlaceholder('Seleziona un canale')
-                                .setChannelTypes(0, 2)
+                                .setChannelTypes(ChannelType.GuildText, ChannelType.GuildVoice)
                         );
                 }
 
