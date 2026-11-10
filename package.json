@@ -8,7 +8,6 @@
     "web": "node -e \"require('dotenv').config({ path: 'config/.env' }); require('./dashboard/server.js')({ guilds: { cache: new Map() } })\"",
     "deploy": "node deploy-commands.js",
     "build": "npm run deploy",
-    "migrate": "node scripts/migrateSheetsToMongo.js",
     "test": "node -e \"console.log('✅ Syntax check passed')\" && node --check index.js",
     "validate": "node -e \"require('./config/config.js'); console.log('✅ Config valido');\""
   },
@@ -22,7 +21,6 @@
   "description": "JARVIS Discord Bot - A multi-purpose Discord bot with leveling system, moderation tools, and more",
   "dependencies": {
     "@vitalets/google-translate-api": "^8.0.0",
-    "axios": "^1.7.2",
     "connect-mongo": "^5.1.0",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.7",
@@ -44,7 +42,7 @@
   },
   "homepage": "https://github.com/Fagghino/JARVIS-v4#readme",
   "engines": {
-    "node": ">=16.0.0",
+    "node": ">=18.0.0",
     "npm": ">=8.0.0"
   }
 }
