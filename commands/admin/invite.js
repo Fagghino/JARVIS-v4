@@ -11,7 +11,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('invita')
     .setDescription('Ottieni il link di invito per il server (SOLO ADMIN)')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false),
 
   async execute(interaction) {
     await interaction.deferReply();
