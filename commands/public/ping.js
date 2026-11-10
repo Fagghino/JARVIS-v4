@@ -9,7 +9,8 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Mostra il ping'),
+    .setDescription('Mostra il ping')
+    .setDMPermission(false),
 
   async execute(interaction) {
     // Ottiene la latenza reale del WebSocket Discord
