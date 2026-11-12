@@ -21,12 +21,19 @@ module.exports = {
   newMemberRoleId: '',
   botRoleId: '',
   botNickname: '',
+  freeGamesChannelId: '',
+  freeGamesRoleId: '',
+  freeGamesFilter: {
+    keepOnly: true,
+    includeDlc: false
+  },
   features: {
     xpEnabled: true,
     levelUpNotificationEnabled: true,
     welcomeEnabled: true,
     reactionRolesEnabled: true,
-    counterEnabled: true
+    counterEnabled: true,
+    freeGamesEnabled: false
   },
   commands: {
     flip: true,
