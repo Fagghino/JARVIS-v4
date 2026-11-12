@@ -48,12 +48,20 @@ async function getGuildConfig(guildId) {
     botRoleId: defaultConfig.botRoleId || '',
     inviteLink: defaultConfig.inviteLink || '',
     botNickname: '',
+    freeGamesChannelId: defaultConfig.freeGamesChannelId || '',
+    freeGamesRoleId: defaultConfig.freeGamesRoleId || '',
+    freeGamesFilter: {
+      keepOnly: true,
+      includeDlc: false,
+      ...(defaultConfig.freeGamesFilter || {})
+    },
     features: {
       xpEnabled: true,
       levelUpNotificationEnabled: true,
       welcomeEnabled: true,
       reactionRolesEnabled: true,
-      counterEnabled: true
+      counterEnabled: true,
+      freeGamesEnabled: false
     },
     commands: {
       flip: true,
@@ -71,6 +79,10 @@ async function getGuildConfig(guildId) {
         config = {
           ...config,
           ...dbConfig,
+          freeGamesFilter: {
+            ...config.freeGamesFilter,
+            ...(dbConfig.freeGamesFilter || {})
+          },
           features: {
             ...config.features,
             ...(dbConfig.features || {})
@@ -104,6 +116,10 @@ async function updateGuildConfig(guildId, updatedFields) {
     ...current,
     ...updatedFields,
     guildId,
+    freeGamesFilter: {
+      ...(current.freeGamesFilter || {}),
+      ...(updatedFields.freeGamesFilter || {})
+    },
     features: {
       ...(current.features || {}),
       ...(updatedFields.features || {})
