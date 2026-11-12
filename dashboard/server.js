@@ -535,7 +535,10 @@ module.exports = (client) => {
     renderTemplate(res, "settings.html", {
       userBarHtml: getUserBarHtml(req.session.user),
       guildId: req.params.guildId,
-      guildName: req.guild.name
+      guildName: req.guild.name,
+      defaultWelcomeText: defaultConfig.welcomeMessageText,
+      defaultGoodbyeText: defaultConfig.goodbyeMessageText,
+      defaultLevelUpText: defaultConfig.levelUpMessageText
     });
   });
 
@@ -825,7 +828,12 @@ module.exports = (client) => {
       channels,
       roles,
       botInfo,
-      stats
+      stats,
+      defaults: {
+        welcomeMessageText: defaultConfig.welcomeMessageText,
+        goodbyeMessageText: defaultConfig.goodbyeMessageText,
+        levelUpMessageText: defaultConfig.levelUpMessageText
+      }
     });
   });
 

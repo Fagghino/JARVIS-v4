@@ -5,9 +5,13 @@
 
 const currentGuildId = document.body.dataset.guildId || window.currentGuildId || "";
 
-const DEFAULT_WELCOME = "Benvenuto nel server, {user}! Ora siamo in {count} membri!";
-const DEFAULT_GOODBYE = "{user} ha lasciato il server. Ci mancherai!";
-const DEFAULT_LEVELUP = "Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!";
+// Recupera i messaggi di default centralizzati (da data-attribute o dall'API)
+const bodyDataset = document.body.dataset || {};
+const DEFAULT_MESSAGES = {
+  welcome: bodyDataset.defaultWelcome || "",
+  goodbye: bodyDataset.defaultGoodbye || "",
+  levelUp: bodyDataset.defaultLevelup || ""
+};
 
 let serverChannels = [];
 let serverRoles = [];
@@ -147,17 +151,17 @@ function switchSettingsTab(tabId, btn) {
 }
 
 function resetWelcomeText() {
-  document.getElementById('welcomeMessageText').value = DEFAULT_WELCOME;
+  document.getElementById('welcomeMessageText').value = DEFAULT_MESSAGES.welcome;
   showToast("Testo di benvenuto ripristinato al default.", "success");
 }
 
 function resetGoodbyeText() {
-  document.getElementById('goodbyeMessageText').value = DEFAULT_GOODBYE;
+  document.getElementById('goodbyeMessageText').value = DEFAULT_MESSAGES.goodbye;
   showToast("Testo di addio ripristinato al default.", "success");
 }
 
 function resetLevelUpText() {
-  document.getElementById('levelUpMessageText').value = DEFAULT_LEVELUP;
+  document.getElementById('levelUpMessageText').value = DEFAULT_MESSAGES.levelUp;
   showToast("Testo di level up ripristinato al default.", "success");
 }
 
@@ -263,7 +267,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!res.ok) throw new Error("Impossibile caricare le impostazioni.");
 
     const data = await res.json();
-    const { currentConfig, channels, roles, botInfo, stats } = data;
+    const { currentConfig, channels, roles, botInfo, stats, defaults } = data;
+
+    // Sincronizza i messaggi di default inviati dal server
+    if (defaults) {
+      if (defaults.welcomeMessageText) DEFAULT_MESSAGES.welcome = defaults.welcomeMessageText;
+      if (defaults.goodbyeMessageText) DEFAULT_MESSAGES.goodbye = defaults.goodbyeMessageText;
+      if (defaults.levelUpMessageText) DEFAULT_MESSAGES.levelUp = defaults.levelUpMessageText;
+    }
 
     serverChannels = channels || [];
     serverRoles = roles || [];
@@ -295,9 +306,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Popola Valori Form
     document.getElementById("welcomeChannelId").value = currentConfig.welcomeChannelId || "";
     document.getElementById("goodbyeChannelId").value = currentConfig.goodbyeChannelId || "";
-    document.getElementById("welcomeMessageText").value = currentConfig.welcomeMessageText || DEFAULT_WELCOME;
-    document.getElementById("goodbyeMessageText").value = currentConfig.goodbyeMessageText || DEFAULT_GOODBYE;
-    document.getElementById("levelUpMessageText").value = currentConfig.levelUpMessageText || DEFAULT_LEVELUP;
+    document.getElementById("welcomeMessageText").value = currentConfig.welcomeMessageText || DEFAULT_MESSAGES.welcome;
+    document.getElementById("goodbyeMessageText").value = currentConfig.goodbyeMessageText || DEFAULT_MESSAGES.goodbye;
+    document.getElementById("levelUpMessageText").value = currentConfig.levelUpMessageText || DEFAULT_MESSAGES.levelUp;
     document.getElementById("newMemberRoleId").value = currentConfig.newMemberRoleId || "";
     document.getElementById("botRoleId").value = currentConfig.botRoleId || "";
     document.getElementById("levelUpChannelId").value = currentConfig.levelUpChannelId || "";
