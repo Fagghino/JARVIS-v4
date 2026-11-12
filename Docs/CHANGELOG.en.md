@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added editable textarea in "🏆 Livelli & XP" dashboard tab for custom level-up embed messages with default template (`Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!`) and dedicated "🔄 Ripristina Default" button.
   - Full variable placeholders support: `{user}` (username), `{mention}` (@user ping), `{level}` (new level), `{server}` (server name), and `{xp}` (total XP).
   - Introduced new cyber-toggle "Notifiche di Level Up" (`features.levelUpNotificationEnabled`) allowing admins to keep XP leveling progression active while silencing public level-up announcements.
+- **Interactive Variable Tags & Real-Time Discord Embed Preview (`dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
+  - Added click-to-insert pill badges (`+ {user}`, `+ {server}`, `+ {count}`, `+ {mention}`, `+ {level}`, `+ {xp}`) inserting placeholders directly at caret position for Welcome, Goodbye, and Level Up textareas.
+  - Built real-time Discord Embed mockup preview rendering formatted Markdown, styled mentions, thumbnail avatars, and field details as the user types.
 
 ### Changed
 - **Centralized Default Messages as Single Source of Truth (`config/config.js`, `models/GuildSettings.js`, `utils/guildSettings.js`, `misc/welcome.js`, `misc/level.js`, `dashboard/server.js`, `dashboard/public/js/settings.js`)**:

@@ -29,6 +29,9 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Aggiunta casella di testo textarea nella scheda "🏆 Livelli & XP" per personalizzare il messaggio embed di Level Up, con il testo attuale impostato come predefinito (`Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!`) e pulsante dedicato "🔄 Ripristina Default".
   - Supporto completo alle variabili dinamiche: `{user}` (nome utente), `{mention}` (menzione @utente), `{level}` (nuovo livello), `{server}` (nome server) e `{xp}` (XP totali).
   - Introdotto nuovo slider toggle cyber "Notifiche di Level Up" (`features.levelUpNotificationEnabled`): permette di mantenere attivo l'intero sistema di accumulo XP e avanzamento livelli disattivando unicamente l'invio dell'annuncio nel canale testuale.
+- **Pillole Cliccabili Inserimento Variabili e Anteprima Discord Embed Live (`dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
+  - Aggiunti pulsanti badge interattivi (`+ {user}`, `+ {server}`, `+ {count}`, `+ {mention}`, `+ {level}`, `+ {xp}`) per l'inserimento istantaneo al punto del cursore nei campi Benvenuto, Addio e Level Up.
+  - Creata una live preview interattiva in stile Discord Embed che renderizza in tempo reale descrizione formattata con Markdown, menzioni stilizzate, avatar e campi informativi mentre l'utente digita.
 
 ### Changed
 - **Centralizzazione Messaggi Predefiniti (Single Source of Truth) (`config/config.js`, `models/GuildSettings.js`, `utils/guildSettings.js`, `misc/welcome.js`, `misc/level.js`, `dashboard/server.js`, `dashboard/public/js/settings.js`)**:
