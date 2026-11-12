@@ -7,6 +7,7 @@ const currentGuildId = document.body.dataset.guildId || window.currentGuildId ||
 
 const DEFAULT_WELCOME = "Benvenuto nel server, {user}! Ora siamo in {count} membri!";
 const DEFAULT_GOODBYE = "{user} ha lasciato il server. Ci mancherai!";
+const DEFAULT_LEVELUP = "Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!";
 
 let serverChannels = [];
 let serverRoles = [];
@@ -155,6 +156,11 @@ function resetGoodbyeText() {
   showToast("Testo di addio ripristinato al default.", "success");
 }
 
+function resetLevelUpText() {
+  document.getElementById('levelUpMessageText').value = DEFAULT_LEVELUP;
+  showToast("Testo di level up ripristinato al default.", "success");
+}
+
 function showToast(msg, type = "success") {
   const box = document.getElementById("toastAlert");
   if (!box) return;
@@ -171,6 +177,7 @@ function showToast(msg, type = "success") {
 window.switchSettingsTab = switchSettingsTab;
 window.resetWelcomeText = resetWelcomeText;
 window.resetGoodbyeText = resetGoodbyeText;
+window.resetLevelUpText = resetLevelUpText;
 window.showToast = showToast;
 window.openNewRoleModal = openNewRoleModal;
 window.closeNewRoleModal = closeNewRoleModal;
@@ -193,6 +200,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 2. Registra listener per bottoni modale e reset
   document.getElementById("btnResetWelcomeText")?.addEventListener("click", resetWelcomeText);
   document.getElementById("btnResetGoodbyeText")?.addEventListener("click", resetGoodbyeText);
+  document.getElementById("btnResetLevelUpText")?.addEventListener("click", resetLevelUpText);
   document.getElementById("btnOpenNewRoleModal")?.addEventListener("click", openNewRoleModal);
   document.getElementById("btnCloseRoleModalIcon")?.addEventListener("click", closeNewRoleModal);
   document.getElementById("btnCancelRoleModal")?.addEventListener("click", closeNewRoleModal);
@@ -289,6 +297,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("goodbyeChannelId").value = currentConfig.goodbyeChannelId || "";
     document.getElementById("welcomeMessageText").value = currentConfig.welcomeMessageText || DEFAULT_WELCOME;
     document.getElementById("goodbyeMessageText").value = currentConfig.goodbyeMessageText || DEFAULT_GOODBYE;
+    document.getElementById("levelUpMessageText").value = currentConfig.levelUpMessageText || DEFAULT_LEVELUP;
     document.getElementById("newMemberRoleId").value = currentConfig.newMemberRoleId || "";
     document.getElementById("botRoleId").value = currentConfig.botRoleId || "";
     document.getElementById("levelUpChannelId").value = currentConfig.levelUpChannelId || "";
@@ -303,6 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("featureReactionRolesEnabled").checked = feat.reactionRolesEnabled !== false;
     document.getElementById("featureCounterEnabled").checked = feat.counterEnabled !== false;
     document.getElementById("featureXpEnabled").checked = feat.xpEnabled !== false;
+    document.getElementById("featureLevelUpNotificationEnabled").checked = feat.levelUpNotificationEnabled !== false;
 
     // Popola Slider Toggle Comandi
     const cmds = currentConfig.commands || {};
@@ -345,6 +355,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       goodbyeChannelId: document.getElementById("goodbyeChannelId").value,
       welcomeMessageText: document.getElementById("welcomeMessageText").value,
       goodbyeMessageText: document.getElementById("goodbyeMessageText").value,
+      levelUpMessageText: document.getElementById("levelUpMessageText").value,
       newMemberRoleId: document.getElementById("newMemberRoleId").value,
       botRoleId: document.getElementById("botRoleId").value,
       levelUpChannelId: document.getElementById("levelUpChannelId").value,
@@ -357,7 +368,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         welcomeEnabled: document.getElementById("featureWelcomeEnabled").checked,
         reactionRolesEnabled: document.getElementById("featureReactionRolesEnabled").checked,
         counterEnabled: document.getElementById("featureCounterEnabled").checked,
-        xpEnabled: document.getElementById("featureXpEnabled").checked
+        xpEnabled: document.getElementById("featureXpEnabled").checked,
+        levelUpNotificationEnabled: document.getElementById("featureLevelUpNotificationEnabled").checked
       },
       commands: {
         flip: document.getElementById("cmd_flip").checked,

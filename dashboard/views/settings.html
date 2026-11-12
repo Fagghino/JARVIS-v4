@@ -1407,9 +1407,38 @@
                 </label>
               </div>
 
-              <div class="form-group">
+              <!-- Slider Toggle Switch Notifiche Level Up -->
+              <div class="feature-switch-bar" style="margin-top: 14px;">
+                <div class="switch-label-wrap">
+                  <span style="font-size: 1.4rem;">🔔</span>
+                  <div>
+                    <div class="switch-title">Notifiche di Level Up</div>
+                    <div class="switch-sub">Invia un messaggio di congratulazioni quando un membro sale di livello. Se disattivato, il conteggio XP resta attivo ma non viene inviato alcun messaggio.</div>
+                  </div>
+                </div>
+                <label class="cyber-toggle">
+                  <input type="checkbox" id="featureLevelUpNotificationEnabled" name="featureLevelUpNotificationEnabled" checked>
+                  <span class="cyber-slider"></span>
+                </label>
+              </div>
+
+              <div class="form-group" style="margin-top: 24px;">
                 <label class="form-label" for="levelUpChannelId">Canale Notifiche Level Up</label>
                 <select id="levelUpChannelId" name="levelUpChannelId" class="form-control text-channel-select"></select>
+              </div>
+
+              <!-- Testo Level Up Personalizzato -->
+              <div class="form-group">
+                <div class="textarea-header">
+                  <label class="form-label" for="levelUpMessageText" style="margin-bottom: 0;">Testo Embed di Level Up</label>
+                  <button type="button" id="btnResetLevelUpText" class="btn-reset-text" onclick="resetLevelUpText()">
+                    🔄 Ripristina Default
+                  </button>
+                </div>
+                <textarea id="levelUpMessageText" name="levelUpMessageText" class="form-control"></textarea>
+                <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block;">
+                  Variabili supportate: <code>{user}</code> (nome utente), <code>{mention}</code> (menzione @utente), <code>{level}</code> (nuovo livello), <code>{server}</code> (nome server), <code>{xp}</code> (XP totali).
+                </span>
               </div>
             </div>
 

@@ -837,7 +837,7 @@ module.exports = (client) => {
     // Whitelist dei campi consentiti per evitare Mass Assignment (ALTA-06)
     const settingsWhitelist = [
       'welcomeChannelId', 'goodbyeChannelId', 'welcomeMessageText', 'goodbyeMessageText',
-      'levelUpChannelId', 'totalChannelId', 'usersChannelId', 'botsChannelId',
+      'levelUpChannelId', 'levelUpMessageText', 'totalChannelId', 'usersChannelId', 'botsChannelId',
       'newMemberRoleId', 'botRoleId', 'inviteLink', 'botNickname', 'features', 'commands'
     ];
     
