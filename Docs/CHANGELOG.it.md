@@ -32,6 +32,10 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
 - **Pillole Cliccabili Inserimento Variabili e Anteprima Discord Embed Live (`dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
   - Aggiunti pulsanti badge interattivi (`+ {user}`, `+ {server}`, `+ {count}`, `+ {mention}`, `+ {level}`, `+ {xp}`) per l'inserimento istantaneo al punto del cursore nei campi Benvenuto, Addio e Level Up.
   - Creata una live preview interattiva in stile Discord Embed che renderizza in tempo reale descrizione formattata con Markdown, menzioni stilizzate, avatar e campi informativi mentre l'utente digita.
+- **Pagine Web Ufficiali Privacy Policy e Termini di Servizio (`dashboard/views/privacy.html`, `dashboard/views/terms.html`, `dashboard/server.js`, `dashboard/views/landing.html`)**:
+  - Create due viste responsive dedicate per la conformità con Discord Developer Policy e GDPR europeo (UE 2016/679).
+  - Rotte pubbliche registrate: `GET /privacy` e `GET /terms` (con alias `/tos`), complete di navigazione a indice, dettagli su titolare, minimizzazione dati, diritti degli utenti e regole d'uso.
+  - Collegati i relativi link nel footer della landing page.
 
 ### Changed
 - **Centralizzazione Messaggi Predefiniti (Single Source of Truth) (`config/config.js`, `models/GuildSettings.js`, `utils/guildSettings.js`, `misc/welcome.js`, `misc/level.js`, `dashboard/server.js`, `dashboard/public/js/settings.js`)**:

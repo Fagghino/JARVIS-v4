@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Interactive Variable Tags & Real-Time Discord Embed Preview (`dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
   - Added click-to-insert pill badges (`+ {user}`, `+ {server}`, `+ {count}`, `+ {mention}`, `+ {level}`, `+ {xp}`) inserting placeholders directly at caret position for Welcome, Goodbye, and Level Up textareas.
   - Built real-time Discord Embed mockup preview rendering formatted Markdown, styled mentions, thumbnail avatars, and field details as the user types.
+- **Dedicated Privacy Policy & Terms of Service Web Pages (`dashboard/views/privacy.html`, `dashboard/views/terms.html`, `dashboard/server.js`, `dashboard/views/landing.html`)**:
+  - Created two responsive legal views compliant with Discord Developer Policy and European GDPR (EU 2016/679).
+  - Registered public routes `GET /privacy` and `GET /terms` (alias `/tos`) featuring table of contents navigation, data controller details, data minimization policies, user deletion rights, and service conduct rules.
+  - Updated landing page footer links accordingly.
 
 ### Changed
 - **Centralized Default Messages as Single Source of Truth (`config/config.js`, `models/GuildSettings.js`, `utils/guildSettings.js`, `misc/welcome.js`, `misc/level.js`, `dashboard/server.js`, `dashboard/public/js/settings.js`)**:
