@@ -31,6 +31,9 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Introdotto nuovo slider toggle cyber "Notifiche di Level Up" (`features.levelUpNotificationEnabled`): permette di mantenere attivo l'intero sistema di accumulo XP e avanzamento livelli disattivando unicamente l'invio dell'annuncio nel canale testuale.
 
 ### Changed
+- **Centralizzazione Messaggi Predefiniti (Single Source of Truth) (`config/config.js`, `models/GuildSettings.js`, `utils/guildSettings.js`, `misc/welcome.js`, `misc/level.js`, `dashboard/server.js`, `dashboard/public/js/settings.js`)**:
+  - Eliminata ogni duplicazione hardcoded delle stringhe di default per Benvenuto, Addio e Level Up: tutti i moduli backend e le rotte API ereditano dinamicamente da `config/config.js`.
+  - La Dashboard web sincronizza i messaggi predefiniti direttamente dal backend via API e attributi dati, permettendo di aggiornare qualsiasi testo di default futuro modificando unicamente `config/config.js`.
 - **Sostituzione Axios con `fetch` Nativo Node 18+ (`dashboard/server.js`, `package.json`)**:
   - Eliminata la dipendenza esterna `axios` nello scambio OAuth2, azzerando 1 vulnerabilità critica e tutte le 13 vulnerabilità ad alta gravità segnalate da `npm audit`.
 - **Ottimizzazione Flush Cache XP su MongoDB (`misc/level.js`)**:

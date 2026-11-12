@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Introduced new cyber-toggle "Notifiche di Level Up" (`features.levelUpNotificationEnabled`) allowing admins to keep XP leveling progression active while silencing public level-up announcements.
 
 ### Changed
+- **Centralized Default Messages as Single Source of Truth (`config/config.js`, `models/GuildSettings.js`, `utils/guildSettings.js`, `misc/welcome.js`, `misc/level.js`, `dashboard/server.js`, `dashboard/public/js/settings.js`)**:
+  - Eliminated hardcoded string duplication for Welcome, Goodbye, and Level Up defaults across backend schemas, bot handlers, and frontend web scripts.
+  - Web dashboard now dynamically receives defaults from `config/config.js` via API and data attributes, ensuring any future default message modifications require editing only `config/config.js`.
 - **Axios Replaced with Node 18+ Native `fetch` (`dashboard/server.js`, `package.json`)**:
   - Removed external `axios` dependency for OAuth2 token exchanges, resolving 1 critical and all 13 high security advisories reported by `npm audit`.
 - **Optimized MongoDB XP Cache Flushing (`misc/level.js`)**:
