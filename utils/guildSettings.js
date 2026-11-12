@@ -40,6 +40,7 @@ async function getGuildConfig(guildId) {
     welcomeMessageText: 'Benvenuto nel server, {user}! Ora siamo in {count} membri!',
     goodbyeMessageText: '{user} ha lasciato il server. Ci mancherai!',
     levelUpChannelId: defaultConfig.levelUpChannelId || '',
+    levelUpMessageText: defaultConfig.levelUpMessageText || 'Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!',
     totalChannelId: defaultConfig.totalChannelId || '',
     usersChannelId: defaultConfig.usersChannelId || '',
     botsChannelId: defaultConfig.botsChannelId || '',
@@ -49,6 +50,7 @@ async function getGuildConfig(guildId) {
     botNickname: '',
     features: {
       xpEnabled: true,
+      levelUpNotificationEnabled: true,
       welcomeEnabled: true,
       reactionRolesEnabled: true,
       counterEnabled: true

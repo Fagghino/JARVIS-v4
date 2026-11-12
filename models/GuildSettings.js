@@ -7,6 +7,7 @@ const guildSettingsSchema = new mongoose.Schema({
   welcomeMessageText: { type: String, default: 'Benvenuto nel server, {user}! Ora siamo in {count} membri!' },
   goodbyeMessageText: { type: String, default: '{user} ha lasciato il server. Ci mancherai!' },
   levelUpChannelId: { type: String, default: '' },
+  levelUpMessageText: { type: String, default: 'Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!' },
   totalChannelId: { type: String, default: '' },
   usersChannelId: { type: String, default: '' },
   botsChannelId: { type: String, default: '' },
@@ -16,6 +17,7 @@ const guildSettingsSchema = new mongoose.Schema({
   botNickname: { type: String, default: '' },
   features: {
     xpEnabled: { type: Boolean, default: true },
+    levelUpNotificationEnabled: { type: Boolean, default: true },
     welcomeEnabled: { type: Boolean, default: true },
     reactionRolesEnabled: { type: Boolean, default: true },
     counterEnabled: { type: Boolean, default: true }

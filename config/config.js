@@ -17,11 +17,13 @@ module.exports = {
   welcomeMessageText: 'Benvenuto nel server, {user}! Ora siamo in {count} membri!',
   goodbyeMessageText: '{user} ha lasciato il server. Ci mancherai!',
   levelUpChannelId: '',
+  levelUpMessageText: 'Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!',
   newMemberRoleId: '',
   botRoleId: '',
   botNickname: '',
   features: {
     xpEnabled: true,
+    levelUpNotificationEnabled: true,
     welcomeEnabled: true,
     reactionRolesEnabled: true,
     counterEnabled: true
