@@ -407,7 +407,7 @@ module.exports = (client) => {
   });
 
   // Informativa sulla Privacy (GDPR & Discord Developer Policy)
-  app.get("/privacy", (req, res) => {
+  app.get(["/privacy-policy", "/privacy"], (req, res) => {
     const user = req.session && req.session.user ? req.session.user : null;
     renderTemplate(res, "privacy.html", {
       version,
@@ -416,7 +416,7 @@ module.exports = (client) => {
   });
 
   // Termini di Servizio (Terms of Service / ToS)
-  app.get(["/terms", "/tos"], (req, res) => {
+  app.get(["/terms-of-services", "/terms-of-service", "/terms", "/tos"], (req, res) => {
     const user = req.session && req.session.user ? req.session.user : null;
     renderTemplate(res, "terms.html", {
       version,

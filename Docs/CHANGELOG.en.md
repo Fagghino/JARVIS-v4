@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Built real-time Discord Embed mockup preview rendering formatted Markdown, styled mentions, thumbnail avatars, and field details as the user types.
 - **Dedicated Privacy Policy & Terms of Service Web Pages (`dashboard/views/privacy.html`, `dashboard/views/terms.html`, `dashboard/server.js`, `dashboard/views/landing.html`)**:
   - Created two responsive legal views compliant with Discord Developer Policy and European GDPR (EU 2016/679).
-  - Registered public routes `GET /privacy` and `GET /terms` (alias `/tos`) featuring table of contents navigation, data controller details, data minimization policies, user deletion rights, and service conduct rules.
+  - Registered primary public routes `GET /privacy-policy` and `GET /terms-of-services` (with backwards-compatible aliases `/privacy`, `/terms`, `/tos`) featuring table of contents navigation, data controller details, data minimization policies, user deletion rights, and service conduct rules.
   - Updated landing page footer links accordingly.
 
 ### Changed

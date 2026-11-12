@@ -34,7 +34,7 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Creata una live preview interattiva in stile Discord Embed che renderizza in tempo reale descrizione formattata con Markdown, menzioni stilizzate, avatar e campi informativi mentre l'utente digita.
 - **Pagine Web Ufficiali Privacy Policy e Termini di Servizio (`dashboard/views/privacy.html`, `dashboard/views/terms.html`, `dashboard/server.js`, `dashboard/views/landing.html`)**:
   - Create due viste responsive dedicate per la conformità con Discord Developer Policy e GDPR europeo (UE 2016/679).
-  - Rotte pubbliche registrate: `GET /privacy` e `GET /terms` (con alias `/tos`), complete di navigazione a indice, dettagli su titolare, minimizzazione dati, diritti degli utenti e regole d'uso.
+  - Rotte pubbliche primarie registrate: `GET /privacy-policy` e `GET /terms-of-services` (con alias `/privacy`, `/terms`, `/tos`), complete di navigazione a indice, dettagli su titolare, minimizzazione dati, diritti degli utenti e regole d'uso.
   - Collegati i relativi link nel footer della landing page.
 
 ### Changed
