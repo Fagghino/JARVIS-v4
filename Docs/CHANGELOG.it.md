@@ -76,6 +76,8 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Implementato pre-fetching asincrono (`guild.members.fetch` con fallback su `client.users.fetch`) per i membri non presenti nella cache in memoria di Discord.js, risolvendo l'anomalia per cui gli utenti del server (es. `purple_rabbit_`) visualizzavano l'avatar blu predefinito anziché la propria immagine profilo Discord.
 - **Risoluzione Layout Top Bar Pagine Dashboard e Accesso Negato (`dashboard/views/dashboard.html`, `dashboard/views/unauthorized.html`, `dashboard/public/css/style.css`)**:
   - Collegato `landing.css`, rimossa l'impostazione flexbox centrata sul `body` in `style.css` e aggiunti wrapper responsive dedicati per eliminare la distorsione dell'avatar del bot e formattare correttamente la navbar sticky.
+- **Risoluzione Conteggio Bot nei Canali Vocali Counter (`misc/counter.js`)**:
+  - Risolto il bug per cui il counter dei bot segnava sempre `1`: all'avvio Discord.js memorizza nella cache volatile solo il bot stesso. Aggiunto il controllo asincrono condizionale (`guild.members.cache.size !== totalMembers`) che scarica la lista completa dei membri solo quando necessario, calcolando con precisione tutti i bot presenti senza sovraccaricare le API Discord.
 
 ### Removed
 - **Script di Migrazione Obsoleto**:

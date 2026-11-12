@@ -76,6 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented asynchronous pre-fetching (`guild.members.fetch` with fallback to `client.users.fetch`) for members missing from Discord.js memory cache, fixing default generic avatar fallbacks for active members (e.g. `purple_rabbit_`).
 - **Dashboard & Unauthorized Views Top Bar Layout Resolution (`dashboard/views/dashboard.html`, `dashboard/views/unauthorized.html`, `dashboard/public/css/style.css`)**:
   - Linked `landing.css`, removed viewport flex-centering on `body` in `style.css`, and introduced dedicated responsive wrappers to eliminate bot avatar distortion and correctly render the sticky glass navigation bar.
+- **Fixed Bot Counter in Voice Channels (`misc/counter.js`)**:
+  - Resolved bug where the bot counter always reported `1` due to Discord.js only caching the connected client itself on startup. Added conditional asynchronous member sync (`guild.members.cache.size !== totalMembers`) ensuring accurate multi-bot tracking without redundant API overhead.
 
 ### Removed
 - **Broken Migration Script**:
