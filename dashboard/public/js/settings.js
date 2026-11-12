@@ -150,18 +150,107 @@ function switchSettingsTab(tabId, btn) {
   }
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderEmbedPreview(rawText, type, defaultFallback) {
+  const text = (rawText && rawText.trim()) ? rawText : defaultFallback;
+  let html = escapeHtml(text);
+
+  // Markdown base Discord
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+  html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  html = html.replace(/`([^`]+)`/g, '<code class="discord-code">$1</code>');
+  html = html.replace(/\n/g, '<br>');
+
+  // Sostituzione variabili con dati d'esempio realistici
+  const guildName = document.body.dataset.guildName || 'Community Server';
+
+  if (type === 'welcome') {
+    html = html
+      .replace(/{user}/g, '<span class="discord-mention">@Fagghino</span>')
+      .replace(/{server}/g, `<strong>${escapeHtml(guildName)}</strong>`)
+      .replace(/{count}/g, '<strong>128</strong>');
+  } else if (type === 'goodbye') {
+    html = html
+      .replace(/{user}/g, '<strong>Fagghino</strong>')
+      .replace(/{server}/g, `<strong>${escapeHtml(guildName)}</strong>`)
+      .replace(/{count}/g, '<strong>127</strong>');
+  } else if (type === 'levelup') {
+    html = html
+      .replace(/{user}/g, '<strong>Fagghino</strong>')
+      .replace(/{mention}/g, '<span class="discord-mention">@Fagghino</span>')
+      .replace(/{level}/g, '<strong>45</strong>')
+      .replace(/{server}/g, `<strong>${escapeHtml(guildName)}</strong>`)
+      .replace(/{xp}/g, '<strong>196,680</strong>');
+  }
+
+  return html;
+}
+
+function updateAllDiscordPreviews() {
+  const welcomeEl = document.getElementById('welcomeMessageText');
+  const previewWelcome = document.getElementById('previewWelcomeDesc');
+  if (welcomeEl && previewWelcome) {
+    previewWelcome.innerHTML = renderEmbedPreview(welcomeEl.value, 'welcome', DEFAULT_MESSAGES.welcome);
+  }
+
+  const goodbyeEl = document.getElementById('goodbyeMessageText');
+  const previewGoodbye = document.getElementById('previewGoodbyeDesc');
+  if (goodbyeEl && previewGoodbye) {
+    previewGoodbye.innerHTML = renderEmbedPreview(goodbyeEl.value, 'goodbye', DEFAULT_MESSAGES.goodbye);
+  }
+
+  const levelUpEl = document.getElementById('levelUpMessageText');
+  const previewLevelUp = document.getElementById('previewLevelUpDesc');
+  if (levelUpEl && previewLevelUp) {
+    previewLevelUp.innerHTML = renderEmbedPreview(levelUpEl.value, 'levelup', DEFAULT_MESSAGES.levelUp);
+  }
+}
+
+function insertVariableAtCursor(textareaId, variableTag) {
+  const textarea = document.getElementById(textareaId);
+  if (!textarea) return;
+
+  const start = textarea.selectionStart ?? textarea.value.length;
+  const end = textarea.selectionEnd ?? textarea.value.length;
+  const text = textarea.value;
+
+  const before = text.substring(0, start);
+  const after = text.substring(end, text.length);
+
+  textarea.value = before + variableTag + after;
+  textarea.selectionStart = textarea.selectionEnd = start + variableTag.length;
+  textarea.focus();
+
+  // Dispatta evento per aggiornare subito l'anteprima in tempo reale
+  textarea.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
 function resetWelcomeText() {
   document.getElementById('welcomeMessageText').value = DEFAULT_MESSAGES.welcome;
+  updateAllDiscordPreviews();
   showToast("Testo di benvenuto ripristinato al default.", "success");
 }
 
 function resetGoodbyeText() {
   document.getElementById('goodbyeMessageText').value = DEFAULT_MESSAGES.goodbye;
+  updateAllDiscordPreviews();
   showToast("Testo di addio ripristinato al default.", "success");
 }
 
 function resetLevelUpText() {
   document.getElementById('levelUpMessageText').value = DEFAULT_MESSAGES.levelUp;
+  updateAllDiscordPreviews();
   showToast("Testo di level up ripristinato al default.", "success");
 }
 
@@ -213,6 +302,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 3. Listener per personalizzazione bot (Nickname, Avatar, Banner)
   document.getElementById("botNickname")?.addEventListener("input", updateBotProfilePreview);
   document.getElementById("btnResetNickname")?.addEventListener("click", resetBotNickname);
+
+  // 4. Listener per pulsanti variabili dinamiche nei messaggi
+  document.querySelectorAll('.btn-var-tag').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = btn.getAttribute('data-target');
+      const varTag = btn.getAttribute('data-var');
+      if (targetId && varTag) {
+        insertVariableAtCursor(targetId, varTag);
+      }
+    });
+  });
+
+  // 5. Listener di input per anteprima live Discord Embed
+  document.getElementById('welcomeMessageText')?.addEventListener('input', updateAllDiscordPreviews);
+  document.getElementById('goodbyeMessageText')?.addEventListener('input', updateAllDiscordPreviews);
+  document.getElementById('levelUpMessageText')?.addEventListener('input', updateAllDiscordPreviews);
 
   const avatarFileInput = document.getElementById("botAvatarFile");
   document.getElementById("btnChooseAvatar")?.addEventListener("click", () => {
@@ -316,6 +422,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("usersChannelId").value = currentConfig.usersChannelId || "";
     document.getElementById("botsChannelId").value = currentConfig.botsChannelId || "";
     document.getElementById("inviteLink").value = currentConfig.inviteLink || "";
+
+    // Aggiorna anteprime Discord Embed live all'avvio
+    updateAllDiscordPreviews();
 
     // Popola Slider Toggle Switches
     const feat = currentConfig.features || {};
