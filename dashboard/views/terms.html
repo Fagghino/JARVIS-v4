@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Termini di Servizio - J.A.R.V.I.S. Bot</title>
+  
+  <!-- Font Google Outfit, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    body {
+      display: block;
+      min-height: 100vh;
+      background-color: var(--bg, #0b0f19);
+      padding: 0;
+      margin: 0;
+      color: var(--text, #f8fafc);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .legal-page-wrap {
+      max-width: 960px;
+      margin: 40px auto 100px auto;
+      padding: 0 24px;
+    }
+
+    .legal-hero {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .legal-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(0, 180, 216, 0.1);
+      border: 1px solid rgba(0, 180, 216, 0.25);
+      color: #00b4d8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .legal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0 0 12px 0;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .legal-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted, #94a3b8);
+      max-width: 680px;
+      margin: 0 auto 16px auto;
+      line-height: 1.6;
+    }
+
+    .legal-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted, #94a3b8);
+      flex-wrap: wrap;
+    }
+
+    .legal-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Indice Rapido */
+    .toc-card {
+      background: rgba(17, 24, 39, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 36px;
+      backdrop-filter: blur(12px);
+    }
+
+    .toc-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px 18px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-grid li a {
+      color: var(--text-muted, #94a3b8);
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .toc-grid li a:hover {
+      color: var(--cyan-primary, #00b4d8);
+      transform: translateX(4px);
+    }
+
+    /* Sezioni Documento */
+    .legal-section {
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 32px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.2s ease;
+    }
+
+    .legal-section:hover {
+      border-color: rgba(0, 180, 216, 0.2);
+    }
+
+    .legal-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgba(0, 180, 216, 0.15);
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      color: #00b4d8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.88rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .section-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 0;
+      color: #fff;
+    }
+
+    .legal-section p {
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+      margin: 0 0 14px 0;
+    }
+
+    .legal-section ul {
+      margin: 0 0 16px 0;
+      padding-left: 20px;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .legal-section li {
+      margin-bottom: 8px;
+    }
+
+    .legal-highlight-box {
+      background: rgba(0, 180, 216, 0.06);
+      border-left: 3px solid #00b4d8;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .legal-warning-box {
+      background: rgba(239, 68, 68, 0.08);
+      border-left: 3px solid #ef4444;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.9rem;
+      color: #fca5a5;
+      line-height: 1.6;
+    }
+
+    .legal-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-top: 10px;
+      transition: all 0.25s ease;
+      font-size: 0.95rem;
+    }
+
+    .legal-contact-btn:hover {
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.4);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       NAVBAR (IDENTICA A LANDING PAGE)
+       ========================================================================== -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="nav-brand">
+        <img src="/images/avatar.gif" alt="JARVIS Logo" class="brand-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+        <span class="brand-title">J.A.R.V.I.S.</span>
+        <span class="brand-badge">v<%= version %></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="/select-guild" class="nav-link">Web Dashboard</a></li>
+        <li><a href="/terms" class="nav-link active" style="color: var(--cyan-primary);">Termini</a></li>
+        <li><a href="/privacy" class="nav-link">Privacy</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <%= navActionsHtml %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       CONTENUTO PRINCIPALE
+       ========================================================================== -->
+  <main class="legal-page-wrap">
+    
+    <!-- Hero Testata -->
+    <header class="legal-hero">
+      <div class="legal-badge-pill">
+        📜 Condizioni di Utilizzo Ufficiali
+      </div>
+      <h1 class="legal-title">Termini di Servizio</h1>
+      <p class="legal-subtitle">
+        Le condizioni e le regole di utilizzo che disciplinano l'installazione e l'interazione con J.A.R.V.I.S. Bot e con la Web Dashboard ufficiale.
+      </p>
+      <div class="legal-meta-bar">
+        <span class="legal-meta-item">📅 Ultimo aggiornamento: <strong>12 Novembre 2026</strong></span>
+        <span>•</span>
+        <span class="legal-meta-item">🤖 Applicazione: <strong>J.A.R.V.I.S. (ID: 787828220107554867)</strong></span>
+        <span>•</span>
+        <span class="legal-meta-item">⚖️ Riconosciuto da: <strong>Discord Developer Terms of Service</strong></span>
+      </div>
+    </header>
+
+    <!-- Indice Rapido -->
+    <nav class="toc-card" aria-label="Indice dei contenuti">
+      <div class="toc-title">
+        <span>📑 Indice dei Contenuti</span>
+      </div>
+      <ul class="toc-grid">
+        <li><a href="#accettazione">1. Accettazione dei Termini</a></li>
+        <li><a href="#requisiti">2. Requisiti di Idoneità ed Età</a></li>
+        <li><a href="#licenza">3. Licenza e Funzionalità del Bot</a></li>
+        <li><a href="#condotta">4. Regole di Condotta e Usi Vietati</a></li>
+        <li><a href="#disponibilita">5. Disponibilità del Servizio & Uptime</a></li>
+        <li><a href="#revoca">6. Sospensione e Revoca dell'Accesso</a></li>
+        <li><a href="#responsabilita">7. Limitazione di Responsabilità</a></li>
+        <li><a href="#modifiche">8. Modifiche ai Termini</a></li>
+        <li><a href="#contatti">9. Contatti & Supporto</a></li>
+      </ul>
+    </nav>
+
+    <!-- Sezione 1: Accettazione -->
+    <section class="legal-section" id="accettazione">
+      <div class="legal-section-header">
+        <div class="section-number">01</div>
+        <h2 class="section-heading">Accettazione dei Termini</h2>
+      </div>
+      <p>
+        Aggiungendo l'applicazione <strong>J.A.R.V.I.S.</strong> (in seguito denominata "Bot") a un server Discord, interagendo con i suoi comandi slash o accedendo alla relativa piattaforma web su <strong>https://jarvis-v5-cto5.onrender.com</strong> (in seguito "Web Dashboard"), l'utente o l'amministratore accetta integralmente i presenti Termini di Servizio.
+      </p>
+      <p>
+        L'utilizzo del Bot è altresì subordinato al pieno rispetto dei <a href="https://discord.com/terms" target="_blank" style="color: var(--cyan-primary);">Termini di Servizio di Discord</a> e delle <a href="https://discord.com/guidelines" target="_blank" style="color: var(--cyan-primary);">Linee Guida della Community di Discord</a>. Se non accetti uno qualsiasi di questi termini, sei pregato di non utilizzare il Bot e di rimuoverlo dal tuo server.
+      </p>
+    </section>
+
+    <!-- Sezione 2: Requisiti -->
+    <section class="legal-section" id="requisiti">
+      <div class="legal-section-header">
+        <div class="section-number">02</div>
+        <h2 class="section-heading">Requisiti di Idoneità ed Età</h2>
+      </div>
+      <p>
+        Per poter utilizzare il Bot e la Web Dashboard, devi soddisfare i requisiti minimi di età prescritti da Discord e dalle leggi del tuo paese di residenza (almeno <strong>13 anni</strong> di età nell'Unione Europea e negli Stati Uniti, o l'età minima legale nel proprio stato).
+      </p>
+      <p>
+        Se installi il Bot all'interno di un server Discord, dichiari e garantisci di possedere i permessi amministrativi necessari (ruolo Amministratore o permesso "Gestisci Server") per autorizzare l'integrazione per conto della tua community.
+      </p>
+    </section>
+
+    <!-- Sezione 3: Licenza -->
+    <section class="legal-section" id="licenza">
+      <div class="legal-section-header">
+        <div class="section-number">03</div>
+        <h2 class="section-heading">Licenza d'Uso e Funzionalità del Bot</h2>
+      </div>
+      <p>
+        Viene concessa una licenza limitata, revocabile, non esclusiva e non trasferibile per l'utilizzo del Bot e della Web Dashboard a fini ricreativi e di gestione della community.
+      </p>
+      <p>J.A.R.V.I.S. offre moduli dedicati a:</p>
+      <ul>
+        <li><strong>Gamification</strong>: calcolo automatico di punti XP (testuali e vocali), gestione livelli e comandi <code>/rank</code> e <code>/classifica</code>.</li>
+        <li><strong>Utility e Gestione Server</strong>: contatori vocali per membri e bot, messaggi di benvenuto/addio personalizzati con embed dinamici.</li>
+        <li><strong>Moderazione</strong>: cancellazione rapida dei messaggi (<code>/clear</code>) e verifica permessi dei membri.</li>
+        <li><strong>Traduzione Istantanea</strong>: supporto a oltre 100 lingue tramite il comando <code>/traduci</code>.</li>
+        <li><strong>Web Dashboard Cloud</strong>: interfaccia grafica per configurare il bot in tempo reale senza toccare codice.</li>
+      </ul>
+    </section>
+
+    <!-- Sezione 4: Regole di Condotta -->
+    <section class="legal-section" id="condotta">
+      <div class="legal-section-header">
+        <div class="section-number">04</div>
+        <h2 class="section-heading">Regole di Condotta e Usi Vietati</h2>
+      </div>
+      <p>
+        Al fine di garantire la stabilità dell'infrastruttura e la sicurezza di tutti gli utenti, è severamente vietato:
+      </p>
+      <ul>
+        <li><strong>Spam e Flooding</strong>: inviare comandi ripetuti a raffica al fine di sovraccaricare il bot, i database o causare rate limit sulle API di Discord.</li>
+        <li><strong>Sfruttamento di Bug o Vulnerabilità</strong>: tentare injection, bypass delle misure di sicurezza della dashboard, manipolazione fraudolenta dei punteggi XP o sfruttamento di falle nel codice senza tempestiva segnalazione allo sviluppatore.</li>
+        <li><strong>Automazione Non Autorizzata (Self-Bot)</strong>: utilizzare script, bot di terze parti o account automatizzati per accumulare punti esperienza o triggerare comandi artificialmente.</li>
+        <li><strong>Usi Illeciti o Dannosi</strong>: utilizzare il bot per diffondere contenuti pedopornografici, messaggi d'odio, minacce, truffe informatiche (phishing) o qualsiasi materiale in violazione delle leggi vigenti o delle Community Guidelines di Discord.</li>
+      </ul>
+
+      <div class="legal-warning-box">
+        ⚠️ <strong>Tolleranza Zero:</strong> I tentativi deliberati di compromettere o sovraccaricare i server del bot comporteranno l'immediata blacklist permanente dell'utente e del server dal servizio.
+      </div>
+    </section>
+
+    <!-- Sezione 5: Disponibilità -->
+    <section class="legal-section" id="disponibilita">
+      <div class="legal-section-header">
+        <div class="section-number">05</div>
+        <h2 class="section-heading">Disponibilità del Servizio & Manutenzione</h2>
+      </div>
+      <p>
+        Il Bot e la Web Dashboard sono forniti <strong>"così come sono" (as is)</strong> e <strong>"secondo disponibilità" (as available)</strong>.
+      </p>
+      <p>
+        Lo sviluppatore si impegna a garantire la massima continuità operativa e tempi di risposta istantanei. Tuttavia, non possiamo garantire un uptime continuo al 100%, in quanto il servizio può subire interruzioni temporanee dovute a:
+      </p>
+      <ul>
+        <li>Manutenzioni periodiche del server o deploy di aggiornamenti software.</li>
+        <li>Disservizi o interruzioni delle API ufficiali di Discord Inc.</li>
+        <li>Manutenzioni dell'infrastruttura cloud di hosting (Render) o del cluster di database (MongoDB Atlas).</li>
+      </ul>
+    </section>
+
+    <!-- Sezione 6: Revoca dell'Accesso -->
+    <section class="legal-section" id="revoca">
+      <div class="legal-section-header">
+        <div class="section-number">06</div>
+        <h2 class="section-heading">Sospensione e Revoca dell'Accesso</h2>
+      </div>
+      <p>
+        Ci riserviamo il diritto insindacabile di sospendere, limitare o revocare l'accesso al Bot e alla Web Dashboard a singoli utenti o a interi server Discord, con o senza preavviso, in caso di:
+      </p>
+      <ul>
+        <li>Violazione accertata dei presenti Termini di Servizio o delle policy di Discord.</li>
+        <li>Uso abusivo o anomalo che metta a rischio le prestazioni per gli altri utenti.</li>
+        <li>Richiesta esplicita da parte del team di Discord Trust & Safety o di autorità giudiziarie competenti.</li>
+      </ul>
+    </section>
+
+    <!-- Sezione 7: Limitazione di Responsabilità -->
+    <section class="legal-section" id="responsabilita">
+      <div class="legal-section-header">
+        <div class="section-number">07</div>
+        <h2 class="section-heading">Limitazione di Responsabilità</h2>
+      </div>
+      <p>
+        Nei limiti massimi consentiti dalla legge applicabile, lo sviluppatore (Fagghino) e i collaboratori di J.A.R.V.I.S. non saranno responsabili per alcun danno diretto, indiretto, incidentale o consequenziale (inclusa la perdita di dati, ruoli, impostazioni di server o interruzioni di attività) derivante dall'utilizzo o dall'impossibilità di utilizzare il Bot o la Web Dashboard.
+      </p>
+      <p>
+        Gli amministratori dei server rimangono gli unici responsabili della corretta assegnazione dei ruoli, della moderazione della propria community e della gestione delle autorizzazioni concesse al Bot all'interno del proprio server Discord.
+      </p>
+    </section>
+
+    <!-- Sezione 8: Modifiche ai Termini -->
+    <section class="legal-section" id="modifiche">
+      <div class="legal-section-header">
+        <div class="section-number">08</div>
+        <h2 class="section-heading">Modifiche ai Termini di Servizio</h2>
+      </div>
+      <p>
+        Ci riserviamo il diritto di aggiornare periodicamente i presenti Termini per adeguarli all'evoluzione tecnica del Bot, a nuove funzionalità o a variazioni normative.
+      </p>
+      <p>
+        La versione più aggiornata sarà sempre consultabile su questa pagina, con evidenziata la data dell'ultimo aggiornamento. Continuando a utilizzare il Bot o la Web Dashboard dopo la pubblicazione delle modifiche, l'utente accetta implicitamente i Termini aggiornati.
+      </p>
+    </section>
+
+    <!-- Sezione 9: Contatti -->
+    <section class="legal-section" id="contatti">
+      <div class="legal-section-header">
+        <div class="section-number">09</div>
+        <h2 class="section-heading">Contatti e Canale di Supporto</h2>
+      </div>
+      <p>
+        Per domande, dubbi sui presenti Termini, chiarimenti o per richiedere supporto per il tuo server:
+      </p>
+      <ul>
+        <li><strong>Sviluppatore Responsabile:</strong> Fagghino (<a href="mailto:fgiordano839@gmail.com" style="color: var(--cyan-primary);">fgiordano839@gmail.com</a>)</li>
+        <li><strong>Repository Ufficiale:</strong> <a href="https://github.com/Fagghino/JARVIS-v4" target="_blank" style="color: var(--cyan-primary);">GitHub / Fagghino / JARVIS-v4</a></li>
+        <li><strong>Informativa Privacy:</strong> <a href="/privacy" style="color: var(--cyan-primary);">Consulta l'Informativa sulla Privacy</a></li>
+      </ul>
+      <a href="mailto:fgiordano839@gmail.com?subject=Richiesta%20Termini%20JARVIS%20Bot" class="legal-contact-btn">
+        ✉️ Contatta l'Amministrazione
+      </a>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>
+          © 2026 J.A.R.V.I.S. Bot • Creato con dedizione da Fagghino. Non affiliato con Discord Inc.
+        </div>
+        <div style="display: flex; gap: 20px;">
+          <a href="/privacy" style="color: var(--text-muted); text-decoration: none;">Privacy</a>
+          <a href="/terms" style="color: var(--cyan-primary); text-decoration: none; font-weight: 600;">Termini di Servizio</a>
+          <a href="#" style="color: var(--text-muted); text-decoration: none;">Torna in Cima ↑</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

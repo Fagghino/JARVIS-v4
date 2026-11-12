@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informativa sulla Privacy - J.A.R.V.I.S. Bot</title>
+  
+  <!-- Font Google Outfit, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    body {
+      display: block;
+      min-height: 100vh;
+      background-color: var(--bg, #0b0f19);
+      padding: 0;
+      margin: 0;
+      color: var(--text, #f8fafc);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .legal-page-wrap {
+      max-width: 960px;
+      margin: 40px auto 100px auto;
+      padding: 0 24px;
+    }
+
+    .legal-hero {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .legal-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(0, 180, 216, 0.1);
+      border: 1px solid rgba(0, 180, 216, 0.25);
+      color: #00b4d8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .legal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0 0 12px 0;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .legal-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted, #94a3b8);
+      max-width: 680px;
+      margin: 0 auto 16px auto;
+      line-height: 1.6;
+    }
+
+    .legal-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted, #94a3b8);
+      flex-wrap: wrap;
+    }
+
+    .legal-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Indice Rapido */
+    .toc-card {
+      background: rgba(17, 24, 39, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 36px;
+      backdrop-filter: blur(12px);
+    }
+
+    .toc-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px 18px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-grid li a {
+      color: var(--text-muted, #94a3b8);
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .toc-grid li a:hover {
+      color: var(--cyan-primary, #00b4d8);
+      transform: translateX(4px);
+    }
+
+    /* Sezioni Documento */
+    .legal-section {
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 32px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.2s ease;
+    }
+
+    .legal-section:hover {
+      border-color: rgba(0, 180, 216, 0.2);
+    }
+
+    .legal-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgba(0, 180, 216, 0.15);
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      color: #00b4d8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.88rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .section-heading {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 0;
+      color: #fff;
+    }
+
+    .legal-section p {
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+      margin: 0 0 14px 0;
+    }
+
+    .legal-section ul {
+      margin: 0 0 16px 0;
+      padding-left: 20px;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .legal-section li {
+      margin-bottom: 8px;
+    }
+
+    .legal-highlight-box {
+      background: rgba(0, 180, 216, 0.06);
+      border-left: 3px solid #00b4d8;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .legal-warning-box {
+      background: rgba(239, 68, 68, 0.08);
+      border-left: 3px solid #ef4444;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin: 18px 0;
+      font-size: 0.9rem;
+      color: #fca5a5;
+      line-height: 1.6;
+    }
+
+    .legal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 0.9rem;
+    }
+
+    .legal-table th, .legal-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .legal-table th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .legal-table td {
+      color: #cbd5e1;
+    }
+
+    .legal-contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-top: 10px;
+      transition: all 0.25s ease;
+      font-size: 0.95rem;
+    }
+
+    .legal-contact-btn:hover {
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.4);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       NAVBAR (IDENTICA A LANDING PAGE)
+       ========================================================================== -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="nav-brand">
+        <img src="/images/avatar.gif" alt="JARVIS Logo" class="brand-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+        <span class="brand-title">J.A.R.V.I.S.</span>
+        <span class="brand-badge">v<%= version %></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="/select-guild" class="nav-link">Web Dashboard</a></li>
+        <li><a href="/terms" class="nav-link">Termini</a></li>
+        <li><a href="/privacy" class="nav-link active" style="color: var(--cyan-primary);">Privacy</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <%= navActionsHtml %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       CONTENUTO PRINCIPALE
+       ========================================================================== -->
+  <main class="legal-page-wrap">
+    
+    <!-- Hero Testata -->
+    <header class="legal-hero">
+      <div class="legal-badge-pill">
+        🛡️ Tutela della Privacy & Regolamento GDPR
+      </div>
+      <h1 class="legal-title">Informativa sulla Privacy</h1>
+      <p class="legal-subtitle">
+        Trasparenza totale su quali dati vengono trattati, le finalità del servizio e come garantiamo la sicurezza e i tuoi diritti all'interno dell'ecosistema J.A.R.V.I.S. Bot e della Web Dashboard.
+      </p>
+      <div class="legal-meta-bar">
+        <span class="legal-meta-item">📅 Ultimo aggiornamento: <strong>12 Novembre 2026</strong></span>
+        <span>•</span>
+        <span class="legal-meta-item">🤖 Applicazione: <strong>J.A.R.V.I.S. (ID: 787828220107554867)</strong></span>
+        <span>•</span>
+        <span class="legal-meta-item">⚖️ Conforme a: <strong>GDPR (UE 2016/679) & Discord Developer Policy</strong></span>
+      </div>
+    </header>
+
+    <!-- Indice Rapido -->
+    <nav class="toc-card" aria-label="Indice dei contenuti">
+      <div class="toc-title">
+        <span>📑 Indice dei Contenuti</span>
+      </div>
+      <ul class="toc-grid">
+        <li><a href="#titolare">1. Titolare del Trattamento</a></li>
+        <li><a href="#dati-raccolti">2. Tipologia di Dati Raccolti</a></li>
+        <li><a href="#dati-non-raccolti">3. Dati che NON Raccogliamo</a></li>
+        <li><a href="#finalita">4. Finalità del Trattamento</a></li>
+        <li><a href="#base-giuridica">5. Base Giuridica</a></li>
+        <li><a href="#sicurezza">6. Conservazione e Sicurezza</a></li>
+        <li><a href="#diritti">7. I Tuoi Diritti (Cancellazione)</a></li>
+        <li><a href="#terze-parti">8. Servizi di Terze Parti</a></li>
+        <li><a href="#contatti">9. Contatti & Supporto</a></li>
+      </ul>
+    </nav>
+
+    <!-- Sezione 1: Titolare -->
+    <section class="legal-section" id="titolare">
+      <div class="legal-section-header">
+        <div class="section-number">01</div>
+        <h2 class="section-heading">Titolare del Trattamento</h2>
+      </div>
+      <p>
+        Il titolare del trattamento dei dati per il bot Discord <strong>J.A.R.V.I.S.</strong> (in seguito denominato "Bot") e per la relativa piattaforma web raggiungibile su <strong>https://jarvis-v5-cto5.onrender.com</strong> (in seguito "Web Dashboard") è lo sviluppatore <strong>Fagghino</strong> e il team di manutenzione di J.A.R.V.I.S.
+      </p>
+      <p>
+        La presente informativa si applica a qualsiasi utente interagisca con il Bot all'interno di un server Discord in cui esso sia presente, nonché a chiunque effettui l'accesso alla Web Dashboard tramite il protocollo Discord OAuth2.
+      </p>
+    </section>
+
+    <!-- Sezione 2: Dati Raccolti -->
+    <section class="legal-section" id="dati-raccolti">
+      <div class="legal-section-header">
+        <div class="section-number">02</div>
+        <h2 class="section-heading">Tipologia di Dati Raccolti</h2>
+      </div>
+      <p>
+        J.A.R.V.I.S. adotta rigorosamente il principio di <strong>minimizzazione dei dati</strong> (Art. 5 GDPR), trattando esclusivamente i parametri tecnici indispensabili all'erogazione delle sue funzionalità di gamification, utilità e configurazione:
+      </p>
+
+      <table class="legal-table">
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Dati Trattati</th>
+            <th>Scopo di Utilizzo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Identificativi Discord</strong></td>
+            <td>User ID univoco, Server (Guild) ID, Channel ID, Username e Discriminatore.</td>
+            <td>Identificazione del profilo all'interno del server per l'esecuzione dei comandi slash e gestione dei permessi.</td>
+          </tr>
+          <tr>
+            <td><strong>Gamification & Livelli</strong></td>
+            <td>Punti XP totali accumulati, livello raggiunto, conteggio messaggi e tempo di permanenza nei canali vocali.</td>
+            <td>Calcolo del livello, assegnazione di ruoli automatici, generazione della card profilo <code>/rank</code> e compilazione della classifica pubblica del server.</td>
+          </tr>
+          <tr>
+            <td><strong>Configurazioni del Server</strong></td>
+            <td>Canali di benvenuto/addio, canali vocali contatori, ruoli autorizzati, testi personalizzati e toggle di funzionalità.</td>
+            <td>Memorizzazione permanente delle preferenze di funzionamento stabilite dagli amministratori del server.</td>
+          </tr>
+          <tr>
+            <td><strong>Sessione Web Dashboard</strong></td>
+            <td>Discord User ID, username, avatar hash e lista identificativi dei server in cui si possiede il permesso di Amministratore.</td>
+            <td>Autenticazione sicura tramite OAuth2 per consentire l'accesso al pannello di gestione dei soli server autorizzati.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Sezione 3: Dati NON Raccolti -->
+    <section class="legal-section" id="dati-non-raccolti">
+      <div class="legal-section-header">
+        <div class="section-number">03</div>
+        <h2 class="section-heading">Dati che NON Vengono MAI Raccolti</h2>
+      </div>
+      <p>
+        Per la massima trasparenza e tranquillità della tua community, specifichiamo chiaramente cosa <strong>non entra mai</strong> nei nostri database:
+      </p>
+      <ul>
+        <li><strong>Nessun messaggio privato (DM)</strong>: il bot non legge, non analizza e non memorizza le conversazioni private tra utenti.</li>
+        <li><strong>Nessun archivio dei testi di chat</strong>: il bot ascolta i messaggi solo per calcolare gli XP o attivare comandi con prefisso legacy; il testo effettivo della chat non viene salvato sui nostri server né ceduto a terzi.</li>
+        <li><strong>Nessuna credenziale, password o token</strong>: le password del tuo account Discord o le credenziali personali non sono mai accessibili dal Bot né dalla Dashboard.</li>
+        <li><strong>Nessun dato finanziario o di pagamento</strong>: il bot è interamente gratuito e non raccoglie numeri di carte, coordinate bancarie o dettagli di fatturazione.</li>
+      </ul>
+
+      <div class="legal-highlight-box">
+        💡 <strong>Protezione delle conversazioni:</strong> I contenuti dei messaggi degli utenti non vengono mai registrati nel nostro database. Viene incrementato unicamente il contatore numerico dei punti esperienza e dei messaggi per la classifica.
+      </div>
+    </section>
+
+    <!-- Sezione 4: Finalità -->
+    <section class="legal-section" id="finalita">
+      <div class="legal-section-header">
+        <div class="section-number">04</div>
+        <h2 class="section-heading">Finalità del Trattamento</h2>
+      </div>
+      <p>I dati raccolti vengono utilizzati unicamente per:</p>
+      <ul>
+        <li>Garantire il corretto funzionamento dei comandi (es. <code>/rank</code>, <code>/classifica</code>, <code>/serverinfo</code>, <code>/traduci</code>).</li>
+        <li>Aggiornare i contatori dei canali vocali (membri totali, utenti online, bot presenti).</li>
+        <li>Inviare notifiche di benvenuto, addio o avanzamento di livello configurate dai gestori del server.</li>
+        <li>Consentire agli amministratori del server di personalizzare i moduli e monitorare le statistiche aggregate tramite Web Dashboard.</li>
+        <li>Proteggere l'infrastruttura contro attacchi DoS, abusi dei comandi o tentativi di exploit tramite cooldown e sistemi di alert Sentinel.</li>
+      </ul>
+    </section>
+
+    <!-- Sezione 5: Base Giuridica -->
+    <section class="legal-section" id="base-giuridica">
+      <div class="legal-section-header">
+        <div class="section-number">05</div>
+        <h2 class="section-heading">Base Giuridica del Trattamento</h2>
+      </div>
+      <p>Il trattamento dei dati si fonda su:</p>
+      <ul>
+        <li><strong>Esecuzione di un servizio richiesto (Art. 6.1.b GDPR)</strong>: l'utente o il proprietario del server installa il bot o interagisce con i comandi, richiedendo implicitamente l'erogazione delle relative risposte.</li>
+        <li><strong>Legittimo interesse (Art. 6.1.f GDPR)</strong>: la necessità tecnica di preservare l'integrità del servizio, mitigare attacchi spam e garantire la stabilità dell'infrastruttura.</li>
+      </ul>
+    </section>
+
+    <!-- Sezione 6: Conservazione e Sicurezza -->
+    <section class="legal-section" id="sicurezza">
+      <div class="legal-section-header">
+        <div class="section-number">06</div>
+        <h2 class="section-heading">Conservazione e Misure di Sicurezza</h2>
+      </div>
+      <p>
+        I dati vengono salvati in un cluster cloud <strong>MongoDB Atlas</strong> protetto, situato in datacenter europei conformi a ISO 27001 e SOC 2, con crittografia end-to-end sia a riposo (Encryption-at-Rest) che in transito (TLS/SSL).
+      </p>
+      <p>
+        <strong>I dati non vengono venduti, affittati né ceduti</strong> a intermediari pubblicitari, broker di dati o terze parti per scopi di marketing. L'accesso al database è strettamente limitato all'istanza operativa del bot tramite credenziali segrete protette da variabili d'ambiente isolate.
+      </p>
+    </section>
+
+    <!-- Sezione 7: I Tuoi Diritti -->
+    <section class="legal-section" id="diritti">
+      <div class="legal-section-header">
+        <div class="section-number">07</div>
+        <h2 class="section-heading">I Tuoi Diritti e Cancellazione dei Dati (Diritto all'Oblio)</h2>
+      </div>
+      <p>
+        In conformità agli articoli 15-22 del Regolamento GDPR e alle policy per gli sviluppatori di Discord, ogni utente e amministratore ha il diritto di:
+      </p>
+      <ul>
+        <li><strong>Accedere ai propri dati</strong>: visualizzare in qualunque momento i propri punti XP tramite il comando <code>/rank</code> o consultando la classifica web <code>/leaderboard/:guildId</code>.</li>
+        <li><strong>Richiedere la rettifica o l'aggiornamento</strong>: correggere configurazioni errate tramite la Web Dashboard o richiedere l'azzeramento di statistiche errate.</li>
+        <li><strong>Richiedere la Cancellazione Totale (Diritto all'Oblio)</strong>: richiedere l'eliminazione completa e definitiva del proprio record XP o della configurazione del server dai nostri database.</li>
+      </ul>
+
+      <div class="legal-highlight-box">
+        🗑️ <strong>Come richiedere la cancellazione:</strong> È sufficiente inviare un'email all'indirizzo del supporto o contattare lo sviluppatore sul server Discord ufficiale specificando il proprio <em>Discord User ID</em> o il <em>Server ID</em>. I dati associati verranno rimossi permanentemente entro 48 ore lavorative.
+      </div>
+    </section>
+
+    <!-- Sezione 8: Terze Parti -->
+    <section class="legal-section" id="terze-parti">
+      <div class="legal-section-header">
+        <div class="section-number">08</div>
+        <h2 class="section-heading">Servizi di Terze Parti Coinvolti</h2>
+      </div>
+      <p>Per il funzionamento complessivo dell'applicazione, J.A.R.V.I.S. si appoggia ai seguenti fornitori di infrastruttura:</p>
+      <ul>
+        <li><strong>Discord Inc.</strong>: piattaforma di hosting del bot e fornitore del protocollo di autenticazione OAuth2 (<a href="https://discord.com/privacy" target="_blank" style="color: var(--cyan-primary);">Informativa Privacy Discord</a>).</li>
+        <li><strong>Render Services Inc.</strong>: piattaforma di hosting cloud in cui risiede l'istanza Node.js del bot e della Web Dashboard (<a href="https://render.com/privacy" target="_blank" style="color: var(--cyan-primary);">Informativa Privacy Render</a>).</li>
+        <li><strong>MongoDB Atlas</strong>: infrastruttura di database NoSQL cloud ad elevata sicurezza (<a href="https://www.mongodb.com/legal/privacy-policy" target="_blank" style="color: var(--cyan-primary);">Informativa Privacy MongoDB</a>).</li>
+      </ul>
+    </section>
+
+    <!-- Sezione 9: Contatti -->
+    <section class="legal-section" id="contatti">
+      <div class="legal-section-header">
+        <div class="section-number">09</div>
+        <h2 class="section-heading">Contatti e Canale di Supporto</h2>
+      </div>
+      <p>
+        Per qualsiasi chiarimento in merito alla presente informativa, per esercitare i tuoi diritti di cancellazione o per segnalare anomalie sulla sicurezza:
+      </p>
+      <ul>
+        <li><strong>Sviluppatore Responsabile:</strong> Fagghino (<a href="mailto:fgiordano839@gmail.com" style="color: var(--cyan-primary);">fgiordano839@gmail.com</a>)</li>
+        <li><strong>Repository Ufficiale:</strong> <a href="https://github.com/Fagghino/JARVIS-v4" target="_blank" style="color: var(--cyan-primary);">GitHub / Fagghino / JARVIS-v4</a></li>
+        <li><strong>Piattaforma Web:</strong> <a href="https://jarvis-v5-cto5.onrender.com" target="_blank" style="color: var(--cyan-primary);">https://jarvis-v5-cto5.onrender.com</a></li>
+      </ul>
+      <a href="mailto:fgiordano839@gmail.com?subject=Richiesta%20Privacy%20JARVIS%20Bot" class="legal-contact-btn">
+        ✉️ Contatta il Titolare della Privacy
+      </a>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>
+          © 2026 J.A.R.V.I.S. Bot • Creato con dedizione da Fagghino. Non affiliato con Discord Inc.
+        </div>
+        <div style="display: flex; gap: 20px;">
+          <a href="/privacy" style="color: var(--cyan-primary); text-decoration: none; font-weight: 600;">Privacy</a>
+          <a href="/terms" style="color: var(--text-muted); text-decoration: none;">Termini di Servizio</a>
+          <a href="#" style="color: var(--text-muted); text-decoration: none;">Torna in Cima ↑</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
