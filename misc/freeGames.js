@@ -87,25 +87,25 @@ function getStoreIcon(store) {
   switch (s) {
     case 'epic':
     case 'epicgames':
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258283293638676/epic.png';
+      return 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/epic-games.png';
     case 'steam':
-      return 'https://media.discordapp.net/attachments/672907465670787083/820258285566820402/steam.png';
+      return 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/steam.png';
     case 'gog':
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258294735962152/gog.png';
+      return 'https://img.icons8.com/ios-filled/150/gog-galaxy.png';
     case 'humble':
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258291862601728/humble.png';
+      return 'https://humblebundle.com/favicon.ico';
     case 'origin':
     case 'ea':
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258290063769600/origin.png';
+      return 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/electronic-arts.png';
     case 'ubi':
     case 'ubisoft':
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258286816854046/ubi.png';
+      return 'https://img.icons8.com/color/144/ubisoft.png';
     case 'prime':
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258287337472010/twitch.png';
+      return 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/twitch.png';
     case 'itch':
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258293410299924/itch.png';
+      return 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/itch.png';
     default:
-      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258296149704714/discord.png';
+      return 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/epic-games.png';
   }
 }
 
@@ -358,8 +358,8 @@ async function sendTestNotification(client, guildId) {
     orgPrice: '39,99 €',
     price: '0,00 €',
     description: "Death Stranding Director's Cut è la versione definitiva del celebre capolavoro di Hideo Kojima, arricchita con nuove missioni, armi, veicoli e scenari grafici mozzafiato.",
-    image: 'https://cdn2.unrealengine.com/egs-deathstrandingdirectorscut-kojimaproductions-s1-2560x1440-a3523f3be8f4.jpg',
-    thumbnail: 'https://cdn2.unrealengine.com/egs-deathstrandingdirectorscut-kojimaproductions-s1-2560x1440-a3523f3be8f4.jpg',
+    image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1850570/header.jpg',
+    thumbnail: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1850570/header.jpg',
     kind: 'game',
     type: 'keep',
     until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Scadenza tra 7 giorni
