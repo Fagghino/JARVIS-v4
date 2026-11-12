@@ -46,6 +46,70 @@ function formatStoreName(store) {
 }
 
 /**
+ * Restituisce il colore tematico per l'embed Discord in base allo store
+ * @param {string} store 
+ * @returns {number}
+ */
+function getStoreColor(store) {
+  const s = String(store || '').toLowerCase().trim();
+  switch (s) {
+    case 'epic':
+    case 'epicgames':
+      return 0x2b2b2b; // Epic Games Dark
+    case 'steam':
+      return 0x1b2838; // Steam Dark Navy
+    case 'gog':
+      return 0x7b2cbf; // GOG Purple
+    case 'humble':
+      return 0xcb2821; // Humble Red
+    case 'origin':
+    case 'ea':
+      return 0xf56c2d; // EA Orange
+    case 'ubi':
+    case 'ubisoft':
+      return 0x0070ff; // Ubisoft Blue
+    case 'prime':
+      return 0x9146ff; // Prime Purple
+    case 'itch':
+      return 0xfa5c5c; // itch Red
+    default:
+      return 0x00b4d8; // J.A.R.V.I.S. Cyber Cyan
+  }
+}
+
+/**
+ * Restituisce l'URL dell'icona ufficiale quadrata dello store (per la thumbnail in alto a destra)
+ * @param {string} store 
+ * @returns {string}
+ */
+function getStoreIcon(store) {
+  const s = String(store || '').toLowerCase().trim();
+  switch (s) {
+    case 'epic':
+    case 'epicgames':
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258283293638676/epic.png';
+    case 'steam':
+      return 'https://media.discordapp.net/attachments/672907465670787083/820258285566820402/steam.png';
+    case 'gog':
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258294735962152/gog.png';
+    case 'humble':
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258291862601728/humble.png';
+    case 'origin':
+    case 'ea':
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258290063769600/origin.png';
+    case 'ubi':
+    case 'ubisoft':
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258286816854046/ubi.png';
+    case 'prime':
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258287337472010/twitch.png';
+    case 'itch':
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258293410299924/itch.png';
+    default:
+      return 'https://cdn.discordapp.com/attachments/672907465670787083/820258296149704714/discord.png';
+  }
+}
+
+/**
  * Restituisce una emoji coerente per lo store
  * @param {string} store 
  * @returns {string}
@@ -67,73 +131,83 @@ function getStoreEmoji(store) {
  */
 function buildGameMessage(game, roleId) {
   const storeName = formatStoreName(game.store);
-  const emoji = getStoreEmoji(game.store);
+  const storeColor = getStoreColor(game.store);
+  const storeIcon = getStoreIcon(game.store);
 
+  // Titolo pulito con link diretto incorporato (senza "GIOCO GRATIS:")
   const embed = new EmbedBuilder()
-    .setColor(0x00b4d8) // J.A.R.V.I.S. Cyber Cyan
-    .setTitle(`${emoji} GIOCO GRATIS: ${game.title}`)
+    .setColor(storeColor)
+    .setTitle(game.title || 'Nuovo Gioco Gratuito')
     .setURL(game.url || 'https://freestuffbot.xyz')
+    .setThumbnail(storeIcon) // Icona dello store a destra in alto
     .setTimestamp();
 
-  // Descrizione e dettagli
+  // Linee di descrizione
   const descLines = [];
 
-  if (game.kind === 'dlc') {
-    descLines.push('✨ **Contenuto Aggiuntivo / DLC Gratuito**');
-  } else if (game.type === 'timed') {
-    descLines.push('⏳ **Weekend di Prova Gratuito (Accesso a tempo)**');
-  } else {
-    descLines.push('🎉 **100% di sconto — Riscattalo e sarà tuo per sempre!**');
+  // Descrizione del gioco in formattazione citazione (> ...)
+  if (game.description && typeof game.description === 'string' && game.description.trim() !== '') {
+    const quoted = game.description
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .map(line => `> ${line}`)
+      .join('\n');
+
+    if (quoted) {
+      descLines.push(quoted);
+      descLines.push('');
+    }
   }
 
-  descLines.push('');
-  descLines.push(`🏬 **Piattaforma:** \`${storeName}\``);
-
+  // Riga Prezzo e Scadenza: ~~39,99 €~~ ➔ GRATIS fino al 20 novembre 2026 alle 17:00
+  let priceLine = '';
   if (game.orgPrice && game.orgPrice.trim() !== '') {
-    descLines.push(`💰 **Prezzo Originale:** ~~${game.orgPrice}~~ ➔ **GRATIS!**`);
+    priceLine += `~~${game.orgPrice}~~ ➔ **GRATIS**`;
   } else {
-    descLines.push('💰 **Prezzo:** **GRATIS!**');
+    priceLine += '**GRATIS**';
   }
 
   if (game.until) {
     const untilDate = new Date(game.until);
     if (!isNaN(untilDate.getTime())) {
       const unixSec = Math.floor(untilDate.getTime() / 1000);
-      descLines.push(`⏰ **Scade:** <t:${unixSec}:f> (<t:${unixSec}:R>)`);
+      priceLine += ` fino al <t:${unixSec}:f>`;
     }
   }
+  descLines.push(priceLine);
 
   embed.setDescription(descLines.join('\n'));
 
-  if (game.thumbnail && typeof game.thumbnail === 'string' && game.thumbnail.startsWith('http')) {
-    embed.setImage(game.thumbnail);
+  // Foto orizzontale in lungo (16:9) del gioco sotto i dettagli
+  const bannerImage = game.image || game.thumbnail;
+  if (bannerImage && typeof bannerImage === 'string' && bannerImage.startsWith('http')) {
+    embed.setImage(bannerImage);
   }
 
   embed.setFooter({
-    text: 'J.A.R.V.I.S. Gaming Alerts • Riscattalo prima della scadenza!',
-    iconURL: 'https://cdn.discordapp.com/emojis/847842305788346419.webp?size=96&quality=lossless'
+    text: 'J.A.R.V.I.S. Gaming Alerts'
   });
 
-  // Bottone interattivo per riscattare direttamente il gioco
+  // Bottone interattivo per riscattare direttamente il gioco (SENZA emoji)
   const components = [];
   if (game.url && game.url.startsWith('http')) {
     const claimButton = new ButtonBuilder()
       .setLabel(`Riscatta su ${storeName}`)
       .setStyle(ButtonStyle.Link)
-      .setURL(game.url)
-      .setEmoji('🛒');
+      .setURL(game.url);
 
     const row = new ActionRowBuilder().addComponents(claimButton);
     components.push(row);
   }
 
-  // Menzione ruolo (se impostata)
+  // Menzione ruolo fuori dall'embed: solo il tag senza testo aggiuntivo
   let content = undefined;
   if (roleId) {
     if (roleId === 'everyone' || roleId === '@everyone') {
-      content = '@everyone 🎁 Nuovo gioco gratuito disponibile!';
+      content = '@everyone';
     } else {
-      content = `<@&${roleId}> 🎁 Nuovo gioco gratuito disponibile!`;
+      content = `<@&${roleId}>`;
     }
   }
 
@@ -177,9 +251,10 @@ async function broadcastFreeGame(client, gameData, options = {}) {
         title: gameData.title,
         store: gameData.store || 'unknown',
         url: gameData.url,
+        description: gameData.description || '',
         orgPrice: gameData.orgPrice || '',
         price: gameData.price || '0.00',
-        thumbnail: gameData.thumbnail || '',
+        thumbnail: gameData.image || gameData.thumbnail || '',
         kind: gameData.kind || 'game',
         type: gameData.type || 'keep',
         until: gameData.until ? new Date(gameData.until) : null
@@ -277,11 +352,13 @@ async function sendTestNotification(client, guildId) {
 
   const testGame = {
     gameId: `test-${Date.now()}`,
-    title: 'Death Stranding Director\'s Cut',
+    title: "Death Stranding Director's Cut",
     store: 'epic',
-    url: 'https://store.epicgames.com/',
+    url: 'https://store.epicgames.com/p/death-stranding-directors-cut',
     orgPrice: '39,99 €',
     price: '0,00 €',
+    description: "Death Stranding Director's Cut è la versione definitiva del celebre capolavoro di Hideo Kojima, arricchita con nuove missioni, armi, veicoli e scenari grafici mozzafiato.",
+    image: 'https://cdn2.unrealengine.com/egs-deathstrandingdirectorscut-kojimaproductions-s1-2560x1440-a3523f3be8f4.jpg',
     thumbnail: 'https://cdn2.unrealengine.com/egs-deathstrandingdirectorscut-kojimaproductions-s1-2560x1440-a3523f3be8f4.jpg',
     kind: 'game',
     type: 'keep',
@@ -337,12 +414,33 @@ function parseWebhookPayload(payload) {
 
   const results = [];
 
+  // Helper per estrarre la descrizione (preferendo italiano o inglese)
+  const extractDescription = (rawDesc) => {
+    if (!rawDesc) return '';
+    if (Array.isArray(rawDesc) && rawDesc.length > 0) {
+      const it = rawDesc.find(d => d && (d.lang === 'it-IT' || d.lang === 'it'));
+      const en = rawDesc.find(d => d && (d.lang === 'en-US' || d.lang === 'en'));
+      return (it && it.text) || (en && en.text) || rawDesc[0].text || '';
+    }
+    if (typeof rawDesc === 'string') return rawDesc;
+    return '';
+  };
+
+  // Helper per estrarre l'immagine orizzontale panoramica (AR_WIDE)
+  const extractWideImage = (rawImages) => {
+    if (!Array.isArray(rawImages) || rawImages.length === 0) return '';
+    // Flag AR_WIDE ha valore bit 1 (1<<1 = 2)
+    const wideImg = rawImages.find(img => img && (typeof img.flags === 'object' ? img.flags.AR_WIDE : ((img.flags & 2) !== 0)));
+    return (wideImg && wideImg.url) || (rawImages[0] && rawImages[0].url) || '';
+  };
+
   // 1. FreeStuff API v2 event: 'fsb:event:announcement_created'
   if (payload.type === 'fsb:event:announcement_created' && payload.data) {
     const products = payload.data.resolvedProducts || [];
     for (const prod of products) {
       const bestUrl = (prod.urls && prod.urls.length) ? (prod.urls.find(u => u.url)?.url || prod.urls[0].url) : '';
-      const bestImg = (prod.images && prod.images.length) ? (prod.images.find(img => img.url)?.url || prod.images[0].url) : '';
+      const wideBanner = extractWideImage(prod.images);
+      const desc = extractDescription(prod.description);
       const priceObj = (prod.prices && prod.prices.length) ? prod.prices[0] : null;
       const orgPrice = priceObj ? `${priceObj.oldValue} ${priceObj.currency || '€'}` : '';
 
@@ -351,9 +449,11 @@ function parseWebhookPayload(payload) {
         title: prod.title || 'Gioco Gratuito',
         store: prod.store || (prod.urls && prod.urls[0] && prod.urls[0].store) || 'epic',
         url: bestUrl || 'https://freestuffbot.xyz',
+        description: desc,
         orgPrice,
         price: '0.00',
-        thumbnail: bestImg,
+        image: wideBanner,
+        thumbnail: wideBanner,
         kind: prod.kind || 'game',
         type: prod.type || 'keep',
         until: prod.until ? new Date(prod.until) : null
@@ -366,7 +466,8 @@ function parseWebhookPayload(payload) {
   if (payload.type === 'fsb:event:product_updated' && payload.data) {
     const prod = payload.data;
     const bestUrl = (prod.urls && prod.urls.length) ? (prod.urls.find(u => u.url)?.url || prod.urls[0].url) : '';
-    const bestImg = (prod.images && prod.images.length) ? (prod.images.find(img => img.url)?.url || prod.images[0].url) : '';
+    const wideBanner = extractWideImage(prod.images);
+    const desc = extractDescription(prod.description);
     const priceObj = (prod.prices && prod.prices.length) ? prod.prices[0] : null;
     const orgPrice = priceObj ? `${priceObj.oldValue} ${priceObj.currency || '€'}` : '';
 
@@ -375,9 +476,11 @@ function parseWebhookPayload(payload) {
       title: prod.title || 'Gioco Gratuito',
       store: prod.store || (prod.urls && prod.urls[0] && prod.urls[0].store) || 'epic',
       url: bestUrl || 'https://freestuffbot.xyz',
+      description: desc,
       orgPrice,
       price: '0.00',
-      thumbnail: bestImg,
+      image: wideBanner,
+      thumbnail: wideBanner,
       kind: prod.kind || 'game',
       type: prod.type || 'keep',
       until: prod.until ? new Date(prod.until) : null
@@ -392,9 +495,11 @@ function parseWebhookPayload(payload) {
       title: payload.title,
       store: payload.store || 'epic',
       url: payload.url,
+      description: payload.description || '',
       orgPrice: payload.orgPrice || '',
       price: payload.price || '0.00',
-      thumbnail: payload.thumbnail || '',
+      image: payload.image || payload.thumbnail || '',
+      thumbnail: payload.thumbnail || payload.image || '',
       kind: payload.kind || 'game',
       type: payload.type || 'keep',
       until: payload.until ? new Date(payload.until) : null
@@ -409,6 +514,8 @@ module.exports = {
   broadcastFreeGame,
   sendTestNotification,
   formatStoreName,
+  getStoreColor,
+  getStoreIcon,
   getStoreEmoji,
   buildGameMessage,
   verifyFreeStuffSignature,
