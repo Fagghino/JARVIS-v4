@@ -28,9 +28,14 @@ module.exports = (client) => {
             // Usa guild.memberCount nativo per il totale
             const totalMembers = guild.memberCount || guild.members.cache.size;
 
-            // Per la distinzione utenti/bot usa la cache esistente senza fetch globale continuo
-            const cachedMembers = guild.members.cache;
-            const bots = cachedMembers.filter(member => member.user.bot).size;
+            // Se sono configurati i canali per utenti o bot e la cache non è allineata al totale reale, scarica i membri
+            if ((guildConfig.usersChannelId || guildConfig.botsChannelId) && guild.members.cache.size !== totalMembers) {
+                await guild.members.fetch({ time: 10000 }).catch(err => {
+                    console.warn(`⚠️ Impossibile eseguire fetch membri per counter [${guild.id}]:`, err.message);
+                });
+            }
+
+            const bots = guild.members.cache.filter(member => member.user.bot).size;
             const users = Math.max(0, totalMembers - bots);
 
             if (guildConfig.totalChannelId) {
