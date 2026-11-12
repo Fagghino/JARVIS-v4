@@ -78,6 +78,10 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Collegato `landing.css`, rimossa l'impostazione flexbox centrata sul `body` in `style.css` e aggiunti wrapper responsive dedicati per eliminare la distorsione dell'avatar del bot e formattare correttamente la navbar sticky.
 - **Risoluzione Conteggio Bot nei Canali Vocali Counter (`misc/counter.js`)**:
   - Risolto il bug per cui il counter dei bot segnava sempre `1`: all'avvio Discord.js memorizza nella cache volatile solo il bot stesso. Aggiunto il controllo asincrono condizionale (`guild.members.cache.size !== totalMembers`) che scarica la lista completa dei membri solo quando necessario, calcolando con precisione tutti i bot presenti senza sovraccaricare le API Discord.
+- **Visualizzazione Banner Globale del Bot nella Dashboard Web (`dashboard/server.js`, `dashboard/public/js/settings.js`, `dashboard/views/settings.html`, `index.js`)**:
+  - Risolta l'anomalia per cui la card di anteprima del profilo bot nelle impostazioni mostrava `🌐 Nessun Banner` anche se il bot aveva un banner configurato su Discord.
+  - In Discord.js il banner globale del bot (`client.user.banner`) non viene fornito all'avvio nel payload Gateway e richiede un fetch esplicito (`client.user.fetch(true)`).
+  - Integrato il pre-fetch all'avvio in `index.js`, inviato `defaultBannerUrl` nell'API `/api/settings/:guildId` e aggiornata la logica frontend in `settings.js` con visualizzazione dell'immagine di sfondo, badge `🌐 Banner Globale Predefinito` e supporto a reset/personalizzazione per-server.
 
 ### Removed
 - **Script di Migrazione Obsoleto**:

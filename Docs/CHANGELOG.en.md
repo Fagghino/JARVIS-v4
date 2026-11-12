@@ -78,6 +78,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Linked `landing.css`, removed viewport flex-centering on `body` in `style.css`, and introduced dedicated responsive wrappers to eliminate bot avatar distortion and correctly render the sticky glass navigation bar.
 - **Fixed Bot Counter in Voice Channels (`misc/counter.js`)**:
   - Resolved bug where the bot counter always reported `1` due to Discord.js only caching the connected client itself on startup. Added conditional asynchronous member sync (`guild.members.cache.size !== totalMembers`) ensuring accurate multi-bot tracking without redundant API overhead.
+- **Global Bot Banner Display in Web Dashboard (`dashboard/server.js`, `dashboard/public/js/settings.js`, `dashboard/views/settings.html`, `index.js`)**:
+  - Fixed issue where the bot customization preview card displayed `🌐 Nessun Banner` even when a global banner was configured in Discord Developer Portal / user profile.
+  - In Discord.js, `client.user.banner` is omitted from the initial Gateway payload and requires an explicit REST fetch (`client.user.fetch(true)`).
+  - Integrated ready prefetch in `index.js`, exposed `defaultBannerUrl` via `/api/settings/:guildId`, and enhanced frontend preview in `settings.js` with background image rendering, `🌐 Banner Globale Predefinito` pill badge, and proper fallback cascades.
 
 ### Removed
 - **Broken Migration Script**:
