@@ -805,6 +805,24 @@ module.exports = (client) => {
       // Ignora errori non bloccanti nel recupero dettagli REST
     }
 
+    // Recupera banner globale predefinito del bot (in discord.js richiede fetch esplicito del profilo utente)
+    let defaultBannerUrl = null;
+    try {
+      if (client.user) {
+        let userObj = client.user;
+        if (!userObj.banner) {
+          userObj = await client.user.fetch(true);
+        }
+        if (userObj && userObj.banner) {
+          defaultBannerUrl = userObj.bannerURL({ extension: "png", size: 512 });
+        }
+      }
+    } catch (e) {
+      if (client.user && typeof client.user.bannerURL === "function") {
+        defaultBannerUrl = client.user.bannerURL({ extension: "png", size: 512 }) || null;
+      }
+    }
+
     const defaultAvatarUrl = client.user ? client.user.displayAvatarURL({ extension: "png", size: 256 }) : "/images/avatar.gif";
 
     const botInfo = {
@@ -814,7 +832,9 @@ module.exports = (client) => {
       defaultAvatarUrl,
       serverAvatarUrl,
       avatarUrl: serverAvatarUrl || defaultAvatarUrl,
-      serverBannerUrl: serverBannerUrl || null
+      defaultBannerUrl,
+      serverBannerUrl: serverBannerUrl || null,
+      bannerUrl: serverBannerUrl || defaultBannerUrl || null
     };
 
     const stats = {

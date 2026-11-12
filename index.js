@@ -83,6 +83,11 @@ client.once("ready", () => {
   counter(client);
   welcome(client);
 
+  // Pre-fetch del profilo bot completo per memorizzare banner e accent color globali
+  client.user.fetch(true).catch((err) => {
+    console.warn("⚠️ Impossibile eseguire il prefetch del profilo bot:", err.message);
+  });
+
   // Timer per XP vocale su tutti i server (ogni 30 secondi)
   setInterval(() => {
     handleVoiceXP(client);

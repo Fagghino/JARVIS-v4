@@ -70,10 +70,18 @@ function updateBotProfilePreview() {
   // 3. Banner
   if (pendingBannerBase64 !== undefined) {
     if (pendingBannerBase64 === null) {
-      if (previewBanner) previewBanner.style.backgroundImage = "none";
-      if (badgeBanner) {
-        badgeBanner.textContent = "🔄 Reset banner (rimozione)";
-        badgeBanner.className = "profile-badge-pill pending";
+      if (currentBotInfo.defaultBannerUrl) {
+        if (previewBanner) previewBanner.style.backgroundImage = `url("${currentBotInfo.defaultBannerUrl}")`;
+        if (badgeBanner) {
+          badgeBanner.textContent = "🔄 Reset al default globale";
+          badgeBanner.className = "profile-badge-pill pending";
+        }
+      } else {
+        if (previewBanner) previewBanner.style.backgroundImage = "none";
+        if (badgeBanner) {
+          badgeBanner.textContent = "🔄 Reset banner (rimozione)";
+          badgeBanner.className = "profile-badge-pill pending";
+        }
       }
     } else {
       if (previewBanner) previewBanner.style.backgroundImage = `url("${pendingBannerBase64}")`;
@@ -88,6 +96,12 @@ function updateBotProfilePreview() {
       if (badgeBanner) {
         badgeBanner.textContent = "🟢 Banner Server Personalizzato";
         badgeBanner.className = "profile-badge-pill customized";
+      }
+    } else if (currentBotInfo.defaultBannerUrl) {
+      if (previewBanner) previewBanner.style.backgroundImage = `url("${currentBotInfo.defaultBannerUrl}")`;
+      if (badgeBanner) {
+        badgeBanner.textContent = "🌐 Banner Globale Predefinito";
+        badgeBanner.className = "profile-badge-pill";
       }
     } else {
       if (previewBanner) previewBanner.style.backgroundImage = "none";
@@ -127,9 +141,18 @@ function resetBotBanner() {
   const fileInput = document.getElementById("botBannerFile");
   if (fileInput) fileInput.value = "";
   const fileLabel = document.getElementById("bannerFileLabel");
-  if (fileLabel) fileLabel.textContent = "Rimozione banner impostata";
+  if (fileLabel) {
+    fileLabel.textContent = (currentBotInfo && currentBotInfo.defaultBannerUrl)
+      ? "Ripristino banner predefinito impostato"
+      : "Rimozione banner impostata";
+  }
   updateBotProfilePreview();
-  showToast("Banner del server impostato su Rimozione.", "success");
+  showToast(
+    (currentBotInfo && currentBotInfo.defaultBannerUrl)
+      ? "Banner del server impostato su Ripristino predefinito."
+      : "Banner del server impostato su Rimozione.",
+    "success"
+  );
 }
 
 // Switch tra le schede nella barra laterale
