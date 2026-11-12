@@ -19,6 +19,7 @@ const { getGuildConfig, updateGuildConfig } = require("../utils/guildSettings.js
 const { loadXPData } = require("../misc/level.js");
 const ReactionRoleModel = require("../models/ReactionRole.js");
 const { addReactionRole, removeReactionRole } = require("../misc/reactionRoles.js");
+const { broadcastFreeGame, sendTestNotification, verifyFreeStuffSignature, parseWebhookPayload } = require("../misc/freeGames.js");
 
 module.exports = (client) => {
   const app = express();
@@ -90,7 +91,12 @@ module.exports = (client) => {
     })
   );
 
-  app.use(express.json({ limit: '10mb' }));
+  app.use(express.json({
+    limit: '10mb',
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    }
+  }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
   app.use(express.static(path.join(__dirname, "public")));
 
@@ -884,7 +890,9 @@ module.exports = (client) => {
     const settingsWhitelist = [
       'welcomeChannelId', 'goodbyeChannelId', 'welcomeMessageText', 'goodbyeMessageText',
       'levelUpChannelId', 'levelUpMessageText', 'totalChannelId', 'usersChannelId', 'botsChannelId',
-      'newMemberRoleId', 'botRoleId', 'inviteLink', 'botNickname', 'features', 'commands'
+      'newMemberRoleId', 'botRoleId', 'inviteLink', 'botNickname',
+      'freeGamesChannelId', 'freeGamesRoleId', 'freeGamesFilter',
+      'features', 'commands'
     ];
     
     const updatedSettings = {};
@@ -1145,6 +1153,65 @@ module.exports = (client) => {
     } catch (error) {
       console.error("Errore API analytics:", error.message);
       res.status(500).json({ success: false, message: "Errore nel caricamento delle analytics." });
+    }
+  });
+
+  // Webhook FreeStuff per notifiche automatiche giochi gratis
+  app.post("/api/webhooks/freestuff", async (req, res) => {
+    try {
+      const signature = req.headers["webhook-signature"];
+      const messageId = req.headers["webhook-id"];
+      const timestamp = req.headers["webhook-timestamp"];
+      const publicKey = process.env.FREESTUFF_WEBHOOK_KEY || "";
+
+      // Verifica firma crittografica se la chiave pubblica è impostata o se gli header sono presenti
+      if (publicKey && !verifyFreeStuffSignature(req.rawBody, signature, messageId, timestamp, publicKey)) {
+        console.warn("⚠️ [Webhook FreeStuff] Tentativo di webhook respinto: firma non valida.");
+        return res.status(400).send("Invalid signature");
+      }
+
+      // Risposta 204 No Content immediata come da standard FreeStuff API v2
+      res.status(204).end();
+
+      const payload = req.body;
+      if (!payload) return;
+
+      if (payload.type === "fsb:event:ping") {
+        console.log("🏓 [Webhook FreeStuff] Ping di verifica ricevuto con successo.");
+        return;
+      }
+
+      const games = parseWebhookPayload(payload);
+      if (!games || games.length === 0) {
+        console.log("ℹ️ [Webhook FreeStuff] Payload ricevuto ma nessun gioco estraibile.");
+        return;
+      }
+
+      console.log(`🎁 [Webhook FreeStuff] Ricevute ${games.length} offerte di giochi gratuiti! Avvio broadcasting...`);
+      for (const game of games) {
+        await broadcastFreeGame(client, game);
+      }
+    } catch (err) {
+      console.error("❌ [Webhook FreeStuff] Errore elaborazione webhook:", err.message);
+      if (!res.headersSent) {
+        res.status(500).send("Internal Server Error");
+      }
+    }
+  });
+
+  // API Test notifica giochi gratis per-server (solo admin del server)
+  app.post("/api/free-games/test/:guildId", ensureAuthenticated, ensureGuildAdminApi, async (req, res) => {
+    const targetGuildId = req.params.guildId;
+    try {
+      const result = await sendTestNotification(client, targetGuildId);
+      if (result.success) {
+        res.json({ success: true, message: result.message });
+      } else {
+        res.status(400).json({ success: false, message: result.message });
+      }
+    } catch (err) {
+      console.error(`❌ Errore durante il test giochi gratis per [${targetGuildId}]:`, err.message);
+      res.status(500).json({ success: false, message: "Errore interno durante il test: " + err.message });
     }
   });
 
