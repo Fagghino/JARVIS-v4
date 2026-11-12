@@ -16,12 +16,19 @@ const guildSettingsSchema = new mongoose.Schema({
   botRoleId: { type: String, default: '' },
   inviteLink: { type: String, default: '' },
   botNickname: { type: String, default: '' },
+  freeGamesChannelId: { type: String, default: '' },
+  freeGamesRoleId: { type: String, default: '' },
+  freeGamesFilter: {
+    keepOnly: { type: Boolean, default: true },
+    includeDlc: { type: Boolean, default: false }
+  },
   features: {
     xpEnabled: { type: Boolean, default: true },
     levelUpNotificationEnabled: { type: Boolean, default: true },
     welcomeEnabled: { type: Boolean, default: true },
     reactionRolesEnabled: { type: Boolean, default: true },
-    counterEnabled: { type: Boolean, default: true }
+    counterEnabled: { type: Boolean, default: true },
+    freeGamesEnabled: { type: Boolean, default: false }
   },
   commands: {
     flip: { type: Boolean, default: true },
