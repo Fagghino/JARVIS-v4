@@ -9,83 +9,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Personal Slash Command `/rank` (`commands/public/rank.js`, `utils/cooldown.js`)**:
-  - New public command to display user level card with server ranking calculation (`#X / Y`), level badge, square-emoji progress bar, current XP, and remaining XP to the next level.
-  - Dedicated 3-second cooldown registered in the cooldown manager.
-- **Public Web Leaderboard per Server (`dashboard/views/leaderboard.html`, `dashboard/server.js`)**:
-  - New responsive web view and public route `GET /leaderboard/:guildId` showing members sorted by XP and level.
-  - Quick action "🏆 Classifica" button added to the server selector view (`select-guild.html`).
+  - Public command to immediately display user level card with server ranking calculation (`#X / Y`), level badge, graphical progress bar, current XP, and remaining XP to the next level, with a dedicated 3-second cooldown.
+- **Public Web Leaderboard per Server (`dashboard/views/leaderboard.html`, `dashboard/server.js`, `dashboard/views/select-guild.html`)**:
+  - Responsive web view and public route `GET /leaderboard/:guildId` showing members sorted by XP and level, complete with asynchronous Discord member avatar prefetching, server header banner with icon, and glassmorphism styling.
+  - Aligned "🏆 Classifica" quick-action button in the server selection view (`select-guild.html`).
 - **Dashboard Analytics & Interactive Chart.js Visualizations (`models/GuildActivity.js`, `dashboard/views/settings.html`, `dashboard/public/js/settings.js`, `dashboard/server.js`)**:
   - New Mongoose model `GuildActivity` for daily aggregated tracking of messages, voice hours, XP, and unique active members.
-  - New protected API route `GET /api/guilds/:guildId/analytics` with 7, 14, and 30-day range selector.
-  - Interactive Chart.js UMD charts in the "Dashboard & Recap" settings tab with dark glassmorphism styling, fluorescent gradients, and responsive tooltips.
+  - Protected API route `GET /api/guilds/:guildId/analytics` with 7, 14, and 30-day range selector and interactive dark-themed Chart.js UMD visualizations with fluorescent gradients.
 - **Real-Time Staff Error Alerts via Discord Webhook (`utils/alertWebhook.js`, `index.js`, `misc/database.js`)**:
-  - Notification system on private staff Discord channel for `uncaughtException`, `unhandledRejection`, MongoDB disconnections, and Discord Gateway anomalies.
-  - Automatic token, secret, and database credential sanitization in stack traces (`sanitizeSecrets`).
-  - Rate-limiting / anti-spam debouncing to silence rapid duplicate error spikes (max 1 alert per 5 minutes per error signature).
-  - Custom sentinel avatar assets generated in `Docs/assets/image/webhook-sentinel.png` and `webhook-sentinel-stark.png`.
-- **Anti-Spam Message XP Cooldown (`misc/level.js`)**:
-  - 60-second temporal rate limit per member on message XP awards with automated memory map cleanup.
-- **Customizable Level Up Message & Independent Notification Toggle (`models/GuildSettings.js`, `misc/level.js`, `dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
-  - Added editable textarea in "🏆 Livelli & XP" dashboard tab for custom level-up embed messages with default template (`Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!`) and dedicated "🔄 Ripristina Default" button.
-  - Full variable placeholders support: `{user}` (username), `{mention}` (@user ping), `{level}` (new level), `{server}` (server name), and `{xp}` (total XP).
-  - Introduced new cyber-toggle "Notifiche di Level Up" (`features.levelUpNotificationEnabled`) allowing admins to keep XP leveling progression active while silencing public level-up announcements.
-- **Interactive Variable Tags & Real-Time Discord Embed Preview (`dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
-  - Added click-to-insert pill badges (`+ {user}`, `+ {server}`, `+ {count}`, `+ {mention}`, `+ {level}`, `+ {xp}`) inserting placeholders directly at caret position for Welcome, Goodbye, and Level Up textareas.
-  - Built real-time Discord Embed mockup preview rendering formatted Markdown, styled mentions, thumbnail avatars, and field details as the user types.
+  - Automated alert system on private staff Discord channel for unhandled exceptions, MongoDB disconnections, and Discord Gateway anomalies.
+  - Preemptive credential sanitization in stack traces (`sanitizeSecrets`), anti-spam debouncing, and custom Sentinel branding assets.
+- **Message Customization (Level Up, Welcome, Goodbye) with Live Embed Preview & Clickable Tags (`dashboard/views/settings.html`, `dashboard/public/js/settings.js`, `models/GuildSettings.js`, `misc/level.js`)**:
+  - Custom level-up message textarea supporting variable placeholders (`{user}`, `{mention}`, `{level}`, `{server}`, `{xp}`) and reset-to-default option.
+  - Independent cyber toggle switch to silence public level-up announcement messages while keeping XP leveling active.
+  - Interactive click-to-insert pill badges and real-time Discord Embed mockup preview rendering formatted Markdown and avatars as the user types across Welcome, Goodbye, and Level Up.
 - **Dedicated Privacy Policy & Terms of Service Web Pages (`dashboard/views/privacy.html`, `dashboard/views/terms.html`, `dashboard/server.js`, `dashboard/views/landing.html`)**:
   - Created two responsive legal views compliant with Discord Developer Policy and European GDPR (EU 2016/679).
-  - Registered primary public routes `GET /privacy-policy` and `GET /terms-of-services` (with backwards-compatible aliases `/privacy`, `/terms`, `/tos`) featuring table of contents navigation, data controller details, data minimization policies, user deletion rights, and service conduct rules.
-  - Updated landing page footer links accordingly.
+  - Registered primary public routes `GET /privacy-policy` and `GET /terms-of-services` (with `/privacy` and `/terms` aliases) linked directly in the landing page footer.
+- **Anti-Spam Message XP Cooldown (`misc/level.js`)**:
+  - 60-second temporal rate limit per member on message XP awards with automated memory cleanup.
 
 ### Changed
-- **Centralized Default Messages as Single Source of Truth (`config/config.js`, `models/GuildSettings.js`, `utils/guildSettings.js`, `misc/welcome.js`, `misc/level.js`, `dashboard/server.js`, `dashboard/public/js/settings.js`)**:
-  - Eliminated hardcoded string duplication for Welcome, Goodbye, and Level Up defaults across backend schemas, bot handlers, and frontend web scripts.
-  - Web dashboard now dynamically receives defaults from `config/config.js` via API and data attributes, ensuring any future default message modifications require editing only `config/config.js`.
+- **Centralized Default Messages as Single Source of Truth (`config/config.js`, `dashboard/server.js`)**:
+  - Centralized default templates for Welcome, Goodbye, and Level Up exclusively in `config/config.js`, dynamically streamed across bot handlers, database schemas, and web dashboard.
+- **Bot Profile Global Banner Support & Resolution in Web Dashboard (`dashboard/server.js`, `dashboard/public/js/settings.js`, `index.js`)**:
+  - Automated ready prefetch of full bot profile (`client.user.fetch(true)`), accurately rendering Discord Global Banners and per-server custom banners with dynamic status badges.
+- **Optimized & Accurate Voice Channel Counters (`misc/counter.js`)**:
+  - Instantaneous member and bot counting with conditional cache synchronization, protecting the bot from Discord HTTP 429 rate limits while guaranteeing precise multi-bot tracking.
 - **Axios Replaced with Node 18+ Native `fetch` (`dashboard/server.js`, `package.json`)**:
-  - Removed external `axios` dependency for OAuth2 token exchanges, resolving 1 critical and all 13 high security advisories reported by `npm audit`.
-- **Optimized MongoDB XP Cache Flushing (`misc/level.js`)**:
-  - Implemented selective dirty tracking (`dirtyUsers = new Set()`), flushing only modified records to MongoDB Atlas and eliminating massive redundant `bulkWrite` cycles.
-- **Optimized Leaderboard Command Queries (`commands/public/classifica.js`)**:
-  - Replaced uncapped global Discord Gateway member downloads (`guild.members.fetch()`) with direct indexed MongoDB queries `UserXP.find().sort().limit(100)`.
-- **Optimized Voice Channel Counters (`misc/counter.js`)**:
-  - Replaced continuous global member fetching with native `guild.memberCount` and added `channel.name !== newName` guard to prevent Discord HTTP 429 rate limits.
+  - Removed external `axios` dependency for OAuth2 token exchanges, resolving all security advisories reported by `npm audit`.
+- **MongoDB Performance & Query Optimizations (`misc/level.js`, `commands/public/classifica.js`)**:
+  - Selective dirty tracking for MongoDB Atlas XP cache flushing (`dirtyUsers`) and replaced uncapped Gateway member downloads in `/classifica` with direct indexed database queries.
+- **Dashboard Views UI Consistency & Responsive Layout (`dashboard/views/*.html`, `dashboard/public/css/style.css`)**:
+  - Normalized navigation bars, wrappers, and styles across internal views (`dashboard.html`, `unauthorized.html`, `select-guild.html`, `leaderboard.html`) with cohesive glassmorphism design.
 - **Aligned `/serverinfo` Slash Command (`commands/public/serverinfo.js`, `utils/cooldown.js`)**:
-  - Aligned slash command name from `/server` to `.setName('serverinfo')` and updated cooldown key `serverinfo: 5`.
-- **Hardened Content Security Policy (CSP) (`dashboard/server.js`, `dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
-  - Extracted 629 lines of inline JavaScript from `settings.html` into static script `public/js/settings.js` mounted via `data-guild-id`.
-  - Allowed `https://cdn.jsdelivr.net` in Helmet CSP for secure Chart.js delivery.
-- **Pruned Web Session Payloads (`dashboard/server.js`)**:
-  - Filtered `req.session.guilds` to essential fields only (`id`, `name`, `icon`, `owner`, `permissions`), substantially reducing MongoDB session store footprint.
+  - Aligned command name from `/server` to `.setName('serverinfo')` and updated cooldown key.
+- **Hardened Content Security Policy (CSP) & Web Session Payloads (`dashboard/server.js`, `dashboard/public/js/settings.js`)**:
+  - Extracted inline JavaScript into modular static script `public/js/settings.js` and pruned MongoDB session store payloads.
 - **Production HTML Template Caching (`dashboard/server.js`)**:
-  - Introduced in-memory template caching for compiled HTML views when `NODE_ENV === 'production'`.
-- **Slash Commands Stability & DM Guards (`commands/*/*.js`)**:
-  - Added `.setDMPermission(false)` and guild check guards across all 15 server commands.
-  - Sanitized `/userinfo` with safe fallback to target user when member is uncached and truncated role list to 1000 characters.
-  - Added immediate `deferReply()` and empty text validation to `/traduci`.
-  - Added network timeout (8000ms) to `makeHttpsPost` in `utils/translator.js`.
-  - Replaced magic numbers with `ChannelType` and `ActivityType` enums, and scoped collector `customId` in `/set`.
-  - Removed deprecated `{ dynamic: true }` option from all avatar methods.
-- **Graceful Asynchronous Shutdown (`index.js`)**:
-  - Enhanced `SIGINT` and `SIGTERM` handlers with `await client.destroy()` for clean Discord WebSocket closure before flushing XP data.
-- **Anchored `.env` File Paths (`index.js`, `deploy-commands.js`, `scripts/clearGuildCommands.js`)**:
-  - Used `path.resolve(__dirname, 'config/.env')` ensuring reliable process startups from any working directory.
-
-### Fixed
-- **UI Alignment & Spacing in Server Selection View (`dashboard/views/select-guild.html`)**:
-  - Aligned "⚙️ Gestisci Server" and "🏆 Classifica" buttons with flex-column layout (`gap: 10px`), `box-sizing: border-box`, and dedicated `.btn-leaderboard` styling ensuring pixel-perfect matching dimensions.
-- **Web Leaderboard Responsive Layout & Top Bar Navbar Distortion (`dashboard/views/leaderboard.html`, `dashboard/public/css/style.css`)**:
-  - Fixed distorted bot avatar (`avatar.gif`), unstyled blue links, and squeezed layout in `leaderboard.html` by linking `landing.css`, isolating the view inside `.leaderboard-page-wrap`, and adding defensive CSS resets for `.navbar .container`.
-  - Added dedicated server header bar with server icon (`guildIconUrl`), back navigation button, and "⚙️ Impostazioni Server" quick action.
-- **Discord Member Avatars Resolution in Web Leaderboard (`dashboard/server.js`)**:
-  - Implemented asynchronous pre-fetching (`guild.members.fetch` with fallback to `client.users.fetch`) for members missing from Discord.js memory cache, fixing default generic avatar fallbacks for active members (e.g. `purple_rabbit_`).
-- **Dashboard & Unauthorized Views Top Bar Layout Resolution (`dashboard/views/dashboard.html`, `dashboard/views/unauthorized.html`, `dashboard/public/css/style.css`)**:
-  - Linked `landing.css`, removed viewport flex-centering on `body` in `style.css`, and introduced dedicated responsive wrappers to eliminate bot avatar distortion and correctly render the sticky glass navigation bar.
-- **Fixed Bot Counter in Voice Channels (`misc/counter.js`)**:
-  - Resolved bug where the bot counter always reported `1` due to Discord.js only caching the connected client itself on startup. Added conditional asynchronous member sync (`guild.members.cache.size !== totalMembers`) ensuring accurate multi-bot tracking without redundant API overhead.
-- **Global Bot Banner Display in Web Dashboard (`dashboard/server.js`, `dashboard/public/js/settings.js`, `dashboard/views/settings.html`, `index.js`)**:
-  - Fixed issue where the bot customization preview card displayed `🌐 Nessun Banner` even when a global banner was configured in Discord Developer Portal / user profile.
-  - In Discord.js, `client.user.banner` is omitted from the initial Gateway payload and requires an explicit REST fetch (`client.user.fetch(true)`).
-  - Integrated ready prefetch in `index.js`, exposed `defaultBannerUrl` via `/api/settings/:guildId`, and enhanced frontend preview in `settings.js` with background image rendering, `🌐 Banner Globale Predefinito` pill badge, and proper fallback cascades.
+  - In-memory template caching for compiled HTML views when `NODE_ENV === 'production'`.
+- **Slash Commands Stability, DM Guards & Graceful Shutdown (`commands/*/*.js`, `index.js`)**:
+  - Enforced `.setDMPermission(false)` across all 15 server commands, sanitized `/userinfo`, added `/traduci` timeout, anchored `.env` paths, and enabled clean WebSocket shutdown on `SIGINT`/`SIGTERM`.
 
 ### Removed
 - **Broken Migration Script**:
