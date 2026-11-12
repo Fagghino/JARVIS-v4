@@ -446,6 +446,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("botsChannelId").value = currentConfig.botsChannelId || "";
     document.getElementById("inviteLink").value = currentConfig.inviteLink || "";
 
+    // Popola Impostazioni Giochi Gratis
+    const elFreeGamesChannel = document.getElementById("freeGamesChannelId");
+    if (elFreeGamesChannel) elFreeGamesChannel.value = currentConfig.freeGamesChannelId || "";
+
+    const elFreeGamesRole = document.getElementById("freeGamesRoleId");
+    if (elFreeGamesRole) elFreeGamesRole.value = currentConfig.freeGamesRoleId || "";
+
+    const gamesFilter = currentConfig.freeGamesFilter || {};
+    const elKeepOnly = document.getElementById("filter_keepOnly");
+    if (elKeepOnly) elKeepOnly.checked = gamesFilter.keepOnly !== false;
+
+    const elIncludeDlc = document.getElementById("filter_includeDlc");
+    if (elIncludeDlc) elIncludeDlc.checked = gamesFilter.includeDlc === true;
+
     // Aggiorna anteprime Discord Embed live all'avvio
     updateAllDiscordPreviews();
 
@@ -456,6 +470,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("featureCounterEnabled").checked = feat.counterEnabled !== false;
     document.getElementById("featureXpEnabled").checked = feat.xpEnabled !== false;
     document.getElementById("featureLevelUpNotificationEnabled").checked = feat.levelUpNotificationEnabled !== false;
+    const elFreeGamesFeat = document.getElementById("featureFreeGamesEnabled");
+    if (elFreeGamesFeat) elFreeGamesFeat.checked = feat.freeGamesEnabled === true;
 
     // Popola Slider Toggle Comandi
     const cmds = currentConfig.commands || {};
@@ -507,12 +523,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       botsChannelId: document.getElementById("botsChannelId").value,
       inviteLink: document.getElementById("inviteLink").value,
       botNickname: document.getElementById("botNickname").value,
+      freeGamesChannelId: document.getElementById("freeGamesChannelId") ? document.getElementById("freeGamesChannelId").value : "",
+      freeGamesRoleId: document.getElementById("freeGamesRoleId") ? document.getElementById("freeGamesRoleId").value : "",
+      freeGamesFilter: {
+        keepOnly: document.getElementById("filter_keepOnly") ? document.getElementById("filter_keepOnly").checked : true,
+        includeDlc: document.getElementById("filter_includeDlc") ? document.getElementById("filter_includeDlc").checked : false
+      },
       features: {
         welcomeEnabled: document.getElementById("featureWelcomeEnabled").checked,
         reactionRolesEnabled: document.getElementById("featureReactionRolesEnabled").checked,
         counterEnabled: document.getElementById("featureCounterEnabled").checked,
         xpEnabled: document.getElementById("featureXpEnabled").checked,
-        levelUpNotificationEnabled: document.getElementById("featureLevelUpNotificationEnabled").checked
+        levelUpNotificationEnabled: document.getElementById("featureLevelUpNotificationEnabled").checked,
+        freeGamesEnabled: document.getElementById("featureFreeGamesEnabled") ? document.getElementById("featureFreeGamesEnabled").checked : false
       },
       commands: {
         flip: document.getElementById("cmd_flip").checked,
@@ -598,6 +621,38 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   });
+
+  // Listener per Test Notifica Giochi Gratis
+  document.getElementById("btnTestFreeGames")?.addEventListener("click", async () => {
+    const btn = document.getElementById("btnTestFreeGames");
+    const channelSelect = document.getElementById("freeGamesChannelId");
+    if (!channelSelect || !channelSelect.value) {
+      showToast("⚠️ Seleziona prima un canale per gli annunci e salva le impostazioni.", "error");
+      return;
+    }
+
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = "<span>⏳</span><span>Invio notifica di prova...</span>";
+
+    try {
+      const res = await fetch(`/api/free-games/test/${currentGuildId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(`✅ ${data.message || "Notifica di test inviata con successo su Discord!"}`, "success");
+      } else {
+        showToast(`❌ ${data.message || "Errore durante l'invio del test."}`, "error");
+      }
+    } catch (err) {
+      showToast(`❌ Errore durante l'invio del test: ${err.message}`, "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+    }
+  });
 });
 
 function populateSelects() {
@@ -633,6 +688,18 @@ function populateSelects() {
       sel.appendChild(opt);
     });
   });
+
+  // Popola selettore ruolo per Notifiche Giochi Gratis
+  const freeGamesRoleSelect = document.getElementById("freeGamesRoleId");
+  if (freeGamesRoleSelect) {
+    freeGamesRoleSelect.innerHTML = '<option value="">Nessun tag (Silenzioso)</option><option value="everyone">@everyone</option>';
+    serverRoles.forEach(r => {
+      const opt = document.createElement("option");
+      opt.value = r.id;
+      opt.textContent = `@${r.name}`;
+      freeGamesRoleSelect.appendChild(opt);
+    });
+  }
 }
 
 function renderQuickRecap(features = {}, commands = {}) {
@@ -642,14 +709,15 @@ function renderQuickRecap(features = {}, commands = {}) {
     { name: "Benvenuto & Addio", key: "welcomeEnabled", icon: "👋" },
     { name: "Reaction Roles", key: "reactionRolesEnabled", icon: "🎭" },
     { name: "Contatori Canali Vocali", key: "counterEnabled", icon: "📈" },
-    { name: "Sistema XP & Livelli", key: "xpEnabled", icon: "🏆" }
+    { name: "Sistema XP & Livelli", key: "xpEnabled", icon: "🏆" },
+    { name: "Giochi Gratis", key: "freeGamesEnabled", icon: "🎮" }
   ];
 
   const cmdList = ['flip', 'ping', 'roll', 'serverinfo', 'userinfo'];
   const activeCmdsCount = cmdList.filter(c => commands[c] !== false).length;
 
   listEl.innerHTML = modules.map(m => {
-    const isEnabled = features[m.key] !== false;
+    const isEnabled = m.key === 'freeGamesEnabled' ? (features[m.key] === true) : (features[m.key] !== false);
     return `
     <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
       <div style="display: flex; align-items: center; gap: 8px;">
