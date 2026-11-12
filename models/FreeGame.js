@@ -5,6 +5,7 @@ const freeGameSchema = new mongoose.Schema({
   title: { type: String, required: true },
   store: { type: String, default: 'unknown' },
   url: { type: String, required: true },
+  description: { type: String, default: '' },
   orgPrice: { type: String, default: '' },
   price: { type: String, default: '0.00' },
   thumbnail: { type: String, default: '' },
