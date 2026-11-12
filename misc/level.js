@@ -183,6 +183,41 @@ function escapeMarkdown(text) {
   return text ? text.replace(/([_*~`|\\])/g, '\\$1') : '';
 }
 
+const DEFAULT_LEVELUP_TEXT = 'Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!';
+
+/**
+ * Invia l'embed di notifica level-up se abilitato nella configurazione del server
+ */
+function sendLevelUpNotification(guild, guildConfig, userId, username, newLevel, totalXp) {
+  // Verifica se le notifiche sono abilitate (default: true)
+  const isNotificationEnabled = guildConfig.features?.levelUpNotificationEnabled !== false;
+  const levelUpChannelId = guildConfig.levelUpChannelId;
+
+  if (!isNotificationEnabled || !levelUpChannelId) return;
+
+  const channel = guild.channels.cache.get(levelUpChannelId);
+  if (!channel) return;
+
+  const cleanName = escapeMarkdown(username);
+  const templateText = guildConfig.levelUpMessageText || DEFAULT_LEVELUP_TEXT;
+  const formattedDesc = templateText
+    .replace(/{user}/g, cleanName)
+    .replace(/{mention}/g, `<@${userId}>`)
+    .replace(/{level}/g, String(newLevel))
+    .replace(/{server}/g, guild.name)
+    .replace(/{xp}/g, String(totalXp));
+
+  const levelUpEmbed = new EmbedBuilder()
+    .setColor(0x3498db)
+    .setTitle('🎉 Level Up!')
+    .setDescription(formattedDesc)
+    .setFooter({ text: `XP totali: ${totalXp}` });
+
+  channel.send({ embeds: [levelUpEmbed] }).catch(err =>
+    console.error(`❌ Impossibile inviare notifica level-up in [${levelUpChannelId}]:`, err.message)
+  );
+}
+
 /**
  * Calcola il livello in base ai punti XP
  * Formula: level = floor(0.1 * sqrt(xp))
@@ -229,23 +264,7 @@ async function addXP(client, userID, xpAmount, guild, username = 'Utente') {
 
   if (newLevel > oldLevel) {
     cache[userID].level = newLevel;
-
-    const levelUpChannelId = guildConfig.levelUpChannelId;
-    if (levelUpChannelId) {
-      const channel = guild.channels.cache.get(levelUpChannelId);
-      if (channel) {
-        const cleanName = escapeMarkdown(username);
-        const levelUpEmbed = new EmbedBuilder()
-          .setColor(0x3498db)
-          .setTitle('🎉 Level Up!')
-          .setDescription(`Congratulazioni **${cleanName}**! Hai raggiunto il **livello ${newLevel}**!`)
-          .setFooter({ text: `XP totali: ${cache[userID].xp}` });
-
-        channel.send({ embeds: [levelUpEmbed] }).catch(err =>
-          console.error(`❌ Impossibile inviare notifica level-up in [${levelUpChannelId}]:`, err.message)
-        );
-      }
-    }
+    sendLevelUpNotification(guild, guildConfig, userID, username, newLevel, cache[userID].xp);
   }
 
   dirtyUsers.add(`${guildId}:${userID}`);
@@ -311,21 +330,7 @@ async function handleVoiceXP(client) {
 
         if (newLevel > oldLevel) {
           cache[uId].level = newLevel;
-          const levelUpChannelId = guildConfig.levelUpChannelId;
-          if (levelUpChannelId) {
-            const channel = guild.channels.cache.get(levelUpChannelId);
-            if (channel) {
-              const levelUpEmbed = new EmbedBuilder()
-                .setColor(0x3498db)
-                .setTitle('🎉 Level Up!')
-                .setDescription(`Congratulazioni **${escapeMarkdown(member.user.username)}**! Hai raggiunto il **livello ${newLevel}**!`)
-                .setFooter({ text: `XP totali: ${cache[uId].xp}` });
-
-              channel.send({ embeds: [levelUpEmbed] }).catch(err =>
-                console.error('❌ Errore invio level-up embed vocale:', err.message)
-              );
-            }
-          }
+          sendLevelUpNotification(guild, guildConfig, uId, member.user.username, newLevel, cache[uId].xp);
         }
 
         dirtyUsers.add(`${guild.id}:${uId}`);
