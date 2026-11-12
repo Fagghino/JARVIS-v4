@@ -8,6 +8,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { getGuildConfig } = require('../utils/guildSettings');
+const defaultConfig = require('../config/config');
 
 /**
  * Inizializza e attiva il sistema di benvenuto/addio
@@ -41,8 +42,7 @@ module.exports = (client) => {
             if (guildConfig.welcomeChannelId) {
                 const welcomeChannel = member.guild.channels.cache.get(guildConfig.welcomeChannelId);
                 if (welcomeChannel) {
-                    const defaultWelcomeText = 'Benvenuto nel server, {user}! Ora siamo in {count} membri!';
-                    const templateText = guildConfig.welcomeMessageText || defaultWelcomeText;
+                    const templateText = guildConfig.welcomeMessageText || defaultConfig.welcomeMessageText;
                     const formattedDesc = templateText
                         .replace(/{user}/g, `<@${member.id}>`)
                         .replace(/{server}/g, member.guild.name)
@@ -79,8 +79,7 @@ module.exports = (client) => {
             if (guildConfig.goodbyeChannelId) {
                 const goodbyeChannel = member.guild.channels.cache.get(guildConfig.goodbyeChannelId);
                 if (goodbyeChannel) {
-                    const defaultGoodbyeText = '{user} ha lasciato il server. Ci mancherai!';
-                    const templateText = guildConfig.goodbyeMessageText || defaultGoodbyeText;
+                    const templateText = guildConfig.goodbyeMessageText || defaultConfig.goodbyeMessageText;
                     const formattedDesc = templateText
                         .replace(/{user}/g, `**${member.user.username}**`)
                         .replace(/{server}/g, member.guild.name)

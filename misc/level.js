@@ -10,6 +10,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { getGuildConfig } = require('../utils/guildSettings');
 const { isDBConnected } = require('./database');
+const defaultConfig = require('../config/config');
 const UserXPModel = require('../models/UserXP');
 const GuildActivityModel = require('../models/GuildActivity');
 
@@ -183,8 +184,6 @@ function escapeMarkdown(text) {
   return text ? text.replace(/([_*~`|\\])/g, '\\$1') : '';
 }
 
-const DEFAULT_LEVELUP_TEXT = 'Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!';
-
 /**
  * Invia l'embed di notifica level-up se abilitato nella configurazione del server
  */
@@ -199,7 +198,7 @@ function sendLevelUpNotification(guild, guildConfig, userId, username, newLevel,
   if (!channel) return;
 
   const cleanName = escapeMarkdown(username);
-  const templateText = guildConfig.levelUpMessageText || DEFAULT_LEVELUP_TEXT;
+  const templateText = guildConfig.levelUpMessageText || defaultConfig.levelUpMessageText;
   const formattedDesc = templateText
     .replace(/{user}/g, cleanName)
     .replace(/{mention}/g, `<@${userId}>`)

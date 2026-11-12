@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
+const config = require('../config/config.js');
 
 const guildSettingsSchema = new mongoose.Schema({
   guildId: { type: String, required: true, unique: true, index: true },
   welcomeChannelId: { type: String, default: '' },
   goodbyeChannelId: { type: String, default: '' },
-  welcomeMessageText: { type: String, default: 'Benvenuto nel server, {user}! Ora siamo in {count} membri!' },
-  goodbyeMessageText: { type: String, default: '{user} ha lasciato il server. Ci mancherai!' },
+  welcomeMessageText: { type: String, default: config.welcomeMessageText },
+  goodbyeMessageText: { type: String, default: config.goodbyeMessageText },
   levelUpChannelId: { type: String, default: '' },
-  levelUpMessageText: { type: String, default: 'Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!' },
+  levelUpMessageText: { type: String, default: config.levelUpMessageText },
   totalChannelId: { type: String, default: '' },
   usersChannelId: { type: String, default: '' },
   botsChannelId: { type: String, default: '' },
