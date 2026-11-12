@@ -25,6 +25,10 @@ e questo progetto aderisce al [Semantic Versioning](https://semver.org/spec/v2.0
   - Icone personalizzate salvate in `Docs/assets/image/webhook-sentinel.png` e `webhook-sentinel-stark.png`.
 - **Cooldown Anti-Spam Assegnazione XP Messaggi (`misc/level.js`)**:
   - Rate-limit temporale di 60 secondi per utente sull'assegnazione XP testuale con pulizia preventiva automatica della mappa in memoria.
+- **Personalizzazione Messaggio Level Up e Toggle Notifiche Indipendente (`models/GuildSettings.js`, `misc/level.js`, `dashboard/views/settings.html`, `dashboard/public/js/settings.js`)**:
+  - Aggiunta casella di testo textarea nella scheda "🏆 Livelli & XP" per personalizzare il messaggio embed di Level Up, con il testo attuale impostato come predefinito (`Congratulazioni **{user}**! Hai raggiunto il **livello {level}**!`) e pulsante dedicato "🔄 Ripristina Default".
+  - Supporto completo alle variabili dinamiche: `{user}` (nome utente), `{mention}` (menzione @utente), `{level}` (nuovo livello), `{server}` (nome server) e `{xp}` (XP totali).
+  - Introdotto nuovo slider toggle cyber "Notifiche di Level Up" (`features.levelUpNotificationEnabled`): permette di mantenere attivo l'intero sistema di accumulo XP e avanzamento livelli disattivando unicamente l'invio dell'annuncio nel canale testuale.
 
 ### Changed
 - **Sostituzione Axios con `fetch` Nativo Node 18+ (`dashboard/server.js`, `package.json`)**:
